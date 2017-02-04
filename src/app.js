@@ -23,10 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('greet').innerHTML = greet();
     document.getElementById('platform-info').innerHTML = os.platform();
     document.getElementById('env-name').innerHTML = env.name;
-	console.log(xelib.GetExampleString());
-	var gamePath = xelib.GetGamePath(3);
-	console.log(gamePath);
+    var gamePath = xelib.GetGamePath(3);
+    console.log(gamePath);
     document.getElementById('game-path').innerHTML = gamePath;
-	console.log(xelib.GetBuffer());
-	console.log(xelib.GetGlobal('Version'));
+    console.log(xelib.GetBuffer());
+    console.log(xelib.GetGlobal('Version'));
 });

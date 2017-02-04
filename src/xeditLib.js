@@ -15,7 +15,6 @@ var lib = ffi.Library('XEditLib', {
 	'GetGlobal': [ 'bool', [PWChar, PWChar, 'int'] ],
 	'Release': [ 'bool', [ref.types.uint32] ],
 	'ResetStore': [ 'bool', [] ],
-	'GetExampleString': ['bool', [ PWChar, 'int'] ],
 	// SETUP FUNCTIONS
 	'SetGameMode': [ 'void', ['int'] ],
 	'GetLoadOrder': [ 'bool', [PWChar, 'int'] ],
@@ -46,13 +45,6 @@ var xelib = {
 		console.log("key: " + wchar_t.toString(key));
 		var success = lib.GetGlobal(key, str, 512);
 		if (!success) throw "xedit-lib: GetGlobal failed.";
-		return wchar_t.toString(str);
-	},
-	'GetExampleString': function() {
-		var str = new Buffer(32);
-		str.type = PWChar;
-		var success = lib.GetExampleString(str, 32);
-		if (!success) throw "xedit-lib: GetExampleString failed.";
 		return wchar_t.toString(str);
 	},
 	'GetLoaderDone': function() {
