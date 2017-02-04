@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Fallout New Vegas",
+    "mode": 0
+  },
+  {
+    "name": "Fallout 3",
+    "mode": 1
+  },
+  {
+    "name": "Oblivion",
+    "mode": 2
+  },
+  {
+    "name": "Skyrim",
+    "mode": 3
+  },
+  {
+    "name": "Skyrim Special Edition",
+    "mode": 4
+  },
+  {
+    "name": "Fallout 4",
+    "mode": 5
+  }
+]
