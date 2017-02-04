@@ -3,12 +3,6 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     font-family: sans-serif;
 }
 
@@ -22,4 +16,70 @@ a {
 
 .subtitle {
     color: gray;
+}
+
+.title-bar {
+  padding: 8px;
+  user-select: none;
+  cursor: default;
+
+  .actions {
+    font-size: 18px;
+
+    .help {
+      content: '?';
+    }
+
+    .divider {
+      content: '|'
+    }
+
+    .minimize {
+      content: '_';
+    }
+
+    .restore {
+      content: '&#25A1;';
+    }
+
+    .close {
+      content: 'X';
+    }
+  }
+}
+
+.game-logo-container {
+  padding: 8px;
+}
+
+.profile-controls {
+  select, span {
+    display: inline-block;
+    font-size: 20px;
+  }
+
+  select {
+    padding: 4px;
+  }
+}
+
+.primary-actions {
+  margin: 14px;
+}
+
+.action-box {
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  background-color: #53b6bf;
+  border-radius: 2px;
+  margin: 2px;
+  font-size: 18px;
+  padding: 4px 8px;
+  font-weight: 500;
+  -webkit-transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #4d5e6b;
+  }
 }
