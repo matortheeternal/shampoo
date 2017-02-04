@@ -1,0 +1,15 @@
+Home screen
+-----------
+
+1. Start a new session
+2. Configure global options
+3. Read documentation
+4. Quit
+
+File ->
+ - New session
+ - Close session (if session is active)
+ - Options
+ - Documentation
+ - About
+ - Quit
