@@ -23,6 +23,10 @@ var lib = ffi.Library('XEditLib', {
 	'GetGamePath': [ 'bool', ['int', PWChar, 'int'] ]
 });
 
+var trimNull = function(str) {
+	return str.substring(0, str.indexOf('\0'));
+}
+
 var xelib = {
 	'Initialize': function() {
 		lib.Initialize();
@@ -34,7 +38,13 @@ var xelib = {
 		var str = new Buffer(4096);
 		str.type = PWChar;
 		lib.GetBuffer(str, 4096);
-		return wchar_t.toString(str);
+		return trimNull(wchar_t.toString(str));
+	},
+	'GetExceptionMessage': function() {
+		var str = new Buffer(4096);
+		str.type = PWChar;
+		lib.GetExceptionMessage(str, 4096);
+		return trimNull(wchar_t.toString(str));
 	},
 	'GetGlobal': function(keyValue) {
 		var str = new Buffer(512);
@@ -45,7 +55,7 @@ var xelib = {
 		console.log("key: " + wchar_t.toString(key));
 		var success = lib.GetGlobal(key, str, 512);
 		if (!success) throw "xedit-lib: GetGlobal failed.";
-		return wchar_t.toString(str);
+		return trimNull(wchar_t.toString(str));
 	},
 	'GetLoaderDone': function() {
 		return lib.GetLoaderDone();
@@ -54,8 +64,8 @@ var xelib = {
 		var str = new Buffer(512);
 		str.type = PWChar;
 		var success = lib.GetGamePath(mode, str, 512);
-		if (!success) throw "xedit-lib: GetGamePath failed.";
-		return wchar_t.toString(str);
+		if (!success) return null;
+		return trimNull(wchar_t.toString(str));
 	}
 }
 
