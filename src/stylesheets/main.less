@@ -19,31 +19,66 @@ a {
 }
 
 .title-bar {
-  padding: 8px;
-  user-select: none;
-  cursor: default;
+  -webkit-user-select: none;
+  border-bottom: 1px solid #aaa;
+  display: table;
+  width: 100%;
+
+  .title {
+    cursor: default;
+    display: table-cell;
+    padding: 11px;
+    -webkit-app-region: drag;
+  }
 
   .actions {
-    font-size: 18px;
+    display: table-cell;
+    width: 112px;
+    font-size: 22px;
+    cursor: default;
+
+    span {
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: middle;
+      min-width: 18px;
+    }
 
     .help {
-      content: '?';
+      &::before {
+        content: '?';
+      }
     }
 
     .divider {
-      content: '|'
+      cursor: default;
+      opacity: 0.4;
+      border-right: 1px solid #aaa;
+      min-width: initial;
+      min-height: 26px;
+      margin-right: 8px;
     }
 
     .minimize {
-      content: '_';
+      &::before {
+        content: '_';
+      }
     }
 
     .restore {
-      content: '&#25A1;';
+      font-size: 33px;
+      line-height: 16px;
+      margin-top: -6px;
+
+      &::before {
+        content: '\25A1';
+      }
     }
 
     .close {
-      content: 'X';
+      &::before {
+        content: 'X';
+      }
     }
   }
 }
