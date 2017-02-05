@@ -9,7 +9,7 @@
             <section>
                 <div class="subsection" ng-repeat="game in games">
                     <span class="input-label">{{game.name}}</span>
-                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()"/>
+                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
                     <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
                 </div>
             </section>

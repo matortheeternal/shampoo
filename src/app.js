@@ -187,7 +187,8 @@ ngapp.controller('profilesModalController', function ($scope, profileService, fo
 
     $scope.buildValidProfiles = function() {
         $scope.validProfiles = $scope.games.filter(function(game) {
-            return profileService.gamePathValid(game.mode, game.installPath);
+            game.valid = profileService.gamePathValid(game.mode, game.installPath);
+            return game.valid;
         });
         if (!$scope.defaultProfile && $scope.validProfiles.length) {
             $scope.defaultProfile = $scope.validProfiles[0];
