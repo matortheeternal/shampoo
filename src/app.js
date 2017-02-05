@@ -9,6 +9,8 @@ import { greet } from './hello_world/hello_world'; // code authored by you in th
 import env from './env';
 import xelib from './xeditLib.js';
 
+ const remote = require('electron').remote;
+
 console.log('Loaded environment variables:', env);
 
 var app = remote.app;
@@ -105,22 +107,27 @@ ngapp.controller('baseController', function($scope, $rootScope) {
   // initialize xedit-lib
   xelib.Initialize();
 
-  $scope.helpMode = false;
-
   $scope.helpClick = function() {
-    console.log("Help clicked");
+    //$scope.toggleHelpModal();
   };
 
   $scope.minimizeClick = function() {
-    console.log("Minimize clicked");
+    var window = remote.getCurrentWindow();
+    window.minimize();
   };
 
   $scope.restoreClick = function() {
-    console.log("Restore clicked");
+    var window = remote.getCurrentWindow();
+    if (window.isMaximized()) {
+      window.unmaximize();
+    } else {
+      window.maximize();
+    }
   };
 
   $scope.closeClick = function() {
-    console.log("Close clicked");
+    var window = remote.getCurrentWindow();
+    window.close();
   };
 });
 
