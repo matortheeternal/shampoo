@@ -10,8 +10,23 @@ a {
     text-decoration: none;
 }
 
-.container {
-    text-align: center;
+.content {
+  ui-view {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: ~"calc(100vh - 41px)";
+
+    .container {
+      text-align: center;
+      margin-top: -45px;
+
+      h1 {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
 
 .subtitle {
