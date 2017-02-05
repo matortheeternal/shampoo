@@ -1,26 +1,32 @@
 [
   {
     "name": "Fallout NV",
-    "mode": 0
+    "mode": 0,
+    "exeName": "FalloutNV.exe"
   },
   {
     "name": "Fallout 3",
-    "mode": 1
+    "mode": 1,
+    "exeName": "Fallout3.exe"
   },
   {
     "name": "Oblivion",
-    "mode": 2
+    "mode": 2,
+    "exeName": "Oblivion.exe"
   },
   {
     "name": "Skyrim",
-    "mode": 3
+    "mode": 3,
+    "exeName": "TESV.exe"
   },
   {
     "name": "Skyrim SE",
-    "mode": 4
+    "mode": 4,
+    "exeName": "SkyrimSE.exe"
   },
   {
     "name": "Fallout 4",
-    "mode": 5
+    "mode": 5,
+    "exeName": "Fallout4.exe"
   }
 ]
