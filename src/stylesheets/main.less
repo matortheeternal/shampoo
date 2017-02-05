@@ -11,22 +11,22 @@ a {
 }
 
 .content {
-  ui-view {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: ~"calc(100vh - 41px)";
+    ui-view {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: ~"calc(100vh - 41px)";
 
-    .container {
-      text-align: center;
-      margin-top: -45px;
+        .container {
+            text-align: center;
+            margin-top: -45px;
 
-      h1 {
-        margin-top: 0;
-        margin-bottom: 10px;
-      }
+            h1 {
+                margin-top: 0;
+                margin-bottom: 10px;
+            }
+        }
     }
-  }
 }
 
 .subtitle {
@@ -34,136 +34,252 @@ a {
 }
 
 .title-bar {
-  -webkit-user-select: none;
-  border-bottom: 1px solid #aaa;
-  display: table;
-  width: 100%;
+    -webkit-user-select: none;
+    border-bottom: 1px solid #aaa;
+    display: table;
+    width: 100%;
 
-  .title {
-    cursor: default;
-    display: table-cell;
-    padding: 11px;
-    -webkit-app-region: drag;
-  }
-
-  .actions {
-    display: table-cell;
-    width: 114px;
-    font-size: 22px;
-    cursor: default;
-
-    span {
-      cursor: pointer;
-      display: inline-block;
-      vertical-align: middle;
-      min-width: 18px;
+    .title {
+        cursor: default;
+        display: table-cell;
+        padding: 11px;
+        -webkit-app-region: drag;
     }
 
-    .help {
-      &::before {
-        content: '?';
-      }
+    .actions {
+        display: table-cell;
+        width: 114px;
+        font-size: 22px;
+        cursor: default;
+
+        span {
+            cursor: pointer;
+            display: inline-block;
+            vertical-align: middle;
+            min-width: 18px;
+        }
+
+        .help {
+            &::before {
+                content: '?';
+            }
+        }
+
+        .divider {
+            cursor: default;
+            opacity: 0.4;
+            border-right: 1px solid #aaa;
+            min-width: initial;
+            min-height: 26px;
+            margin-right: 8px;
+        }
+
+        .minimize {
+            margin-top: -6px;
+
+            &::before {
+                content: '_';
+            }
+        }
+
+        .restore {
+            font-size: 33px;
+            line-height: 16px;
+            margin-top: -6px;
+
+            &::before {
+                content: '\25A1';
+            }
+        }
+
+        .close {
+            margin-top: 1px;
+
+            &::before {
+                content: 'X';
+            }
+        }
     }
-
-    .divider {
-      cursor: default;
-      opacity: 0.4;
-      border-right: 1px solid #aaa;
-      min-width: initial;
-      min-height: 26px;
-      margin-right: 8px;
-    }
-
-    .minimize {
-      margin-top: -6px;
-
-      &::before {
-        content: '_';
-      }
-    }
-
-    .restore {
-      font-size: 33px;
-      line-height: 16px;
-      margin-top: -6px;
-
-      &::before {
-        content: '\25A1';
-      }
-    }
-
-    .close {
-      margin-top: 1px;
-
-      &::before {
-        content: 'X';
-      }
-    }
-  }
 }
 
 .game-logo-container {
-  padding: 8px;
+    padding: 8px;
 }
 
 .profile-controls {
-  select, span {
-    display: inline-block;
-    vertical-align: middle;
-  }
+    select, span {
+        display: inline-block;
+        vertical-align: middle;
+    }
 
-  span.fa {
-    margin-left: 4px;
-    font-size: 30px;
-    cursor: pointer;
-  }
+    span.fa {
+        margin-left: 4px;
+        font-size: 30px;
+        cursor: pointer;
+    }
 
-  select {
-    padding: 4px;
-    font-size: 20px;
-    min-width: 140px;
-    -webkit-appearance: none;
+    select {
+        padding: 4px;
+        font-size: 20px;
+        min-width: 140px;
+        -webkit-appearance: none;
 
-    // background
-    background-image:
-      linear-gradient(45deg, transparent 50%, gray 50%),
-      linear-gradient(135deg, gray 50%, transparent 50%),
-      linear-gradient(to right, #ccc, #ccc);
-    background-position:
-      ~"calc(100% - 15px) calc(50% + 2px),
+        // background
+        background-image: linear-gradient(45deg, transparent 50%, gray 50%),
+        linear-gradient(135deg, gray 50%, transparent 50%),
+        linear-gradient(to right, #ccc, #ccc);
+        background-position: ~"calc(100% - 15px) calc(50% + 2px),
       calc(100% - 10px) calc(50% + 2px),
       calc(100% - 1.5em) 50%";
-    background-size:
-      5px 5px,
-      5px 5px,
-      1px 80%;
-    background-repeat: no-repeat;
-  }
+        background-size: 5px 5px,
+        5px 5px,
+        1px 80%;
+        background-repeat: no-repeat;
+    }
 }
 
 .primary-actions {
-  margin: 16px;
+    margin: 16px;
 
-  .action-box {
-    font-size: 28px;
-    padding: 8px 16px;
-  }
+    .action-box {
+        font-size: 28px;
+        padding: 8px 16px;
+    }
 }
 
 .action-box {
-  color: #fff;
-  text-align: center;
-  cursor: pointer;
-  display: inline-block;
-  background-color: #53b6bf;
-  border-radius: 2px;
-  margin: 2px;
-  font-size: 18px;
-  padding: 4px 8px;
-  font-weight: 500;
-  -webkit-transition: background-color 0.2s ease-in-out;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    background-color: #53b6bf;
+    border-radius: 2px;
+    margin: 2px;
+    font-size: 18px;
+    padding: 4px 8px;
+    font-weight: 500;
+    -webkit-transition: background-color 0.2s ease-in-out;
 
-  &:hover {
-    background-color: #4d5e6b;
-  }
+    &:hover {
+        background-color: #4d5e6b;
+    }
+}
+
+/* css for modals */
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 200;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    .modal {
+        position: relative;
+        width: 400px;
+        padding: 40px;
+        margin: 150px auto;
+        box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
+        background-color: #fff;
+
+        .section-title {
+            display: block;
+            vertical-align: top;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .content-message {
+            margin: 20px 0 0;
+        }
+    }
+
+    .big-modal {
+        width: 600px;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding-right: 3px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .messages {
+        background-color: transparent;
+
+        .error-message, .success-message {
+            font-size: 18px;
+        }
+    }
+
+    .section-title {
+        margin-top: 0;
+    }
+
+    section {
+        margin: 15px;
+    }
+}
+
+form {
+    .section-title {
+        display: block;
+        vertical-align: top;
+        font-size: 22px;
+        font-weight: 500;
+    }
+
+    section {
+        display: block;
+        margin-top: 15px;
+        margin-left: 30px;
+        margin-bottom: 30px;
+
+        .subsection {
+            display: block;
+            margin-bottom: 15px;
+            margin-top: 15px;
+
+            span, input {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .fa {
+                margin-left: 2px;
+                cursor: pointer;
+            }
+        }
+
+        .path-input {
+            width: 350px;
+        }
+    }
+
+    .input-label {
+        display: inline-block;
+        min-width: 180px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+}
+
+.action-button-container {
+    margin-top: 16px;
+    text-align: center;
+
+    .action-box {
+        margin: 1px;
+    }
+}
+
+.default-profile-section {
+    select {
+        min-width: 100px;
+    }
 }
