@@ -13,3 +13,24 @@ File ->
  - Documentation
  - About
  - Quit
+ 
+ 
+------
+
+1. frameless window
+2. ? | _ [] X in corner
+3. game selection
+	- game logo/icon
+	- game names in dropdown
+	- "start session" button
+	- gear/dropdown option to "add game"
+4. error display at top of the window
+5. welcome message/tutorial modal (also used for updates)
+
+$scope.profiles = [
+	{
+    "name": "Skyrim",
+    "gameMode": 1,
+    "gamePath": "C:\SteamLibrary\common\steamapps\Skyrim"
+	}
+]
