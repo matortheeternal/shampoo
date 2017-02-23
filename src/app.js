@@ -17,6 +17,21 @@ var loadJsonFile = function (filename, defaultValue) {
     }
 };
 
+// test GetGlobal
+var testGetGlobal = function() {
+  try {
+    console.log(xelib.GetGlobal('ProgramPath'));
+  } catch (e) {
+    console.log(e);
+    try {
+      console.log(xelib.GetBuffer());
+      console.log(xelib.GetExceptionMessage());
+    } catch (e) {
+      console.log("Failed to get exception information: " + e);
+    }
+  }
+}
+
 var ngapp = angular.module('shampoo', [
     'ui.router', 'ct.ui.router.extras'
 ]);
@@ -99,6 +114,7 @@ ngapp.service('profileService', function () {
 ngapp.controller('baseController', function ($scope) {
     // initialize xedit-lib
     xelib.Initialize();
+    testGetGlobal();
 
     $scope.helpClick = function () {
         //$scope.toggleHelpModal();
