@@ -23,10 +23,29 @@ var lib = ffi.Library('XEditLib', {
 	'GetGamePath': [ 'bool', ['int', PWChar, 'int'] ]
 });
 
+// help functions
 var trimNull = function(str) {
 	return str.substring(0, str.indexOf('\0'));
-}
+};
 
+var createTypedBuffer = function(size, type) {
+	var buf = new Buffer(size);
+	buf.type = type;
+	return buf;
+};
+
+var readPWCharString = function(buf) {
+	return trimNull(wchar_t.toString(buf));
+};
+
+var writePWCharBuffer = function(value) {
+  var buf = new Buffer((value.length + 1) * 2);
+	buf.write(value, 0, 'ucs2');
+	buf.type = PWChar;
+	return buf;
+};
+
+// wrapper functions
 var xelib = {
 	'Initialize': function() {
 		lib.Initialize();
@@ -35,38 +54,31 @@ var xelib = {
 		lib.Finalize();
 	},
 	'GetBuffer': function() {
-		var str = new Buffer(4096);
-		str.type = PWChar;
+		var str = createTypedBuffer(4096, PWChar);
 		lib.GetBuffer(str, 4096);
-		return trimNull(wchar_t.toString(str));
+		return readPWCharString(str);
 	},
 	'GetExceptionMessage': function() {
-		var str = new Buffer(4096);
-		str.type = PWChar;
+		var str = newPWCharBuffer(4096);
 		lib.GetExceptionMessage(str, 4096);
-		return trimNull(wchar_t.toString(str));
+		return readPWCharString(str);
 	},
 	'GetGlobal': function(keyValue) {
-		var str = new Buffer(512);
-		str.type = PWChar;
-		var key = new Buffer(keyValue.length + 1);
-		key.writeCString(keyValue);
-		key.type = PWChar;
-		console.log("key: " + wchar_t.toString(key));
+		var str = createTypedBuffer(512, PWChar);
+		var key = writePWCharBuffer(keyValue);
 		var success = lib.GetGlobal(key, str, 512);
 		if (!success) throw "xedit-lib: GetGlobal failed.";
-		return trimNull(wchar_t.toString(str));
+		return readPWCharString(str);
 	},
 	'GetLoaderDone': function() {
 		return lib.GetLoaderDone();
 	},
 	'GetGamePath': function(mode) {
-		var str = new Buffer(512);
-		str.type = PWChar;
+		var str = createTypedBuffer(512, PWChar);
 		var success = lib.GetGamePath(mode, str, 512);
 		if (!success) return null;
-		return trimNull(wchar_t.toString(str));
+		return readPWCharString(str);
 	}
-}
+};
 
 export default xelib;
