@@ -258,6 +258,27 @@ var xelib = {
     if (!lib.GetFileNames(filenames, 16384))
       Fail("Failed to get file names.");
     return readPWCharString(filenames).split('\n');
+  },
+
+  // MASTER HANDLING METHODS
+  'CleanMasters': function(_id) {
+    if (!lib.CleanMasters(_id))
+      Fail("Failed to clean masters in: " + _id);
+  },
+  'SortMasters': function(_id) {
+    if (!lib.SortMasters(_id))
+      Fail("Failed to sort masters in: " + _id);
+  },
+  'AddMaster': function(_id, filename) {
+    var masterName = writePWCharBuffer(filename);
+    if (!lib.AddMaster(_id, masterName))
+      Fail("Failed to add master " + filename + " to file: " + _id);
+  },
+  'GetMaster': function(_id, index) {
+    var _res = createTypedBuffer(4, PCardinal);
+    if (!lib.GetMaster(_id, index))
+      Fail("Failed to get master at " + index + " in file: " + _id);
+    return _res.readUInt32LE(0);
   }
 };
 
