@@ -3,7 +3,17 @@ var ArrayType = require('ref-array');
 var wchar_t = require('ref-wchar');
 var ffi = require('ffi');
 
-var PWChar = ref.refType(wchar_t.string);
+var WString = wchar_t.string;
+var Cardinal = ref.types.uint32;
+var Integer = ref.types.int32;
+var WordBool = ref.types.bool;
+var Double = ref.types.double;
+var PWChar = ref.refType(WString);
+var PCardinal = ref.refType(Cardinal);
+var PInteger = ref.refType(Integer);
+var PWordBool = ref.refType(WordBool);
+var PDouble = ref.refType(Double);
+var PCardinalArray = ArrayType(Cardinal);
 
 // function binding
 var lib = ffi.Library('XEditLib', {
