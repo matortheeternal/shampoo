@@ -154,6 +154,7 @@ var Fail = function(message) {
 
 // wrapper functions
 var xelib = {
+	// META FUNCTIONS
 	'Initialize': function() {
 		lib.Initialize();
 	},
@@ -166,25 +167,25 @@ var xelib = {
 		return readPWCharString(str);
 	},
 	'GetExceptionMessage': function() {
-		var str = newPWCharBuffer(4096);
-		lib.GetExceptionMessage(str, 4096);
+		var str = createTypedBuffer(2048, PWChar);
+		lib.GetExceptionMessage(str, 2048);
 		return readPWCharString(str);
 	},
 	'GetGlobal': function(keyValue) {
 		var str = createTypedBuffer(512, PWChar);
 		var key = writePWCharBuffer(keyValue);
-		var success = lib.GetGlobal(key, str, 512);
-		if (!success) throw "xedit-lib: GetGlobal failed.";
+		if (!lib.GetGlobal(key, str, 512))
+			Fail("GetGlobal failed.");
 		return readPWCharString(str);
 	},
 	'GetLoaderDone': function() {
 		return lib.GetLoaderDone();
 	},
-	'GetGamePath': function(mode) {
+	'GetGamePath': function(gameMode) {
 		var str = createTypedBuffer(512, PWChar);
-		var success = lib.GetGamePath(mode, str, 512);
-		if (!success) return null;
-		return readPWCharString(str);
+		if (lib.GetGamePath(gameMode, str, 512))
+			return readPWCharString(str);
+		return null;
 	}
 };
 
