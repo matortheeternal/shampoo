@@ -166,6 +166,9 @@ var xelib = {
 		lib.GetBuffer(str, 4096);
 		return readPWCharString(str);
 	},
+	'FlushBuffer': function() {
+		lib.FlushBuffer();
+	},
 	'GetExceptionMessage': function() {
 		var str = createTypedBuffer(2048, PWChar);
 		lib.GetExceptionMessage(str, 2048);
@@ -178,6 +181,15 @@ var xelib = {
 			Fail("GetGlobal failed.");
 		return readPWCharString(str);
 	},
+	'Release': function(_id) {
+		if (!lib.Release(_id))
+			Fail("Failed to release interface #" + _id);
+	},
+	'ResetStore': function() {
+		if (!lib.ResetStore())
+			Fail("Failed to reset interface store");
+	},
+
 	'GetLoaderDone': function() {
 		return lib.GetLoaderDone();
 	},
