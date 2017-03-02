@@ -213,6 +213,51 @@ var xelib = {
     if (lib.GetGamePath(gameMode, str, 512))
       return readPWCharString(str);
     return null;
+  },
+
+  // FILE HANDLING METHODS
+  'NewFile': function(filename) {
+    var fName = writePWCharBuffer(filename);
+    var _id = createTypedBuffer(4, PCardinal);
+    if (!lib.NewFile(fName, _id))
+      Fail("Failed to create new file: " + filename);
+    return _id.readUInt32LE(0);
+  },
+  'FileByIndex': function(index) {
+    var _id = createTypedBuffer(4, PCardinal);
+    if (!lib.FileByIndex(index, _id))
+      Fail("Failed to find file at index: " + index);
+    return _id.readUInt32LE(0);
+  },
+  'FileByLoadOrder': function(loadOrder) {
+    var _id = createTypedBuffer(4, PCardinal);
+    if (!lib.FileByLoadOrder(loadOrder, _id))
+      Fail("Failed to find file at load order: " + index);
+    return _id.readUInt32LE(0);
+  },
+  'FileByName': function(filename) {
+    var fName = writePWCharBuffer(filename);
+    var _id = createTypedBuffer(4, PCardinal);
+    if (!lib.FileByName(fName, _id))
+      Fail("Failed to find file: " + filename);
+    return _id.readUInt32LE(0);
+  },
+  'FileByAuthor': function(author) {
+    var fAuthor = writePWCharBuffer(author);
+    var _id = createTypedBuffer(4, PCardinal);
+    if (!lib.FileByAuthor(fAuthor, _id))
+      Fail("Failed to find file with author: " + author);
+    return _id.readUInt32LE(0);
+  },
+  'SaveFile': function(_id) {
+    if (!lib.SaveFile(_id))
+      Fail("Failed to save file: " + _id);
+  },
+  'GetFileNames': function() {
+    var filenames = createTypedBuffer(16384, PWChar);
+    if (!lib.GetFileNames(filenames, 16384))
+      Fail("Failed to get file names.");
+    return readPWCharString(filenames).split('\n');
   }
 };
 
