@@ -120,7 +120,7 @@ var lib = ffi.Library('XEditLib', {
 	'ExchangeReferences': [ WordBool, [Cardinal, Cardinal, Cardinal] ]
 });
 
-// help functions
+// helper functions
 var trimNull = function(str) {
 	return str.substring(0, str.indexOf('\0'));
 };
@@ -140,6 +140,16 @@ var writePWCharBuffer = function(value) {
 	buf.write(value, 0, 'ucs2');
 	buf.type = PWChar;
 	return buf;
+};
+
+var Fail = function(message) {
+	try {
+    var libMessage = GetExceptionMessage();
+		if (libMessage) console.log(libMessage);
+	} catch (e) {
+		console.log('Unknown critical exception!');
+	}
+	throw message;
 };
 
 // wrapper functions
