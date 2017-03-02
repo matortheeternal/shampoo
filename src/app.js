@@ -3,7 +3,7 @@ import os from 'os'; // native node.js module
 import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
-import xelib from './xeditLib.js';
+import xelib from './xelib.js';
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());

@@ -8,12 +8,13 @@ var Cardinal = ref.types.uint32;
 var Integer = ref.types.int32;
 var WordBool = ref.types.bool;
 var Double = ref.types.double;
+var CardinalArray = ArrayType(Cardinal);
 var PWChar = ref.refType(WString);
 var PCardinal = ref.refType(Cardinal);
 var PInteger = ref.refType(Integer);
 var PWordBool = ref.refType(WordBool);
 var PDouble = ref.refType(Double);
-var PCardinalArray = ArrayType(Cardinal);
+var PCardinalArray = ref.refType(CardinalArray);
 
 // function binding
 var lib = ffi.Library('XEditLib', {
