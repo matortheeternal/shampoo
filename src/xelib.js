@@ -70,6 +70,9 @@ var lib = ffi.Library('XEditLib', {
   'ElementCount': [ WordBool, [Cardinal, PInteger] ],
   'ElementAssigned': [ WordBool, [Cardinal] ],
   'Equals': [ WordBool, [Cardinal, Cardinal] ],
+  'GetErrors': [ WordBool, [Cardinal, PCardinalArray] ],
+  'GetErrorString': [ WordBool, [Cardinal, PWideChar, Integer] ],
+  'CopyElement': [ WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal] ],
   'IsMaster': [ WordBool, [Cardinal] ],
   'IsInjected': [ WordBool, [Cardinal] ],
   'IsOverride': [ WordBool, [Cardinal] ],
@@ -118,7 +121,8 @@ var lib = ffi.Library('XEditLib', {
   'OverrideByIndex': [ WordBool, [Cardinal, Integer, PCardinal] ],
   'GetFormID': [ WordBool, [Cardinal, PCardinal] ],
   'SetFormID': [ WordBool, [Cardinal, Cardinal] ],
-  'ExchangeReferences': [ WordBool, [Cardinal, Cardinal, Cardinal] ]
+  'ExchangeReferences': [ WordBool, [Cardinal, Cardinal, Cardinal] ],
+  'GetReferences': [ WordBool, [Cardinal, PCardinalArray] ]
 });
 
 // helper functions
