@@ -1,4 +1,5 @@
 var ref = require('ref');
+var ArrayType = require('ref-array');
 var wchar_t = require('ref-wchar');
 var ffi = require('ffi');
 

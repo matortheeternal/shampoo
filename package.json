@@ -37,6 +37,7 @@
     "fs-jetpack": "^0.10.2",
     "iconv": "^2.0",
     "ref": "^1.0",
+    "ref-array": "^1.2.0",
     "ref-wchar": "^1.0",
     "ui-router-extras": "^0.1.3"
   },
