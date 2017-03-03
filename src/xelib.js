@@ -207,7 +207,8 @@ var xelib = {
     return null;
   },
   'LoadPlugins': function(loadOrder) {
-    if (!lib.LoadPlugins(loadOrder))
+    var buff = writePWCharBuffer(loadOrder);
+    if (!lib.LoadPlugins(buff))
       Fail("Failed to load plugins.");
   },
   'GetLoaderDone': function() {
