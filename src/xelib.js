@@ -60,7 +60,7 @@ var lib = ffi.Library('XEditLib', {
   'SetIsESM': [ WordBool, [Cardinal, WordBool] ],
   // ELEMENT HANDLING METHODS
   'GetElement': [ WordBool, [Cardinal, PWChar, PCardinal] ],
-  'GetElements': [ WordBool, [Cardinal, PCardinalArray] ],
+  'GetElements': [ WordBool, [Cardinal, PWChar, Integer] ],
   'GetElementFile': [ WordBool, [Cardinal, PCardinal] ],
   'GetContainer': [ WordBool, [Cardinal, PCardinal] ],
   'NewElement': [ WordBool, [Cardinal, PWChar, PCardinal] ],
@@ -71,7 +71,7 @@ var lib = ffi.Library('XEditLib', {
   'ElementAssigned': [ WordBool, [Cardinal] ],
   'Equals': [ WordBool, [Cardinal, Cardinal] ],
   'GetErrors': [ WordBool, [Cardinal, PCardinalArray] ],
-  'GetErrorString': [ WordBool, [Cardinal, PWideChar, Integer] ],
+  'GetErrorString': [ WordBool, [Cardinal, PWChar, Integer] ],
   'CopyElement': [ WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal] ],
   'IsMaster': [ WordBool, [Cardinal] ],
   'IsInjected': [ WordBool, [Cardinal] ],
@@ -139,6 +139,12 @@ var createTypedBuffer = function(size, type) {
 var readPWCharString = function(buf) {
   return trimNull(wchar_t.toString(buf));
 };
+
+var readCommaSeparatedIds = function(buf) {
+  return readPWCharString(buf).split(',').map(function(item) {
+    return parseInt(item);
+  });
+}
 
 var writePWCharBuffer = function(value) {
   var buf = new Buffer((value.length + 1) * 2);
@@ -285,6 +291,14 @@ var xelib = {
     if (!lib.GetMaster(_id, index))
       Fail("Failed to get master at " + index + " in file: " + _id);
     return _res.readUInt32LE(0);
+  },
+
+  // ELEMENT HANDLING METHODS
+  'GetElements': function(_id) {
+    var _res = createTypedBuffer(1024, PWChar);
+    if (!lib.GetElements(_id, _res, 1024))
+      Fail("Failed to get child elements of " + _id);
+    return readCommaSeparatedIds(_res);
   },
 
   // ELEMENT VALUE METHODS
