@@ -11,214 +11,262 @@ var appDir = jetpack.cwd(app.getAppPath());
 
 // helper function for loading json file
 var loadJsonFile = function (filename, defaultValue) {
-    if (appDir.exists(filename) === 'file') {
-        return appDir.read(filename, 'json');
-    } else {
-        return defaultValue || [];
-    }
+  if (appDir.exists(filename) === 'file') {
+    return appDir.read(filename, 'json');
+  } else {
+    return defaultValue || [];
+  }
 };
 
 // test GetGlobal
 var testGetGlobal = function() {
   try {
-    console.log(xelib.GetGlobal('ProgramPath'));
+  console.log(xelib.GetGlobal('ProgramPath'));
   } catch (e) {
-    console.log(e);
-    try {
-      console.log(xelib.GetBuffer());
-      console.log(xelib.GetExceptionMessage());
-    } catch (e) {
-      console.log("Failed to get exception information: " + e);
-    }
+  console.log(e);
+  try {
+    console.log(xelib.GetBuffer());
+    console.log(xelib.GetExceptionMessage());
+  } catch (e) {
+    console.log("Failed to get exception information: " + e);
+  }
   }
 }
 
 var ngapp = angular.module('shampoo', [
-    'ui.router', 'ct.ui.router.extras'
+  'ui.router', 'ct.ui.router.extras', 'angularSpinner'
 ]);
 
 ngapp.config(function ($urlMatcherFactoryProvider) {
-    //this allows urls with and without trailing slashes to go to the same state
-    $urlMatcherFactoryProvider.strictMode(false);
+  //this allows urls with and without trailing slashes to go to the same state
+  $urlMatcherFactoryProvider.strictMode(false);
 });
 
 ngapp.run(['$rootScope', '$state', function ($rootScope, $state) {
-    $rootScope.$on('$stateChangeStart', function (evt, toState, params, fromState) {
-        if (toState.redirectTo) {
-            evt.preventDefault();
-            $state.go(toState.redirectTo, params, {location: 'replace'});
-        }
-    });
+  $rootScope.$on('$stateChangeStart', function (evt, toState, params, fromState) {
+    if (toState.redirectTo) {
+      evt.preventDefault();
+      $state.go(toState.redirectTo, params, {location: 'replace'});
+    }
+  });
 }]);
 
 // TODO: GET PROPER BUNDLING INSTEAD
 ngapp.config(['$stateProvider', function ($stateProvider) {
-    $stateProvider.state('base', {
-        url: '',
-        redirectTo: 'base.start',
-        templateUrl: 'partials/base.html',
-        controller: 'baseController'
-    });
+  $stateProvider.state('base', {
+    url: '',
+    redirectTo: 'base.start',
+    templateUrl: 'partials/base.html',
+    controller: 'baseController'
+  });
 }]);
 
 ngapp.service('profileService', function () {
-    var service = this;
+  var service = this;
 
-    this.games = loadJsonFile('app/games.json');
-    this.profiles = loadJsonFile('app/profiles.json');
+  this.games = loadJsonFile('app/games.json');
+  this.profiles = loadJsonFile('app/profiles.json');
 
-    this.saveProfiles = function (profiles) {
-        appDir.write('app/profiles.json', JSON.stringify(profiles));
-    };
+  this.saveProfiles = function (profiles) {
+    appDir.write('app/profiles.json', JSON.stringify(profiles));
+  };
 
-    this.createProfile = function (game) {
-        var installPath = xelib.GetGamePath(game.mode);
-        if (installPath) {
-            return {
-                name: game.name,
-                gameMode: game.mode,
-                installPath: installPath
-            }
-        }
-    };
+  this.createProfile = function (game) {
+    var installPath = xelib.GetGamePath(game.mode);
+    if (installPath) {
+      return {
+        name: game.name,
+        gameMode: game.mode,
+        installPath: installPath
+      }
+    }
+  };
 
-    this.detectMissingProfiles = function (profiles) {
-        service.games.forEach(function (game) {
-            var gameProfile = profiles.find(function (profile) {
-                return profile.gameMode == game.mode;
-            });
-            if (!gameProfile) {
-                gameProfile = service.createProfile(game);
-                if (gameProfile) profiles.push(gameProfile);
-            }
-        });
-    };
+  this.detectMissingProfiles = function (profiles) {
+    service.games.forEach(function (game) {
+      var gameProfile = profiles.find(function (profile) {
+        return profile.gameMode == game.mode;
+      });
+      if (!gameProfile) {
+        gameProfile = service.createProfile(game);
+        if (gameProfile) profiles.push(gameProfile);
+      }
+    });
+  };
 
-    this.getProfiles = function () {
-        service.detectMissingProfiles(service.profiles);
-        service.saveProfiles(service.profiles);
-        return service.profiles;
-    };
+  this.getProfiles = function () {
+    service.detectMissingProfiles(service.profiles);
+    service.saveProfiles(service.profiles);
+    return service.profiles;
+  };
 
-    this.getGame = function (gameMode) {
-        return service.games.find(function (game) {
-            return game.mode == gameMode;
-        });
-    };
+  this.getGame = function (gameMode) {
+    return service.games.find(function (game) {
+      return game.mode == gameMode;
+    });
+  };
 
-    this.gamePathValid = function(gameMode, path) {
-        var game = service.getGame(gameMode);
-        return jetpack.exists(path + game.exeName);
-    };
+  this.gamePathValid = function(gameMode, path) {
+    var game = service.getGame(gameMode);
+    return jetpack.exists(path + game.exeName);
+  };
 });
 
 ngapp.controller('baseController', function ($scope) {
-    // initialize xedit-lib
-    xelib.Initialize();
-    testGetGlobal();
+  // initialize xedit-lib
+  xelib.Initialize();
+  testGetGlobal();
 
-    $scope.helpClick = function () {
-        //$scope.toggleHelpModal();
-    };
+  $scope.helpClick = function () {
+    //$scope.toggleHelpModal();
+  };
 
-    $scope.minimizeClick = function () {
-        var window = remote.getCurrentWindow();
-        window.minimize();
-    };
+  $scope.minimizeClick = function () {
+    var window = remote.getCurrentWindow();
+    window.minimize();
+  };
 
-    $scope.restoreClick = function () {
-        var window = remote.getCurrentWindow();
-        if (window.isMaximized()) {
-            window.unmaximize();
-        } else {
-            window.maximize();
-        }
-    };
+  $scope.restoreClick = function () {
+    var window = remote.getCurrentWindow();
+    if (window.isMaximized()) {
+      window.unmaximize();
+    } else {
+      window.maximize();
+    }
+  };
 
-    $scope.closeClick = function () {
-        var window = remote.getCurrentWindow();
-        window.close();
-    };
+  $scope.closeClick = function () {
+    var window = remote.getCurrentWindow();
+    window.close();
+  };
 });
 
 ngapp.config(['$stateProvider', function ($stateProvider) {
-    $stateProvider.state('base.start', {
-        templateUrl: 'partials/start.html',
-        controller: 'startController',
-        url: '/start'
-    });
+  $stateProvider.state('base.start', {
+    templateUrl: 'partials/start.html',
+    controller: 'startController',
+    url: '/start'
+  });
 }]);
 
 ngapp.controller('startController', function ($scope, profileService) {
-    $scope.profiles = profileService.getProfiles();
-    $scope.selectedProfile = ($scope.profiles.length > 0) && $scope.profiles[0];
+  $scope.profiles = profileService.getProfiles();
+  $scope.selectedProfile = ($scope.profiles.length > 0) && $scope.profiles[0];
 
-    $scope.setSelectedGame = function () {
-        if ($scope.selectedProfile) {
-            $scope.selectedGame = profileService.getGame($scope.selectedProfile.gameMode);
-        } else {
-            $scope.selectedGame = {};
-        }
-    };
+  $scope.setSelectedGame = function () {
+    if ($scope.selectedProfile) {
+      $scope.selectedGame = profileService.getGame($scope.selectedProfile.gameMode);
+    } else {
+      $scope.selectedGame = {};
+    }
+  };
 
-    $scope.toggleProfilesModal = function(visible) {
-        $scope.showProfilesModal = visible;
-        $scope.$emit('toggleModal', visible);
-    };
+  $scope.toggleProfilesModal = function(visible) {
+    $scope.showProfilesModal = visible;
+    $scope.$emit('toggleModal', visible);
+  };
 
-    // load selectedGame
-    $scope.setSelectedGame();
+  $scope.toggleLoadOrderModal = function(visible) {
+    $scope.showLoadOrderModal = visible;
+    $scope.$emit('toggleModal', visible);
+  };
+
+  $scope.getLoadOrder = function() {
+    var loadOrder = xelib.GetLoadOrder().split(',');
+    console.log(loadOrder);
+    $scope.loadOrder = loadOrder.map(function(filename) {
+      return {
+        filename: filename,
+        active: false
+      }
+    });
+  };
+
+  $scope.startSession = function() {
+    console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
+    xelib.SetGameMode($scope.selectedProfile.gameMode);
+    $scope.getLoadOrder();
+    $scope.toggleLoadOrderModal(true);
+  };
+
+  // load selectedGame
+  $scope.setSelectedGame();
+});
 });
 
 ngapp.service('formUtils', function() {
-    this.unfocusModal = function(callback) {
-        return function(e) {
-            if (e.target.classList.contains("modal-container")) {
-                callback(false);
-            }
-        }
-    };
+  this.unfocusModal = function(callback) {
+    return function(e) {
+      if (e.target.classList.contains("modal-container")) {
+        callback(false);
+      }
+    }
+  };
 });
 
 ngapp.directive('profilesModal', function () {
-    return {
-        restrict: 'E',
-        templateUrl: 'directives/profilesModal.html',
-        controller: 'profilesModalController',
-        scope: false
-    }
+  return {
+    restrict: 'E',
+    templateUrl: 'directives/profilesModal.html',
+    controller: 'profilesModalController',
+    scope: false
+  }
 });
 
 ngapp.controller('profilesModalController', function ($scope, profileService, formUtils) {
-    $scope.games = angular.copy(profileService.games);
-    $scope.validProfiles = [];
+  $scope.games = angular.copy(profileService.games);
+  $scope.validProfiles = [];
 
-    $scope.games.forEach(function(game) {
-        var gameProfile = $scope.profiles.find(function(profile) {
-            return profile.gameMode == game.mode;
-        });
-        game.installPath = gameProfile ? gameProfile.installPath : '';
+  $scope.games.forEach(function(game) {
+    var gameProfile = $scope.profiles.find(function(profile) {
+      return profile.gameMode == game.mode;
     });
+    game.installPath = gameProfile ? gameProfile.installPath : '';
+  });
 
-    $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
+  $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
 
-    $scope.buildValidProfiles = function() {
-        $scope.validProfiles = $scope.games.filter(function(game) {
-            game.valid = profileService.gamePathValid(game.mode, game.installPath);
-            return game.valid;
-        });
-        if (!$scope.defaultProfile && $scope.validProfiles.length) {
-            $scope.defaultProfile = $scope.validProfiles[0];
-        }
-    };
+  $scope.buildValidProfiles = function() {
+    $scope.validProfiles = $scope.games.filter(function(game) {
+      game.valid = profileService.gamePathValid(game.mode, game.installPath);
+      return game.valid;
+    });
+    if (!$scope.defaultProfile && $scope.validProfiles.length) {
+      $scope.defaultProfile = $scope.validProfiles[0];
+    }
+  };
 
-    $scope.pathBrowse = function(game) {
-        // todo
-    };
+  $scope.pathBrowse = function(game) {
+    // todo
+  };
 
-    $scope.saveProfiles = function() {
-        // todo
-    };
+  $scope.saveProfiles = function() {
+    // todo
+  };
 
-    $scope.buildValidProfiles();
+  $scope.buildValidProfiles();
+});
+
+ngapp.directive('loadOrderModal', function () {
+  return {
+    restrict: 'E',
+    templateUrl: 'directives/loadOrderModal.html',
+    controller: 'loadOrderModalController',
+    scope: false
+  }
+});
+
+ngapp.controller('loadOrderModalController', function ($scope, $state, formUtils) {
+  $scope.loadPlugins = function() {
+    var loadOrder = $scope.loadOrder.filter(function(item) {
+      return item.active;
+    }).map(function(item) {
+      return item.filename;
+    }).join(',');
+    console.log(process.cwd());
+    console.log("Loading: \n" + loadOrder);
+    xelib.FlushBuffer();
+    xelib.LoadPlugins(loadOrder);
+    $state.go('base.main');
+  };
 });
