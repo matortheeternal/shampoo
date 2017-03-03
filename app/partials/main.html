@@ -1,0 +1,30 @@
+<div ng-if="loaded" class="container">
+    <h1>Shampoo Plugin Cleaner</h1>
+
+    <div class="overview">
+      <span>Checking for errors...  ({{checkedPlugins}} / {{::plugins.length}})</span>
+      <span>{{errors.length}} errors found</span>
+
+      <div class="error-breakdown">
+        <div ng-repeat="errorType in groupedErrors">
+          <span class="error-header">{{errorType.errors.length}} {{::errorType.name}} ({{::errorType.acronym}})</span>
+          <span>{{::errorType.explanation}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div ng-repeat="plugin in plugins" class="content-block">
+       <div class="content-header">{{::plugin.filename}} ({{plugin.status}})</div>
+       <div class="content-container">
+          <div class="action-button-container">
+            <span class="action-box">Fix Errors</span>
+            <span class="action-box">Automatically Fix Errors</span>
+          </div>
+       </div>
+    </div>
+</div>
+
+<div ng-if="!loaded">
+  <div class="big-spinner" us-spinner="spinnerOpts"></div>
+  <div class="log" ng-bind="log"></div>
+</div>
