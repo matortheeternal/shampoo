@@ -4,6 +4,7 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
 import xelib from './xelib.js';
+import 'angular-spinner';
 
 var app = remote.app;
 var appDir = jetpack.cwd(app.getAppPath());
