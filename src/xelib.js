@@ -284,6 +284,14 @@ var xelib = {
     if (!lib.GetMaster(_id, index))
       Fail("Failed to get master at " + index + " in file: " + _id);
     return _res.readUInt32LE(0);
+  },
+
+  // ELEMENT VALUE METHODS
+  'Name': function(_id) {
+    var str = createTypedBuffer(1024, PWChar);
+    if (!lib.Name(_id, str, 1024))
+      Fail("Failed to get name of " + _id);
+    return readPWCharString(str);
   }
 };
 
