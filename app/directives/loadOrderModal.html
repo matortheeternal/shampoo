@@ -1,0 +1,20 @@
+<div class="modal-container" ng-if="showLoadOrderModal">
+    <div class="modal big-modal">
+        <form>
+            <h3>Load Order</h3>
+            <section>
+                <ul class="checkbox-list">
+                    <li ng-repeat="item in loadOrder">
+                        <label>
+                            <input type="checkbox" ng-model="item.active" /> {{::item.filename}}
+                        </label>
+                    </li>
+                </ul>
+            </section>
+
+            <div class="action-button-container">
+                <span class="action-box" ng-click="loadPlugins()">OK</span>
+            </div>
+        </form>
+    </div>
+</div>
