@@ -1,9 +1,12 @@
+@import "roboto";
+
 html, body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
 }
 
 a {
@@ -12,19 +15,27 @@ a {
 
 .content {
     ui-view {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: block;
+        overflow-y: auto;
+        margin: 20px 40px;
         height: ~"calc(100vh - 41px)";
 
         .container {
             text-align: center;
-            margin-top: -45px;
+            margin: auto;
+            max-width: 1000px;
 
             h1 {
                 margin-top: 0;
                 margin-bottom: 10px;
             }
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: ~"calc(100vh - 41px)";
         }
     }
 }
@@ -163,6 +174,19 @@ a {
     &:hover {
         background-color: #4d5e6b;
     }
+
+    &.red-box {
+        background-color: red;
+    }
+
+    &.green-box {
+        background-color: green;
+    }
+
+    &.small {
+        font-size: 12px;
+        padding: 4px 6px;
+    }
 }
 
 /* css for modals */
@@ -198,6 +222,10 @@ a {
 
     .big-modal {
         width: 600px;
+    }
+
+    .skinny-modal {
+        width: 400px;
     }
 
     .close-modal {
@@ -289,20 +317,74 @@ input.invalid {
 }
 
 .checkbox-list {
-  list-style: none;
-  padding-left: 10px;
-  text-align: left;
+    list-style: none;
+    padding-left: 10px;
+    text-align: left;
+
+    li {
+        -webkit-user-select: none;
+    }
 }
 
 .log {
-  white-space: pre-wrap;
-  display: block;
-  margin-top: 30px;
-  height: 200px;
-  max-height: 200px;
-  overflow-y: auto;
+    white-space: pre-wrap;
+    display: block;
+    margin-top: 30px;
+    height: 200px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .big-spinner {
-  height: 250px;
+    height: 250px;
+}
+
+.content-block {
+    margin: 20px 0;
+    background-color: #fff;
+    border: 1px solid #aaa;
+
+    .content-title {
+        position: relative;
+        padding: 10px;
+        background-color: #3a4751;
+        font-size: 16px;
+        font-weight: 500;
+        color: #fff;
+
+        .right {
+            float: right;
+            margin-top: -3px;
+        }
+    }
+
+    .content-container {
+        margin: 20px;
+    }
+}
+
+.overview {
+    > span {
+        display: block;
+        font-size: 18px;
+        margin: 6px 0;
+    }
+
+}
+
+.error-breakdown {
+    > div {
+        margin: 20px 0;
+
+        .error-header {
+            border: 1px solid #aaa;
+            display: block;
+            padding: 10px;
+            font-size: 18px;
+            background-color: #3a454a;
+            color: #fff;
+            font-weight: 500;
+            text-align: left;
+        }
+    }
 }
