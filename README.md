@@ -7,9 +7,7 @@ Shampoo is a NodeJS application using Electron.  Instead [NodeJS](https://nodejs
 You can build a release of the application using `npm run release`.  The application structure is based off of [electron-boilerplate](https://github.com/szwacz/electron-boilerplate).  
 
 ## build issues
-Note that you will need to copy `XEditLib.dll` to the output `dist/win-ia32-unpacked` folder for the application to run (I don't have the build script configured to do this automatically yet).
-
-Running the application with `npm start` may require you to copy `XEditLib.dll` to the electron dist folder at `node_modules\electron\dist`.  Also note: the Hardcoded dat files for the game modes you want to start the application in must also be alongside the DLL to be utilized.
+Running the application with `npm start` may not work due to directory/dll issues.  Fall back to `npm run release` if `npm start` doesn't work for you.
 
 # contact
 If you're looking for support or want to contribute, join the [Modding Tools discord server](https://discord.gg/GUfRdpT).
