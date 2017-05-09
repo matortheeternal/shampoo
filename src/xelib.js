@@ -8,13 +8,11 @@ var Cardinal = ref.types.uint32;
 var Integer = ref.types.int32;
 var WordBool = ref.types.bool;
 var Double = ref.types.double;
-var CardinalArray = ArrayType(Cardinal);
 var PWChar = ref.refType(WString);
 var PCardinal = ref.refType(Cardinal);
 var PInteger = ref.refType(Integer);
 var PWordBool = ref.refType(WordBool);
 var PDouble = ref.refType(Double);
-var PCardinalArray = ref.refType(CardinalArray);
 
 // function binding
 var lib = ffi.Library('XEditLib', {
@@ -46,6 +44,7 @@ var lib = ffi.Library('XEditLib', {
     'SortMasters': [WordBool, [Cardinal]],
     'AddMaster': [WordBool, [Cardinal, PWChar]],
     'GetMaster': [WordBool, [Cardinal, Integer, PCardinal]],
+    'GetMasters': [WordBool, [Cardinal, PCardinal, Integer]],
     // FILE VALUE METHODS
     'GetFileHeader': [WordBool, [Cardinal, PCardinal]],
     'GetNextObjectId': [WordBool, [Cardinal, PCardinal]],
@@ -60,7 +59,7 @@ var lib = ffi.Library('XEditLib', {
     'SetIsESM': [WordBool, [Cardinal, WordBool]],
     // ELEMENT HANDLING METHODS
     'GetElement': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetElements': [WordBool, [Cardinal, PWChar, Integer]],
+    'GetElements': [WordBool, [Cardinal, PCardinal, Integer]],
     'GetElementFile': [WordBool, [Cardinal, PCardinal]],
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
     'NewElement': [WordBool, [Cardinal, PWChar, PCardinal]],
@@ -114,8 +113,8 @@ var lib = ffi.Library('XEditLib', {
     'GetGroupSignatureNameMap': [WordBool, [PWChar, Integer]],
     // RECORD HANDLING METHODS
     'AddRecord': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetRecords': [WordBool, [Cardinal, PCardinalArray]],
-    'RecordsBySignature': [WordBool, [Cardinal, PWChar, PCardinalArray]],
+    'GetRecords': [WordBool, [Cardinal, PCardinal, Integer]],
+    'RecordsBySignature': [WordBool, [Cardinal, PWChar, PCardinal, Integer]],
     'RecordByIndex': [WordBool, [Cardinal, Integer, PCardinal]],
     'RecordByFormID': [WordBool, [Cardinal, Cardinal, PCardinal]],
     'RecordByEditorID': [WordBool, [Cardinal, PWChar, PCardinal]],
@@ -125,7 +124,7 @@ var lib = ffi.Library('XEditLib', {
     'GetFormID': [WordBool, [Cardinal, PCardinal]],
     'SetFormID': [WordBool, [Cardinal, Cardinal]],
     'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
-    'GetReferences': [WordBool, [Cardinal, PCardinalArray]]
+    'GetReferences': [WordBool, [Cardinal, PCardinal, Integer]]
 });
 
 // helper functions
@@ -147,6 +146,16 @@ var readCommaSeparatedIds = function (buf) {
     return readPWCharString(buf).split(',').map(function (item) {
         return parseInt(item);
     });
+};
+
+var readCardinalArray = function (buf) {
+    var a = [];
+    for (var i = 0; i < buf.length; i+=4) {
+      var c = buf.readUInt32LE(i);
+      if (c == 0) break;
+      a.push(c);
+    }
+    return a;
 };
 
 var writePWCharBuffer = function (value) {
@@ -295,13 +304,26 @@ var xelib = {
             Fail("Failed to get master at " + index + " in file: " + _id);
         return _res.readUInt32LE(0);
     },
+    'GetMasters': function (_id) {
+        var _res = createTypedBuffer(1024, PCardinal);
+        if (!lib.GetMasters(_id, _res, 256))
+          Fail("Failed to get child elements of " + _id);
+        return readCardinalArray(_res);
+    },
 
     // ELEMENT HANDLING METHODS
     'GetElements': function (_id) {
-        var _res = createTypedBuffer(1024, PWChar);
-        if (!lib.GetElements(_id, _res, 1024))
+        var size = _id == 0 ? 256 : this.ElementCount(_id);
+        var _res = createTypedBuffer(size * 4, PCardinal);
+        if (!lib.GetElements(_id, _res, size))
             Fail("Failed to get child elements of " + _id);
-        return readCommaSeparatedIds(_res);
+        return readCardinalArray(_res);
+    },
+    'ElementCount': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.ElementCount(_id, _res))
+          Fail("Failed to get element count for " + _id);
+        return _res.readInt32LE(0);
     },
 
     // ERROR CHECKING METHODS
