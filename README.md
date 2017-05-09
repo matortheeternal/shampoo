@@ -8,6 +8,8 @@ Before installing node modules you need to tell NodeJS where Python is so it can
 
 Run `npm install`.  This will install required node modules and dependencies.  If you run into any errors (indicated by `ERR!`) contact us and we'll help sort things out.
 
+You can then run the application with `npm start`.  If you get `Error: Electron failed to install correctly`, simply delete the `node_modules\electron` folder and run `npm install` again.
+
 # building
 You can build a release of the application using `npm run release`.  The application structure is based off of [electron-boilerplate](https://github.com/szwacz/electron-boilerplate).  
 
