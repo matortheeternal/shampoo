@@ -8,15 +8,16 @@ Before installing node modules you need to tell NodeJS where Python is so it can
 
 Run `npm install`.  This will install required node modules and dependencies.  If you run into any errors (indicated by `ERR!`) contact us and we'll help sort things out.
 
-You can then run the application with `npm start`.  If you get `Error: Electron failed to install correctly`, simply delete the `node_modules\electron` folder and run `npm install` again.  If you get `Exception loading X, *.hardcoded.dat not found` when loading plugins copy the appropriate dat file from the base directory to the `node_modules\electron\dist` folder.
+You can then run the application with `npm start`.  
 
 # building
 You can build a release of the application using `npm run release`.  The application structure is based off of [electron-boilerplate](https://github.com/szwacz/electron-boilerplate).  
 
-## build issues
-Running the application with `npm start` may not work due to directory/dll issues.  Fall back to `npm run release` if `npm start` doesn't work for you.
-
-If you run into a bug with `bindings.js`, you may need to use node-gyp to rebuild the `ref` module.
+# troubleshooting
+- If you get `Error: Electron failed to install correctly`, simply delete the `node_modules\electron` folder and run `npm install` again.  
+- If you get `Exception loading X, *.hardcoded.dat not found` when loading plugins copy the appropriate dat file from the base directory to the `node_modules\electron\dist` folder.
+- Fall back to `npm run release` if `npm start` doesn't work for you due to a DLL not found error.
+- If you run into an error with `bindings.js`, you may need to use node-gyp to rebuild the `ref` module.
 
 # contact
 If you're looking for support or want to contribute, join the [Modding Tools discord server](https://discord.gg/GUfRdpT).
