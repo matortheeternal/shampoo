@@ -18,18 +18,21 @@ var loadJsonFile = function (filename, defaultValue) {
     }
 };
 
-// test GetGlobal
+var getExceptionInformation = function () {
+  try {
+      console.log(xelib.GetBuffer());
+      console.log(xelib.GetExceptionMessage());
+  } catch (e) {
+      console.log("Failed to get exception information: " + e);
+  }
+};
+
 var testGetGlobal = function () {
     try {
         console.log(xelib.GetGlobal('ProgramPath'));
     } catch (e) {
         console.log(e);
-        try {
-            console.log(xelib.GetBuffer());
-            console.log(xelib.GetExceptionMessage());
-        } catch (e) {
-            console.log("Failed to get exception information: " + e);
-        }
+        getExceptionInformation();
     }
 };
 
