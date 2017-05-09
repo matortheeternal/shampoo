@@ -2,7 +2,7 @@
 An application for fixing errors/dirty edits in Bethesda Plugin Files.
 
 # building
-Shampoo is a NodeJS application using Electron.  Install [NodeJS](https://nodejs.org/en/), then start a terminal/command prompt in the application directory and run `npm install`.
+Shampoo is a NodeJS application using Electron.  Install [NodeJS](https://nodejs.org/en/) (32-bit), then start a terminal/command prompt in the application directory and run `npm install`.
 
 You can build a release of the application using `npm run release`.  The application structure is based off of [electron-boilerplate](https://github.com/szwacz/electron-boilerplate).  
 
