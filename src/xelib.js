@@ -38,7 +38,6 @@ var lib = ffi.Library('XEditLib', {
     'FileByName': [WordBool, [PWChar, PCardinal]],
     'FileByAuthor': [WordBool, [PWChar, PCardinal]],
     'SaveFile': [WordBool, [Cardinal]],
-    'GetFileNames': [WordBool, [PWChar, Integer]],
     // MASTER HANDLING METHODS
     'CleanMasters': [WordBool, [Cardinal]],
     'SortMasters': [WordBool, [Cardinal]],
@@ -142,12 +141,6 @@ var readPWCharString = function (buf) {
     return trimNull(wchar_t.toString(buf));
 };
 
-var readCommaSeparatedIds = function (buf) {
-    return readPWCharString(buf).split(',').map(function (item) {
-        return parseInt(item);
-    });
-};
-
 var readCardinalArray = function (buf) {
     var a = [];
     for (var i = 0; i < buf.length; i+=4) {
@@ -221,7 +214,7 @@ var xelib = {
     'GetLoadOrder': function () {
         var str = createTypedBuffer(8192, PWChar);
         if (lib.GetLoadOrder(str, 8192))
-            return readPWCharString(str);
+            return readPWCharString(str).trim();
         return null;
     },
     'LoadPlugins': function (loadOrder) {
@@ -276,12 +269,6 @@ var xelib = {
     'SaveFile': function (_id) {
         if (!lib.SaveFile(_id))
             Fail("Failed to save file: " + _id);
-    },
-    'GetFileNames': function () {
-        var filenames = createTypedBuffer(16384, PWChar);
-        if (!lib.GetFileNames(filenames, 16384))
-            Fail("Failed to get file names.");
-        return readPWCharString(filenames).split('\n');
     },
 
     // MASTER HANDLING METHODS

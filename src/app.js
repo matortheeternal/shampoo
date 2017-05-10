@@ -188,7 +188,7 @@ ngapp.controller('startController', function ($scope, $rootScope, profileService
     };
 
     $scope.getLoadOrder = function () {
-        var loadOrder = xelib.GetLoadOrder().split(',');
+        var loadOrder = xelib.GetLoadOrder().split('\n');
         console.log(loadOrder);
         $scope.loadOrder = loadOrder.map(function (filename) {
             return {
@@ -482,11 +482,11 @@ ngapp.controller('loadOrderModalController', function ($scope, $state, formUtils
             return item.active;
         }).map(function (item) {
             return item.filename;
-        }).join(',');
+        });
         console.log(process.cwd());
         console.log("Loading: \n" + loadOrder);
         xelib.FlushBuffer();
-        xelib.LoadPlugins(loadOrder);
+        xelib.LoadPlugins(loadOrder.join('\n'));
         $state.go('base.main');
     };
 });
