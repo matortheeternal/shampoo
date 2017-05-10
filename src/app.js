@@ -216,14 +216,6 @@ ngapp.service('errorsFactory', function () {
     this.errorTypes = function () {
         return [
             {
-                group: 0,
-                name: "Other Errors",
-                acronym: "OE",
-                caption: "Other errors that don't fall into the other groups are placed in this group.",
-                benign: true,
-                errors: []
-            },
-            {
                 group: 1,
                 name: "Identical to Master Records",
                 acronym: "ITM",
@@ -266,6 +258,14 @@ ngapp.service('errorsFactory', function () {
                 name: "Unexpected References",
                 acronym: "UER",
                 caption: "UERs are errors where a record references another record in an abnormal fashion.",
+                benign: true,
+                errors: []
+            },
+            {
+                group: 0,
+                name: "Other Errors",
+                acronym: "OE",
+                caption: "Errors that don't fall into the other groups are placed in this group.",
                 benign: true,
                 errors: []
             }
