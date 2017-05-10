@@ -501,6 +501,6 @@ ngapp.filter('groupFilter', function() {
       }
     });
 
-    return out.length;
+    return out;
   }
 });
