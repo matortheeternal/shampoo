@@ -32,6 +32,12 @@
             </div>
         </div>
     </div>
+
+    <div class="main-actions">
+        <span class="action-box" ng-click="apply()" title="Applies error resolutions and saves plugins to disk.">Apply</span>
+        <span class="action-box" ng-click="close()" title="Closes the program.">Close</span>
+        <span class="action-box" ng-click="toggleSettingsModal(true)" title="Opens the settings modal.">Settings</span>
+    </div>
 </div>
 
 <div ng-if="!loaded" class="flex-container">
