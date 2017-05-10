@@ -139,9 +139,10 @@ a {
         background-image: linear-gradient(45deg, transparent 50%, gray 50%),
         linear-gradient(135deg, gray 50%, transparent 50%),
         linear-gradient(to right, #ccc, #ccc);
-        background-position: ~"calc(100% - 15px) calc(50% + 2px),
-      calc(100% - 10px) calc(50% + 2px),
-      calc(100% - 1.5em) 50%";
+        background-position:
+        ~"calc(100% - 15px) calc(50% + 2px),
+          calc(100% - 10px) calc(50% + 2px),
+          calc(100% - 1.5em) 50%";
         background-size: 5px 5px,
         5px 5px,
         1px 80%;
@@ -374,18 +375,22 @@ input.invalid {
 }
 
 .error-breakdown {
-    > div {
-        margin: 20px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
 
-        .error-header {
-            border: 1px solid #aaa;
-            display: block;
-            padding: 10px;
-            font-size: 18px;
-            background-color: #3a454a;
-            color: #fff;
-            font-weight: 500;
-            text-align: left;
+    .content-block {
+        max-width: 48%;
+        margin: 15px 0;
+
+        &:nth-child(even) {
+            margin-right: 0;
+        }
+
+        &:nth-child(odd) {
+            margin-left: 0;
         }
     }
 }
