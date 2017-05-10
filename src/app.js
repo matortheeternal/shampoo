@@ -322,7 +322,7 @@ ngapp.controller('mainController', function ($scope, $rootScope, $timeout, error
     };
 
     $scope.groupErrors = function(plugin) {
-
+        plugin.errors.forEach(error => $scope.groupedErrors[error.group].errors.push(error));
     };
 
     $scope.setCurrentPluginErrors = function(errors) {
