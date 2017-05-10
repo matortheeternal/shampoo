@@ -490,3 +490,17 @@ ngapp.controller('loadOrderModalController', function ($scope, $state, formUtils
         $state.go('base.main');
     };
 });
+
+ngapp.filter('groupFilter', function() {
+  return function(input, group) {
+    var out = [];
+
+    input.forEach(function(error) {
+      if (error.group === group) {
+        out.push(error);
+      }
+    });
+
+    return out.length;
+  }
+});
