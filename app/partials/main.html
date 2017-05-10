@@ -7,7 +7,7 @@
 
     <div class="overview" ng-show="checking">
         <span ng-show="checkingDone">Error check complete</span>
-        <span ng-hide="checkingDone">Checking for errors...  ({{checkedPlugins}}/{{pluginsToCheck}})</span>
+        <span ng-hide="checkingDone">Checking for errors...  ({{checkedPlugins + 1}}/{{pluginsToCheck}})</span>
         <span>{{totalErrors}} errors found</span>
 
         <div class="error-breakdown" ng-show="errorCheckDone">
