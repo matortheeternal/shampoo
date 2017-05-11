@@ -173,7 +173,7 @@ ui-view {
 }
 
 .action-box {
-    color: #fff;
+    color: #fff !important;
     text-align: center;
     cursor: pointer;
     display: inline-block;
@@ -367,6 +367,10 @@ input.invalid {
         font-weight: 500;
         color: #fff;
 
+        span {
+            color: #80ccff;
+        }
+
         .right {
             float: right;
             margin-top: -3px;
@@ -397,6 +401,13 @@ input.invalid {
     .content-block {
         max-width: 48%;
         margin: 15px 0;
+
+        .content-title span {
+            font-size: 20px;
+            margin: -5px 1px -2px 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
 
         &:nth-child(even) {
             margin-right: 0;
