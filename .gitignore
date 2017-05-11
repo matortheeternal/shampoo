@@ -16,3 +16,6 @@ Thumbs.db
 /coverage
 **/profiles.json
 .idea/
+
+# ignore VSCode editor files
+.vscode/

@@ -31,7 +31,7 @@ module.exports = function (src, dest, opts) {
         entry: src,
         external: generateExternalModulesList(),
         cache: cached[src],
-        plugins: opts.rollupPlugins,
+        plugins: opts.rollupPlugins
     })
     .then(function (bundle) {
         cached[src] = bundle;
@@ -40,7 +40,7 @@ module.exports = function (src, dest, opts) {
         var result = bundle.generate({
             format: 'cjs',
             sourceMap: true,
-            sourceMapFile: jsFile,
+            sourceMapFile: jsFile
         });
         // Wrap code in self invoking function so the variables don't
         // pollute the global namespace.
