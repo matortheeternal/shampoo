@@ -39,9 +39,15 @@ export default function(ngapp, xelib) {
         };
 
         $scope.groupErrors = function(plugin) {
-            plugin.errors.forEach(function(error) {
-                var group = $scope.groupedErrors.slice(error.group - 1)[0];
-                group.errors.push(error);
+            plugin.groupedErrors = errorsFactory.errorTypes();
+            plugin.groupedErrors.forEach(function(errorGroup) {
+                errorGroup.errors = plugin.errors.filter(function(error) {
+                  return error.group === errorGroup.group;
+                });
+            });
+
+            $scope.groupedErrors.forEach(function(errorGroup, index) {
+                errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
             });
         };
 

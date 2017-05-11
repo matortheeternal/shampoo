@@ -31,8 +31,12 @@
             </div>
             <div class="content-container" ng-show="plugin.errors.length">
                 <div class="action-button-container" ng-show="plugin.checked">
-                    <span class="action-box">Manual</span>
-                    <span class="action-box">Auto</span>
+                    <div ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked">
+                        <span>{{ group.errors.length }} {{ ::group.acronym }}s</span>
+                        <span class="action-box">Skip</span>
+                        <span class="action-box">Manual</span>
+                        <span class="action-box">Auto</span>
+                    </div>
                 </div>
             </div>
         </div>
