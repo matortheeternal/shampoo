@@ -1,0 +1,33 @@
+.overview > span {
+    display: block;
+    font-size: 18px;
+    margin: 6px 0;
+}
+
+.error-breakdown {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .content-block {
+        max-width: 48%;
+        margin: 15px 0;
+
+        .content-title span {
+            font-size: 20px;
+            margin: -5px 1px -2px 0;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        &:nth-child(even) {
+            margin-right: 0;
+        }
+
+        &:nth-child(odd) {
+            margin-left: 0;
+        }
+    }
+}
