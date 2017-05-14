@@ -4,9 +4,11 @@ $titleBarButtonPadding: 4px;
 .title-bar {
     -webkit-user-select: none;
     display: flex;
+    position: relative;
     height: $titleBarHeight;
     width: 100%;
-    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.6), 0 0 8px 0 rgba(0, 0, 0, 0.8);
+    z-index: 1000;
 
     .title-bar-title {
         flex-grow: 1;
