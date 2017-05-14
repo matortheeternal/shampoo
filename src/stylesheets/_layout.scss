@@ -1,0 +1,95 @@
+$titleBarHeight: 38px;
+$titleBarButtonPadding: 4px;
+
+.title-bar {
+    -webkit-user-select: none;
+    display: flex;
+    height: $titleBarHeight;
+    width: 100%;
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.4);
+
+    .title {
+        flex-grow: 1;
+        padding: 11px;
+        -webkit-app-region: drag;
+    }
+
+    .title-bar-actions {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: inline-block;
+            padding: $titleBarButtonPadding;
+
+            button {
+                height: $titleBarHeight - (2 * $titleBarButtonPadding);
+                width: $titleBarHeight - (2 * $titleBarButtonPadding);
+                color: inherit;
+                background-color: transparent;
+                border: none;
+                border-radius: 50%;
+                font-weight: bold;
+
+                &:hover { background-color: rgba(255, 255, 255, 0.15); }
+                &:active { background-color: rgba(255, 255, 255, 0.3); }
+            }
+
+            &.separator {
+                position: relative;
+
+                &::after {
+                    display: block;
+                    position: absolute;
+                    content: " ";
+                    border-left: 1px solid #FFF;
+                    top: -10px;
+                    bottom: -10px;
+                }
+            }
+        }
+    }
+}
+
+ui-view {
+    display: block;
+    position: absolute;
+    top: $titleBarHeight;
+    bottom: 82px; // For the main actions bar?
+    left: 0;
+    right: 0;
+
+    padding: 20px 40px;
+    overflow-y: auto;
+
+    .center-column {
+        margin: auto;
+        max-width: 1000px;
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+    }
+
+    .main-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        padding: 15px;
+        text-align: center;
+        width: 100vw;
+        border-top: 1px solid #aaa;
+        background-color: #fff;
+    }
+}
+
+.center-in-parent {
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

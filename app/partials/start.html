@@ -1,21 +1,19 @@
-<div class="flex-container">
-    <div>
-        <h1>Shampoo Plugin Cleaner</h1>
-        <div class="game-logo-container">
-            <img ng-src="images/games/{{selectedGame.mode}}.png"/>
-        </div>
-        <div class="profile-controls">
-            <select ng-options="profile as profile.name for profile in profiles" ng-model="selectedProfile"
-                    ng-change="setSelectedGame()">
-                <option value="" ng-if="!profiles.length">None</option>
-            </select>
-            <span class="fa fa-gear" ng-click="toggleProfilesModal(true)"></span>
-        </div>
-        <div class="primary-actions">
-            <span class="btn btn-raised btn-primary" ng-click="startSession()">Start Session</span>
-        </div>
-
-        <profiles-modal></profiles-modal>
-        <load-order-modal></load-order-modal>
+<div class="center-in-parent">
+    <h1>Shampoo Plugin Cleaner</h1>
+    <div class="game-logo-container">
+        <img ng-src="images/games/{{selectedGame.mode}}.png"/>
+    </div>
+    <div class="profile-controls">
+        <select ng-options="profile as profile.name for profile in profiles" ng-model="selectedProfile"
+                ng-change="setSelectedGame()">
+            <option value="" ng-if="!profiles.length">None</option>
+        </select>
+        <span class="fa fa-gear" ng-click="toggleProfilesModal(true)"></span>
+    </div>
+    <div class="primary-actions">
+        <span class="btn btn-raised btn-primary" ng-click="startSession()">Start Session</span>
     </div>
 </div>
+
+<profiles-modal></profiles-modal>
+<load-order-modal></load-order-modal>

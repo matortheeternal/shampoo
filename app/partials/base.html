@@ -1,12 +1,12 @@
 <div class="title-bar">
     <div class="title">Shampoo - Plugin Cleaner</div>
-    <div class="actions">
-        <span class="help" ng-click="helpClick()"></span>
-        <span class="divider"></span>
-        <span class="minimize" ng-click="minimizeClick()"></span>
-        <span class="restore" ng-click="restoreClick()"></span>
-        <span class="close" ng-click="closeClick()"></span>
-    </div>
+    <ul class="title-bar-actions">
+        <li><button ng-click="helpClick()">?</button></li>
+        <li class="separator"></li>
+        <li><button ng-click="minimizeClick()">_</button></li>
+        <li><button ng-click="restoreClick()">&#9633;</button></li>
+        <li><button ng-click="closeClick()">&#x2715;</button></li>
+    </ul>
 </div>
 
 <ui-view></ui-view>
