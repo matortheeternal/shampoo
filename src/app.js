@@ -13,7 +13,6 @@ import loadOrderModal from './Directives/loadOrderModal.js'
 import baseView from './Views/base.js'
 import startView from './Views/start.js'
 import mainView from './Views/main.js'
-import 'angular-spinner';
 
 // set up electron application
 var electron = {
@@ -23,7 +22,7 @@ var electron = {
 
 // set up angular application
 var ngapp = angular.module('shampoo', [
-    'ui.router', 'ct.ui.router.extras', 'angularSpinner'
+    'ui.router', 'ct.ui.router.extras'
 ]);
 
 ngapp.config(function ($urlMatcherFactoryProvider) {

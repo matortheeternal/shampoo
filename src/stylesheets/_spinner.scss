@@ -1,0 +1,42 @@
+$spinnerNSize: 1rem;
+$spinnerXLSize: 6rem;
+
+.spinner {
+	width: $spinnerNSize;
+	height: $spinnerNSize;
+	border: 2px solid #000;
+	border-right-color: transparent;
+	border-radius: 50%;
+
+	animation: spin 1s linear infinite;
+
+	&.spinner-x-large {
+		height: $spinnerXLSize;
+		width: $spinnerXLSize;
+		border-width: 5px;
+	}
+}
+
+.spinner-group {
+	position: relative;
+	padding-top: 2rem;
+
+	& > .spinner {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		animation: spin-with-translateX 1s linear infinite;
+	}
+
+	&.spinner-group-x-large { padding-top: 8rem; }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes spin-with-translateX {
+	0% { transform: translateX(-50%) rotate(0deg); }
+	100% { transform: translateX(-50%) rotate(360deg); }
+}
