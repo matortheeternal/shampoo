@@ -1,31 +1,32 @@
 <div class="modal-container" ng-if="showProfilesModal" ng-click="unfocusProfilesModal($event)">
-    <div class="modal big-modal">
+    <div class="modal modal-large">
         <form>
-            <div class="close-modal">
-                <span class="fa fa-times" ng-click="toggleProfilesModal()"></span>
+            <div class="modal-header">
+                Game Profiles <button class="modal-close">&times;</button>
             </div>
 
-            <h3>Game Profiles</h3>
-            <section>
-                <div class="subsection" ng-repeat="game in games">
-                    <span class="input-label">{{game.name}}</span>
-                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
-                    <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
-                </div>
-            </section>
+            <div class="modal-body">
+                <section>
+                    <div class="subsection" ng-repeat="game in games">
+                        <span class="input-label">{{game.name}}</span>
+                        <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
+                        <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
+                    </div>
+                </section>
 
-            <section>
-                <div class="subsection default-profile-section">
-                    <span class="input-label">Default Profile</span>
-                    <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
-                        <option value="" ng-if="!validProfiles.length"></option>
-                    </select>
-                </div>
-            </section>
+                <section>
+                    <div class="subsection default-profile-section">
+                        <span class="input-label">Default Profile</span>
+                        <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
+                            <option value="" ng-if="!validProfiles.length"></option>
+                        </select>
+                    </div>
+                </section>
+            </div>
 
-            <div class="action-btn-container">
-                <span class="btn btn-raised btn-primary" ng-click="saveProfiles()">Save</span>
-                <span class="btn btn-raised btn-default" ng-click="toggleProfilesModal()">Close</span>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="saveProfiles()">Save</button>
+                <button class="btn btn-primary" ng-click="toggleProfilesModal()">Close</button>
             </div>
         </form>
     </div>

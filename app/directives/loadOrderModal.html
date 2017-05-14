@@ -1,19 +1,26 @@
 <div class="modal-container" ng-if="showLoadOrderModal">
-    <div class="modal skinny-modal">
+    <div class="modal">
         <form>
-            <h3>Load Order</h3>
-            <section>
-                <ul class="checkbox-list">
-                    <li ng-repeat="item in loadOrder">
-                        <label>
-                            <input type="checkbox" ng-model="item.active" /> {{::item.filename}}
-                        </label>
-                    </li>
-                </ul>
-            </section>
+            <div class="modal-header">
+                Load Order <button class="modal-close">&times;</button>
+            </div>
 
-            <div class="action-btn-container">
-                <span class="btn btn-raised btn-primary" ng-click="loadPlugins()">OK</span>
+            <div class="modal-body">
+                <form>
+                    <section>
+                        <ul class="checkbox-list">
+                            <li ng-repeat="item in loadOrder">
+                                <label>
+                                    <input type="checkbox" ng-model="item.active" /> {{::item.filename}}
+                                </label>
+                            </li>
+                        </ul>
+                    </section>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="loadPlugins()">OK</button>
             </div>
         </form>
     </div>

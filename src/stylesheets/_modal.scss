@@ -7,34 +7,40 @@
     height: 100%;
     overflow-y: auto;
     z-index: 200;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.3);
 
     .modal {
         position: relative;
         width: 400px;
-        padding: 40px;
+        padding: 20px;
         margin: 150px auto;
-        box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
-        background-color: #fff;
+        box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2), 0 40px 77px 0 rgba(0, 0, 0, 0.22);
 
-        .section-title {
-            display: block;
-            vertical-align: top;
-            font-size: 20px;
-            font-weight: 500;
+        .modal-header {
+            font-size: 1.2em;
+            margin-bottom: 24px;
+
+            .modal-close {
+                position: absolute;
+                top: 0px;
+                right: 0;
+                font-size: 1.4em;
+                padding: 18px 23px 0px;
+                cursor: pointer;
+            }
         }
 
-        .content-message {
-            margin: 20px 0 0;
+        .modal-body { }
+
+        .modal-footer {
+            text-align: right;
+
+            .btn { margin-bottom: 0; } // Too much space when buttons are there
         }
-    }
 
-    .big-modal {
-        width: 600px;
-    }
-
-    .skinny-modal {
-        width: 400px;
+        &.modal-large {
+            width: 600px;
+        }
     }
 
     .close-modal {

@@ -1,3 +1,14 @@
+// Container themes
+.title-bar {
+	color: #FFF;
+	background-color: #2398E6;
+}
+
+ui-view.container {
+	background-color: #EEE;
+}
+
+// Button themes
 .btn {
 	&.btn-raised {
 		&.btn-default {
@@ -45,11 +56,12 @@
 	}
 }
 
-.title-bar {
-	color: #FFF;
-	background-color: #2398E6;
-}
+// Modal themes
+.modal {
+	background-color: #FFF;
 
-ui-view.container {
-	background-color: #EEE;
+	.modal-close {
+		color: #CCC;
+		&:hover { color: #999; }
+	}
 }
