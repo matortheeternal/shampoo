@@ -6,6 +6,7 @@ var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var plumber = require('gulp-plumber');
 var wait = require('gulp-wait');
+var livereload = require('gulp-livereload');
 var jetpack = require('fs-jetpack');
 var bundle = require('./bundle');
 var utils = require('./utils');
@@ -26,7 +27,8 @@ gulp.task('sass', function () {
         .pipe(plumber())
         .pipe(wait(250))
         .pipe(sass())
-        .pipe(gulp.dest(destDir.path('stylesheets')));
+        .pipe(gulp.dest(destDir.path('stylesheets')))
+        .pipe(livereload());
 });
 
 gulp.task('environment', function () {
@@ -43,6 +45,8 @@ gulp.task('watch', function () {
             done(err);
         };
     };
+
+    livereload.listen();
 
     watch('src/**/*.js', batch(function (events, done) {
         gulp.start('bundle', beepOnError(done));
