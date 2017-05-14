@@ -1,0 +1,46 @@
+.btn {
+	&.btn-raised {
+		&.btn-default {
+			color: #226490;
+			background-color: #FFF;
+
+			&:hover { background-color: #D4DBE0; }
+		}
+
+		&.btn-primary {
+			color: #FFF;
+			background-color: #226490;
+
+			&:hover { background-color: #3981b1; }
+		}
+
+		&.btn-success {
+			color: #FFF;
+			background-color: #49A249;
+		}
+
+		&.btn-warning {
+			color: #FFF;
+			background-color: #D28A23;
+
+			&:hover { background-color: #3981b1; }
+		}
+
+		&.btn-danger {
+			color: #FFF;
+			background-color: #F54949;
+		}
+	}
+
+	&:not(.btn-raised) {
+		&.btn-default { color: #226490; }
+		&.btn-primary { color: #226490; }
+		&.btn-success { color: #49A249; }
+		&.btn-warning { color: #D28A23; }
+		&.btn-danger { color: #F54949; }
+
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.1);
+		}
+	}
+}

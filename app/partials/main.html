@@ -2,8 +2,8 @@
     <div class="center-column">
         <h1>Shampoo Plugin Cleaner</h1>
 
-        <div class="action-button-container" ng-show="!checking">
-            <span class="action-box" ng-click="startCheck()">Check For Errors</span>
+        <div class="action-btn-container" ng-show="!checking">
+            <span class="btn btn-raised btn-primary" ng-click="startCheck()">Check For Errors</span>
         </div>
 
         <div class="overview" ng-show="checking">
@@ -26,22 +26,22 @@
             <div class="content-title">{{::plugin.filename}}
                 <span ng-show="checking">({{plugin.status}})</span>
             <span class="right" ng-show="!checking">
-                <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
+                <span class="btn btn-raised btn-small {{plugin.skip ? 'btn-danger' : 'btn-success'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
             </span>
             </div>
             <div class="content-container" ng-show="plugin.errors.length">
-                <div class="action-button-container" ng-show="plugin.checked">
-                    <span class="action-box">Manual</span>
-                    <span class="action-box">Auto</span>
+                <div class="action-btn-container" ng-show="plugin.checked">
+                    <span class="btn btn-raised btn-default">Manual</span>
+                    <span class="btn btn-raised btn-default">Auto</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="main-actions">
-        <span class="action-box" ng-click="apply()" title="Applies error resolutions and saves plugins to disk.">Apply</span>
-        <span class="action-box" ng-click="close()" title="Closes the program.">Close</span>
-        <span class="action-box" ng-click="toggleSettingsModal(true)" title="Opens the settings modal.">Settings</span>
+        <span class="btn btn-raised btn-default" ng-click="apply()" title="Applies error resolutions and saves plugins to disk.">Apply</span>
+        <span class="btn btn-raised btn-default" ng-click="close()" title="Closes the program.">Close</span>
+        <span class="btn btn-raised btn-default" ng-click="toggleSettingsModal(true)" title="Opens the settings modal.">Settings</span>
     </div>
 </div>
 
