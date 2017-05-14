@@ -8,39 +8,6 @@
     padding: 8px;
 }
 
-.profile-controls {
-    select, span {
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    span.fa {
-        margin-left: 4px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    select {
-        padding: 4px;
-        font-size: 20px;
-        min-width: 140px;
-        -webkit-appearance: none;
-
-        // background
-        background-image: linear-gradient(45deg, transparent 50%, gray 50%),
-        linear-gradient(135deg, gray 50%, transparent 50%),
-        linear-gradient(to right, #ccc, #ccc);
-        background-position:
-            calc(100% - 15px) calc(50% + 2px),
-            calc(100% - 10px) calc(50% + 2px),
-            calc(100% - 1.5em) 50%;
-        background-size: 5px 5px,
-            5px 5px,
-            1px 80%;
-        background-repeat: no-repeat;
-    }
-}
-
 .checkbox-list {
     list-style: none;
     padding-left: 10px;
@@ -51,20 +18,21 @@
     }
 }
 
+.game-select {
+    font-size: 1.3em;
+    padding: 12px;
+    width: 260px;
+}
+
+.game-settings-button {
+    font-size: 1.8em !important;
+    margin-left: 8px;
+}
+
 .log {
     white-space: pre-wrap;
     display: block;
     height: 200px;
     max-height: 200px;
     overflow-y: auto;
-}
-
-.big-spinner {
-    height: 250px;
-}
-
-.default-profile-section {
-    select {
-        min-width: 100px;
-    }
 }

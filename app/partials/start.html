@@ -1,18 +1,19 @@
-<div class="center-in-parent">
+<div class="center-in-parent container">
     <span class="title">Shampoo Plugin Cleaner</span>
     <div class="game-logo-container">
         <img ng-src="images/games/{{selectedGame.mode}}.png"/>
     </div>
-    <div class="profile-controls">
-        <select ng-options="profile as profile.name for profile in profiles" ng-model="selectedProfile"
-                ng-change="setSelectedGame()">
+
+    <div>
+        <select class="game-select" ng-options="profile as profile.name for profile in profiles" ng-model="selectedProfile" ng-change="setSelectedGame()">
             <option value="" ng-if="!profiles.length">None</option>
         </select>
-        <span class="fa fa-gear" ng-click="toggleProfilesModal(true)"></span>
+        <button class="btn btn-primary" ng-click="toggleProfilesModal(true)" style="font-size:1.5em;">
+            <span class="fa fa-gear"></span>
+        </button>
     </div>
-    <div class="primary-actions">
-        <span class="btn btn-raised btn-primary" ng-click="startSession()">Start Session</span>
-    </div>
+    
+    <span class="btn btn-raised btn-primary" ng-click="startSession()">Start Session</span>
 </div>
 
 <profiles-modal></profiles-modal>

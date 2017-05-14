@@ -1,37 +1,47 @@
 <div ng-if="loaded">
-    <div class="center-column">
-        <div class="action-btn-container" ng-show="!checking">
-            <span class="btn btn-raised btn-primary" ng-click="startCheck()">Check For Errors</span>
-        </div>
+    <div class="action-btn-container" ng-show="!checking">
+        <span class="btn btn-raised btn-primary" ng-click="startCheck()">Check For Errors</span>
+    </div>
 
-        <div class="overview" ng-show="checking">
-            <span ng-show="checkingDone">Error check complete</span>
-            <span ng-hide="checkingDone">Checking for errors...  ({{checkedPlugins + 1}}/{{pluginsToCheck}})</span>
-            <span>{{totalErrors}} errors found</span>
+    <div class="container" ng-show="checking">
+        <h2 ng-show="checkingDone">Error check complete</h2>
+        <h2 ng-hide="checkingDone">Checking for errors... ({{checkedPlugins + 1}}/{{pluginsToCheck}})</h2>
+        <span>{{totalErrors}} errors found</span>
 
-            <div class="error-breakdown" ng-show="checkingDone">
-                <div ng-repeat="errorType in groupedErrors" ng-if="errorType.errors.length" class="content-block">
-                    <div class="content-title">
+        <div class="row" ng-show="checkingDone">
+            <div ng-repeat="errorType in groupedErrors" ng-if="errorType.errors.length" class="col col-4">
+                <div class="panel panel-danger">
+                    <div class="panel-header">
                         <span>{{errorType.errors.length}}</span>
                         {{::errorType.name}} ({{::errorType.acronym}})
                     </div>
-                    <div class="content-container">{{::errorType.caption}}</div>
+
+                    <!-- Make the description on a modal or a tooltip instead? -->
+                    <!--<div class="panel-body">{{::errorType.caption}}</div>-->
                 </div>
             </div>
         </div>
+    </div>
 
-        <div ng-repeat="plugin in plugins" class="content-block" ng-hide="checking && plugin.skip">
-            <div class="content-title">{{::plugin.filename}}
-                <span ng-show="checking">({{plugin.status}})</span>
-                <span class="right" ng-show="!checking">
-                    <span class="btn btn-small {{plugin.skip ? 'btn-danger' : 'btn-success'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
-                </span>
+    <div class="container">
+        <h2>Plugins</h2>
+        <div ng-repeat="plugin in plugins" class="panel panel-primary" ng-hide="checking && plugin.skip">
+            <div class="panel-header">{{::plugin.filename}}
+                <span class="badge badge-primary badge-invert" ng-show="checking">({{plugin.status}})</span>
+                <a class="btn btn-small {{plugin.skip ? 'btn-danger' : 'btn-success'}} header-btn" ng-show="!checking" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</a>
             </div>
-            <div class="content-container" ng-show="plugin.errors.length">
-                <div class="action-btn-container" ng-show="plugin.checked">
-                    <span class="btn btn-raised btn-default">Manual</span>
-                    <span class="btn btn-raised btn-default">Auto</span>
-                </div>
+
+            <div class="panel-body" ng-show="plugin.errors.length && plugin.checked">
+                <form class="row">
+                    <label class="form-group col col-4 row">
+                        <span class="input-label col col-3">Action:</span>
+                        <select class="col col-9">
+                            <option>Manual</option>
+                            <option selected>Auto</option>
+                            <option>Skip</option>
+                        </select>
+                    </label>
+                </form>
             </div>
         </div>
     </div>

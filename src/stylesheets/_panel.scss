@@ -1,27 +1,27 @@
-.content-block {
-    margin: 20px 0;
-    background-color: #fff;
-    border: 1px solid #aaa;
+.panel {
+    margin: 8px;
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.3);
 
-    .content-title {
+    .panel-header {
         position: relative;
-        padding: 10px;
-        background-color: #3a4751;
-        font-size: 16px;
-        font-weight: 500;
-        color: #fff;
+        padding: 12px;
 
-        span {
-            color: #80ccff;
-        }
-
-        .right {
-            float: right;
-            margin-top: -3px;
+        .header-btn {
+            position: absolute;
+            
+            &.btn-small {
+                right: 6px;
+                top: 7px;
+            }
         }
     }
 
-    .content-container {
-        margin: 20px;
+    .panel-body {
+        padding: 8px;
+    }
+
+    .panel-footer {
+        font-size: 0.9em;
+        padding: 12px;
     }
 }

@@ -1,59 +1,27 @@
+// Main variables
+$state-list: "default" "primary" "success" "warning" "danger";
+$color-list: #DEDEDE #226490 #49A249 #D28A23 #F54949;
+$text-list: #222 #FFF #FFF #FFF #FFF;
+
+// Page themes
+body {
+	background-color: #EEE;
+}
+
 // Container themes
 .title-bar {
 	color: #FFF;
 	background-color: #2398E6;
 }
 
-ui-view.container {
-	background-color: #EEE;
+.container {
+	padding: 24px;
+	background-color: #FFF;
 }
 
 // Button themes
-.btn {
-	&.btn-raised {
-		&.btn-default {
-			color: #226490;
-			background-color: #FFF;
-
-			&:hover { background-color: #D4DBE0; }
-		}
-
-		&.btn-primary {
-			color: #FFF;
-			background-color: #226490;
-
-			&:hover { background-color: #3981b1; }
-		}
-
-		&.btn-success {
-			color: #FFF;
-			background-color: #49A249;
-		}
-
-		&.btn-warning {
-			color: #FFF;
-			background-color: #D28A23;
-
-			&:hover { background-color: #3981b1; }
-		}
-
-		&.btn-danger {
-			color: #FFF;
-			background-color: #F54949;
-		}
-	}
-
-	&:not(.btn-raised) {
-		&.btn-default { color: #226490; }
-		&.btn-primary { color: #226490; }
-		&.btn-success { color: #49A249; }
-		&.btn-warning { color: #D28A23; }
-		&.btn-danger { color: #F54949; }
-
-		&:hover {
-			background-color: rgba(0, 0, 0, 0.1);
-		}
-	}
+.btn:not(.btn-raised):hover {
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 // Modal themes
@@ -89,7 +57,7 @@ input[type="checkbox"] {
 		border-color: #226490;
 		background-color: #FFF;
 		color: #FFF;
-		
+
 		transition: background-color 200ms;
 	}
 	
@@ -108,5 +76,54 @@ a.input-addon {
 	&:hover {
 		border-color: #BBB;
 		background-color: #EDF2F5;
+	}
+}
+
+// Panel themes
+.panel {
+	background-color: #FFF;
+}
+
+
+// Colour contextual state loop
+@for $i from 1 through length($state-list) {
+	$state: nth($state-list, $i);
+	$bg: nth($color-list, $i);
+	$text: nth($text-list, $i);
+
+	// ConTEXTual text
+	.text-#{$state} {
+		color: $bg;
+	}
+
+	// Contextual panels
+	.panel.panel-#{$state} {
+		border: 1px solid $bg;
+
+		.panel-header, .panel-footer {
+			color: $text;
+			background-color: $bg;
+		}
+	}
+
+	// Contextual buttons
+	.btn.btn-raised.btn-#{$state} { 
+		color: $text;
+		background-color: $bg;
+	}
+
+	.btn:not(.btn-raised).btn-#{$state} {
+		color: $bg;
+	}
+
+	// Contextual badges
+	.badge.badge-#{$state}:not(.badge-invert) {
+		color: $text;
+		background-color: $bg;
+	}
+
+	.badge.badge-#{$state}.badge-invert {
+		color: $bg;
+		background-color: $text;
 	}
 }

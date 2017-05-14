@@ -1,15 +1,13 @@
 $inputBorderRadius: 4px;
 
-form {
-    label.form-group {
-        display: block;
-        width: 100%;
-        margin-bottom: 8px;
+label.form-group {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
 
-        .input-label {
-            position: relative;
-            top: 7px;
-        }
+    .input-label {
+        position: relative;
+        top: 7px;
     }
 }
 

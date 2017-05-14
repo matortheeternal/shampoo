@@ -3,6 +3,7 @@ $numCols: 12;
 .row {
 	.col {
 		float: left;
+		box-sizing: border-box;
 	}
 
 	@for $i from 1 through $numCols {
