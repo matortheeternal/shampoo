@@ -13,7 +13,10 @@ a {
 }
 
 button {
-    outline: none;
     border: none;
     background: none;
+}
+
+input, select, button {
+    outline: none;
 }

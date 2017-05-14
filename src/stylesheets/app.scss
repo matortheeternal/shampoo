@@ -1,10 +1,11 @@
+@import 'mixins';
 @import 'font';
 @import 'main';
 
+@import 'grid';
 @import 'layout';
 @import 'modal';
 @import 'form';
-@import 'input';
 @import 'button';
 @import 'panel';
 @import 'spinner';

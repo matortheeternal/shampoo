@@ -6,22 +6,20 @@
             </div>
 
             <div class="modal-body">
-                <section>
-                    <div class="subsection" ng-repeat="game in games">
-                        <span class="input-label">{{game.name}}</span>
-                        <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
-                        <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
+                <label class="row form-group" ng-repeat="game in games">
+                    <div class="col col-3 input-label">{{game.name}}</div>
+                    <div class="input-group col col-9">
+                        <input class="input-control" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
+                        <a class="input-addon" ng-click="pathBrowse(game)"><span class="fa fa-folder-open-o"></span></a>
                     </div>
-                </section>
+                </label>
 
-                <section>
-                    <div class="subsection default-profile-section">
-                        <span class="input-label">Default Profile</span>
-                        <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
-                            <option value="" ng-if="!validProfiles.length"></option>
-                        </select>
-                    </div>
-                </section>
+                <label class="row form-group default-profile-section">
+                    <div class="col col-3 input-label">Default Profile</div>
+                    <select class="col col-9" ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
+                        <option value="" ng-if="!validProfiles.length"></option>
+                    </select>
+                </label>
             </div>
 
             <div class="modal-footer">

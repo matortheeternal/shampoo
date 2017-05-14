@@ -2,20 +2,16 @@
     <div class="modal">
         <form>
             <div class="modal-header">
-                Load Order <button class="modal-close">&times;</button>
+                Load Order
             </div>
 
             <div class="modal-body">
                 <form>
-                    <section>
-                        <ul class="checkbox-list">
-                            <li ng-repeat="item in loadOrder">
-                                <label>
-                                    <input type="checkbox" ng-model="item.active" /> {{::item.filename}}
-                                </label>
-                            </li>
-                        </ul>
-                    </section>
+                    <label class="form-group" ng-repeat="item in loadOrder">
+                        <input type="checkbox" ng-model="item.active" />
+                        <div class="checkbox"></div>
+                        <span class="input-label">{{::item.filename}}</span>
+                    </label>
                 </form>
             </div>
 

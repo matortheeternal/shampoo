@@ -65,3 +65,48 @@ ui-view.container {
 		&:hover { color: #999; }
 	}
 }
+
+// Input themes
+input[type="text"], select, .input-group .input-addon {
+	border-color: #DDD;
+}
+
+input[type="text"], select {
+	&:focus {
+		border-color: #226490;
+		box-shadow: 0 0 6px 0px #3981B1;
+	}
+
+	&.invalid {
+		border-color: #F54949;
+		color: #F54949;
+		&:focus { box-shadow: 0 0 6px 0px #E06060; }
+	}
+}
+
+input[type="checkbox"] {
+	& ~ .checkbox {
+		border-color: #226490;
+		background-color: #FFF;
+		color: #FFF;
+		
+		transition: background-color 200ms;
+	}
+	
+	&:checked ~ .checkbox {
+		background-color: #226490;
+	}
+}
+
+.input-addon {
+	background-color: #F9F9F9;
+}
+
+a.input-addon {
+	background-color: #FFF;
+	
+	&:hover {
+		border-color: #BBB;
+		background-color: #EDF2F5;
+	}
+}

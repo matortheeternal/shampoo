@@ -1,42 +1,84 @@
+$inputBorderRadius: 4px;
+
 form {
-    .section-title {
+    label.form-group {
         display: block;
-        vertical-align: top;
-        font-size: 22px;
-        font-weight: 500;
-    }
+        width: 100%;
+        margin-bottom: 8px;
 
-    section {
-        display: block;
-        margin-top: 15px;
-        margin-left: 30px;
-        margin-bottom: 30px;
-
-        .subsection {
-            display: block;
-            margin-bottom: 15px;
-            margin-top: 15px;
-
-            span, input {
-                display: inline-block;
-                vertical-align: middle;
-            }
-
-            .fa {
-                margin-left: 2px;
-                cursor: pointer;
-            }
-        }
-
-        .path-input {
-            width: 350px;
+        .input-label {
+            position: relative;
+            top: 7px;
         }
     }
+}
 
-    .input-label {
+// Text inputs and combo-boxes
+input[type="text"], select {
+    border: 1px solid;
+    box-sizing: border-box;
+    border-radius: $inputBorderRadius;
+
+    transition: border-color 200ms, box-shadow 200ms;
+}
+
+input[type="text"] { padding: 8px; }
+select { padding: 7px; }
+
+// Checkboxes
+input[type="checkbox"] {
+    display: none;
+
+    & ~ .checkbox {
         display: inline-block;
-        min-width: 180px;
-        margin-bottom: 5px;
-        margin-top: 5px;
+        width: 1em;
+        height: 1em;
+        margin-right: 4px;
+        border: 2px solid;
+
+        &::before {
+            font: normal normal normal 14px/1 FontAwesome;
+            content: "\f00c";
+            position: relative;
+            top: -2px;
+            left: 2px;
+        }
+    }
+
+    & ~ .input-label {
+        top: -2px !important; // Fix offset (inherits a position: relative from form label.form-group .input-label)
+    }
+}
+
+// Input addons
+.input-group {
+    display: table;
+
+    .input-addon, .input-control {
+        display: table-cell;
+    }
+
+    .input-addon {
+        width: 1%;
+        padding: 0 8px;
+        white-space: nowrap;
+        border: 1px solid;
+
+        &:nth-child(1) {
+            border-right: none;
+            @include border-left-radii($inputBorderRadius);
+        }
+
+        &:nth-last-child(1) {
+            border-left: none;
+            @include border-right-radii($inputBorderRadius); 
+        }
+    }
+
+    .input-control {
+        width: 100%;
+
+        &:nth-child(2) { @include border-left-radii(0); }
+        &:nth-last-child(2) { @include border-right-radii(0); }
     }
 }

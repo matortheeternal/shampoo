@@ -1,0 +1,19 @@
+$numCols: 12;
+
+.row {
+	.col {
+		float: left;
+	}
+
+	@for $i from 1 through $numCols {
+		.col-#{$i} {
+			width: 100% / $numCols * $i;
+		}
+	}
+
+	&::after {
+		content: "";
+		display: table;
+		clear: both; 
+	}
+}
