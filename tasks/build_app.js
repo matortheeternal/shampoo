@@ -5,6 +5,7 @@ var sass = require('gulp-sass');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var plumber = require('gulp-plumber');
+var wait = require('gulp-wait');
 var jetpack = require('fs-jetpack');
 var bundle = require('./bundle');
 var utils = require('./utils');
@@ -23,6 +24,7 @@ gulp.task('bundle', function () {
 gulp.task('sass', function () {
     return gulp.src(srcDir.path('stylesheets/*'))
         .pipe(plumber())
+        .pipe(wait(250))
         .pipe(sass())
         .pipe(gulp.dest(destDir.path('stylesheets')));
 });
