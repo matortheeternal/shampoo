@@ -1,17 +1,18 @@
 @import 'mixins';
-@import 'font';
-@import 'main';
+@import 'page/font';
+@import 'page/main';
 
-@import 'headers';
-@import 'container';
-@import 'grid';
-@import 'layout';
-@import 'modal';
-@import 'form';
-@import 'button';
-@import 'panel';
-@import 'spinner';
-@import 'badge';
+@import 'containers/container';
+@import 'containers/grid';
+@import 'containers/layout';
+@import 'containers/panel';
 
-@import 'profiles';
-@import 'errorcomposition';
+@import 'elements/headers';
+@import 'elements/modal';
+@import 'elements/form';
+@import 'elements/button';
+@import 'elements/spinner';
+@import 'elements/badge';
+
+@import 'views/profiles';
+@import 'views/errorcomposition';

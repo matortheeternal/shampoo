@@ -23,12 +23,24 @@ gulp.task('bundle', function () {
 });
 
 gulp.task('sass', function () {
-    return gulp.src(srcDir.path('stylesheets/*'))
-        .pipe(plumber())
-        .pipe(wait(250))
-        .pipe(sass())
-        .pipe(gulp.dest(destDir.path('stylesheets')))
-        .pipe(livereload());
+    return Promise.all([
+        gulp.src(srcDir.path('stylesheets/*.scss'))
+            .pipe(plumber())
+            .pipe(wait(250))
+            .pipe(sass())
+            .pipe(gulp.dest(destDir.path('stylesheets')))
+            .pipe(livereload()),
+        
+        // Theme sass files have to be outputted somewhere other than the `app` folder, else they'll be
+        // compiled into the `app.asar` file which makes them harder to install/modify by the user.
+        gulp.src(srcDir.path('stylesheets/themes/*.scss'))
+            .pipe(plumber())
+            .pipe(wait(250))
+            .pipe(sass())
+            .pipe(gulp.dest('./themes')) // For now, and for testing purposes we'll dump it in the regular stylesheet folder too
+            .pipe(gulp.dest(destDir.path('stylesheets')))
+            .pipe(livereload())
+    ]);
 });
 
 gulp.task('environment', function () {
