@@ -1,87 +1,143 @@
-// Main variables
+// Shampoo Default Theme
+// Author: Will Bennion
+
+// ---------- //
+// Variables //
+// -------- //
+/* Most users will just need to change these for their desired theme. */
+
+// App:
+$app-bg: #EEE;
+$container-bg: #FFF;
+$container-color: #222;
+
+$title-bar-bg: #2398E6;
+$title-bar-color: #FFF;
+
+// Contextual states:
 $state-list: "default" "primary" "success" "warning" "danger";
 $color-list: #DEDEDE #226490 #49A249 #D28A23 #F54949;
 $text-list: #222 #FFF #FFF #FFF #FFF;
 
+
+
+// ------------------- //
+// Advanced variables //
+// ----------------- //
+/* Tweaking these will allow for finer control over some elements. */
+
+// Buttons
+$button-flat-hover-bg: transparentize($container-color, 0.85);
+
+// Inputs
+$input-bg: $container-bg;
+$input-border: mix($container-bg, $container-color, 80%);
+$input-color: $container-color;
+
+$input-addon-bg: mix($input-bg, $input-color, 95%);
+$input-addon-color: $input-color;
+$input-addon-button-bg: $input-bg;
+$input-addon-button-color: $input-color;
+$input-addon-button-hover-bg: mix($input-bg, $input-color, 90%);
+$input-addon-button-hover-color: $input-color;
+$input-addon-button-hover-border: mix($input-border, $input-color, 75%);
+
+
+
+// ---------- //
+// Rule sets //
+// -------- //
+/* Do not change anything below this line unless you know what you're doing :) */
+
+// Color shortcuts
+$primary-color: nth($color-list, index($state-list, "primary"));
+$danger-color: nth($color-list, index($state-list, "danger"));
+
 // Page themes
 body {
-	background-color: #EEE;
+	background-color: $app-bg;
 }
 
 // Container themes
 .title-bar {
-	color: #FFF;
-	background-color: #2398E6;
+	color: $title-bar-color;
+	background-color: $title-bar-bg;
 }
 
 .container {
 	padding: 24px;
-	background-color: #FFF;
+	background-color: $container-bg;
 }
 
 // Button themes
 .btn:not(.btn-raised):hover {
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: $button-flat-hover-bg;
 }
 
 // Modal themes
 .modal {
-	background-color: #FFF;
+	background-color: $container-bg;
 
 	.modal-close {
-		color: #CCC;
-		&:hover { color: #999; }
+		color: mix($container-color, $container-bg, 20%);
+		&:hover {
+			color: mix($container-color, $container-bg, 40%);
+		}
 	}
 }
 
 // Input themes
 input[type="text"], select, .input-group .input-addon {
-	border-color: #DDD;
+	border-color: $input-border;
 }
 
 input[type="text"], select {
 	&:focus {
-		border-color: #226490;
-		box-shadow: 0 0 6px 0px #3981B1;
+		border-color: $primary-color;
+		box-shadow: 0 0 6px 0px lighten($primary-color, 10%);
 	}
 
 	&.invalid {
-		border-color: #F54949;
-		color: #F54949;
-		&:focus { box-shadow: 0 0 6px 0px #E06060; }
+		border-color: $danger-color;
+		color: $danger-color;
+		&:focus {
+			box-shadow: 0 0 6px 0px lighten($danger-color, 10%);
+		}
 	}
 }
 
 input[type="checkbox"] {
 	& ~ .checkbox {
-		border-color: #226490;
-		background-color: #FFF;
-		color: #FFF;
+		border-color: $primary-color;
+		background-color: $container-bg;
+		color: $container-bg;
 
 		transition: background-color 200ms;
 	}
 	
 	&:checked ~ .checkbox {
-		background-color: #226490;
+		background-color: $primary-color;
 	}
 }
 
 .input-addon {
-	background-color: #F9F9F9;
+	background-color: $input-addon-bg;
 }
 
 a.input-addon {
-	background-color: #FFF;
+	background-color: $input-addon-button-bg;
+	color: $input-addon-button-color;
 	
 	&:hover {
-		border-color: #BBB;
-		background-color: #EDF2F5;
+		background-color: $input-addon-button-hover-bg;
+		color: $input-addon-button-hover-color;
+		border-color: $input-addon-button-hover-border;
 	}
 }
 
 // Panel themes
 .panel {
-	background-color: #FFF;
+	background-color: $container-bg;
 }
 
 
@@ -98,7 +154,7 @@ a.input-addon {
 
 	// Contextual panels
 	.panel.panel-#{$state} {
-		border: 1px solid $bg;
+		border-color: $bg;
 
 		.panel-header, .panel-footer {
 			color: $text;
