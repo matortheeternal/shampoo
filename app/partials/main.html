@@ -32,7 +32,7 @@
             <div class="content-container" ng-show="plugin.errors.length && plugin.showContent">
                 <div class="action-button-container" ng-show="plugin.checked">
                     <div ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
-                        <span>{{ group.errors.length }} {{ ::group.acronym }}s
+                        <span>{{ group.errors.length }} {{ ::group.name }}s
                             <select ng-model="group.resolution">
                                 <option value="auto">Auto</option>
                                 <option value="skip">Skip</option>
