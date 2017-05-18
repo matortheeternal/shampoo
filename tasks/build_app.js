@@ -1,10 +1,11 @@
 'use strict';
 
 var gulp = require('gulp');
-var less = require('gulp-less');
+var sass = require('gulp-sass');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var plumber = require('gulp-plumber');
+var wait = require('gulp-wait');
 var jetpack = require('fs-jetpack');
 var bundle = require('./bundle');
 var utils = require('./utils');
@@ -20,10 +21,11 @@ gulp.task('bundle', function () {
     ]);
 });
 
-gulp.task('less', function () {
+gulp.task('sass', function () {
     return gulp.src(srcDir.path('stylesheets/*'))
         .pipe(plumber())
-        .pipe(less())
+        .pipe(wait(250))
+        .pipe(sass())
         .pipe(gulp.dest(destDir.path('stylesheets')));
 });
 
@@ -45,9 +47,9 @@ gulp.task('watch', function () {
     watch('src/**/*.js', batch(function (events, done) {
         gulp.start('bundle', beepOnError(done));
     }));
-    watch('src/**/*.less', batch(function (events, done) {
-        gulp.start('less', beepOnError(done));
+    watch('src/**/*.scss', batch(function (events, done) {
+        gulp.start('sass', beepOnError(done));
     }));
 });
 
-gulp.task('build', ['bundle', 'less', 'environment']);
+gulp.task('build', ['bundle', 'sass', 'environment']);
