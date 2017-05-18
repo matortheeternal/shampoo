@@ -121,7 +121,8 @@ export default function(ngapp, xelib) {
                     _id: _id,
                     filename: xelib.Name(_id),
                     status: "Queued",
-                    skip: false
+                    skip: false,
+                    showContent: false
                 }
             }).filter(function (plugin) {
                 return !$scope.skipPlugin(plugin.filename);
