@@ -25,17 +25,20 @@
         <div ng-repeat="plugin in plugins" class="content-block" ng-hide="checking && plugin.skip">
             <div class="content-title">{{::plugin.filename}}
                 <span ng-show="checking">({{plugin.status}})</span>
-            <span class="right" ng-show="!checking">
-                <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
-            </span>
+                <span class="right" ng-show="!checking">
+                    <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
+                </span>
             </div>
             <div class="content-container" ng-show="plugin.errors.length">
                 <div class="action-button-container" ng-show="plugin.checked">
-                    <div ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked">
-                        <span>{{ group.errors.length }} {{ ::group.acronym }}s</span>
-                        <span class="action-box">Skip</span>
-                        <span class="action-box">Manual</span>
-                        <span class="action-box">Auto</span>
+                    <div ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
+                        <span>{{ group.errors.length }} {{ ::group.acronym }}s
+                            <select ng-model="group.resolution">
+                                <option value="auto">Auto</option>
+                                <option value="skip">Skip</option>
+                                <option value="manual">Manual</option>
+                            </select>
+                        </span>
                     </div>
                 </div>
             </div>
