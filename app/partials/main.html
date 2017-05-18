@@ -23,22 +23,35 @@
         </div>
 
         <div ng-repeat="plugin in plugins" class="content-block" ng-hide="checking && plugin.skip">
-            <div class="content-title" ng-click="plugin.showContent = !plugin.showContent" ng-style="{ cursor: (plugin.errors.length) ? 'pointer' : 'default' }">{{::plugin.filename}}
+            <div class="content-title">{{::plugin.filename}}
                 <span ng-show="checking">({{plugin.status}})</span>
                 <span class="right" ng-show="!checking">
                     <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
                 </span>
             </div>
-            <div class="content-container" ng-show="plugin.errors.length && plugin.showContent">
+            <div class="content-container" ng-show="plugin.errors.length">
                 <div class="action-button-container" ng-show="plugin.checked">
-                    <div ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
-                        <span>{{ group.errors.length }} {{ ::group.name }}
-                            <select ng-model="group.resolution">
+                    <div class="content-block" ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
+                        <div class="content-title">
+                            <span>{{ group.errors.length }}</span> {{ ::group.name }}
+                            <select ng-model="group.resolution" class="right">
                                 <option value="auto">Auto</option>
                                 <option value="skip">Skip</option>
                                 <option value="manual">Manual</option>
                             </select>
-                        </span>
+                        </div>
+                        <div class="content-container">
+                            <table>
+                                <tr>
+                                    <th>Error Name</th>
+                                    <th>Resolution</th>
+                                </tr>
+                                <tr ng-repeat="error in group.errors">
+                                    <td>{{ error.name }}</td>
+                                    <td>{{ error.resolution }}</td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
