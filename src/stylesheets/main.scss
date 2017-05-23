@@ -373,6 +373,16 @@ input.invalid {
 
         span {
             color: #80ccff;
+
+            &.fa {
+                color: #fff;
+                float: left;
+                cursor: pointer;
+
+                &.fa-chevron-right {
+                    margin-left: 4px;
+                }
+            }
         }
 
         .right {

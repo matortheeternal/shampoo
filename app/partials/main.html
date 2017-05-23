@@ -33,6 +33,7 @@
                 <div class="action-button-container" ng-show="plugin.checked">
                     <div class="content-block" ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
                         <div class="content-title">
+                            <span ng-click="group.showGroup = !group.showGroup" class="fa" ng-class="group.showGroup ? 'fa-chevron-down' : 'fa-chevron-right'"></span>
                             <span>{{ group.errors.length }}</span> {{ ::group.name }}
                             <select ng-model="group.resolution" class="right">
                                 <option value="auto">Auto</option>
@@ -40,7 +41,7 @@
                                 <option value="manual">Manual</option>
                             </select>
                         </div>
-                        <div class="content-container">
+                        <div class="content-container" ng-show="group.showGroup">
                             <table>
                                 <tr>
                                     <th>Error Information</th>
