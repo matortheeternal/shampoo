@@ -43,11 +43,11 @@
                         <div class="content-container">
                             <table>
                                 <tr>
-                                    <th>Error Name</th>
+                                    <th>Error Information</th>
                                     <th>Resolution</th>
                                 </tr>
                                 <tr ng-repeat="error in group.errors">
-                                    <td>{{ error.name }}</td>
+                                    <td>{{ formatError(error) }}</td>
                                     <td>{{ error.resolution }}</td>
                                 </tr>
                             </table>

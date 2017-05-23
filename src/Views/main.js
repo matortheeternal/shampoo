@@ -50,6 +50,31 @@ export default function(ngapp, xelib) {
             $scope.groupedErrors.forEach(function(errorGroup, index) {
                 errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
             });
+
+        };
+
+        $scope.formatError = function(error) {
+            switch (error.group) {
+                case 3:
+                    return error.name +
+                        '\n\r - Record marked as deleted but contains: ' + error.data;
+                    break;
+                case 4:
+                    return error.name +
+                        '\n\r - Error: Record (' + error.data.split(",")[0] + ') contains unexpected (or out of order) subrecord '+ error.data.split(",")[1];
+                    break;
+                case 5:
+                    return error.name +
+                        '\n\r - ' + error.path + ': [' + error.data + '] < Error: Could not be resolved >';
+                    break;
+                case 6:
+                    return error.name +
+                        '\n\r - ' + error.path + ': Found a (' + error.data.split(",")[0] + ') reference, expected: ' + error.data.split(",")[1];
+                    break;
+                default:
+                    return error.name;
+                    break;
+            }
         };
 
         $scope.setCurrentPluginErrors = function(errors) {
