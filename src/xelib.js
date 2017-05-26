@@ -1,8 +1,8 @@
 var ref = require('ref');
-var ArrayType = require('ref-array');
 var wchar_t = require('ref-wchar');
 var ffi = require('ffi');
 
+var Void = 'void';
 var WString = wchar_t.string;
 var Cardinal = ref.types.uint32;
 var Integer = ref.types.int32;
@@ -17,10 +17,10 @@ var PDouble = ref.refType(Double);
 // function binding
 var lib = ffi.Library('XEditLib', {
     // META FUNCTIONS
-    'Initialize': ['void', []],
-    'Finalize': ['void', []],
-    'GetBuffer': ['void', [PWChar, Integer]],
-    'FlushBuffer': ['void', []],
+    'Initialize': [Void, []],
+    'Finalize': [Void, []],
+    'GetBuffer': [Void, [PWChar, Integer]],
+    'FlushBuffer': [Void, []],
     'GetExceptionMessage': [WordBool, [PWChar, Integer]],
     'GetGlobal': [WordBool, [PWChar, PWChar, Integer]],
     'Release': [WordBool, [Cardinal]],
