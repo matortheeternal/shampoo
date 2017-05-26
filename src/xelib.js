@@ -167,6 +167,13 @@ var Fail = function(message) {
     throw message;
 };
 
+var GetStringValue = function(_id, maxSize, method) {
+    var str = createTypedBuffer(maxSize, PWChar);
+    if (!lib[method](_id, str, maxSize))
+        Fail(method + " failed on " + _id);
+    return readPWCharString(str);
+};
+
 // wrapper functions
 var xelib = {
     // META FUNCTIONS
@@ -327,18 +334,12 @@ var xelib = {
         return JSON.parse(readPWCharString(str)).errors;
     },
     'GetErrorString': function(_id) {
-        var str = createTypedBuffer(2048, PWChar);
-        if (!lib.GetErrorString(_id, str, 1024))
-            Fail("Failed to get error string for " + _id);
-        return readPWCharString(str);
+        return GetStringValue(_id, 2048, "GetErrorString");
     },
 
     // ELEMENT VALUE METHODS
-    'Name': function (_id) {
-        var str = createTypedBuffer(1024, PWChar);
-        if (!lib.Name(_id, str, 1024))
-            Fail("Failed to get name of " + _id);
-        return readPWCharString(str);
+    'Name': function(_id) {
+        return GetStringValue(_id, 1024, "Name");
     }
 };
 
