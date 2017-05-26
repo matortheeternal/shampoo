@@ -35,9 +35,9 @@
                         <div class="content-title">
                             <span ng-click="group.showGroup = !group.showGroup" class="fa" ng-class="group.showGroup ? 'fa-chevron-down' : 'fa-chevron-right'"></span>
                             <span>{{ group.errors.length }}</span> {{ ::group.name }}
-                            <select ng-model="group.resolution" class="right">
-                                <option value="auto">Auto</option>
-                                <option value="skip">Skip</option>
+                            <select ng-model="group.resolution" class="right" ng-change="changeErrorResolution(group)">
+                                <option value="auto">Automatic</option>
+                                <option value="ignore">Ignore</option>
                                 <option value="manual">Manual</option>
                             </select>
                         </div>
@@ -49,7 +49,7 @@
                                 </tr>
                                 <tr ng-repeat="error in group.errors">
                                     <td>{{ formatError(error) }}</td>
-                                    <td>{{ error.resolution }}</td>
+                                    <td><span class="action-box small" ng-click="showErrorResolutionModal(true, error)">{{ error.resolution }}</span></td>
                                 </tr>
                             </table>
                         </div>

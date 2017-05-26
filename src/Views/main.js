@@ -46,6 +46,7 @@ export default function(ngapp, xelib) {
                 errorGroup.errors = plugin.errors.filter(function(error) {
                     return error.group === errorGroup.group;
                 });
+                $scope.changeErrorResolution(errorGroup);
             });
 
             $scope.groupedErrors.forEach(function(errorGroup, index) {
@@ -76,6 +77,16 @@ export default function(ngapp, xelib) {
                     return error.name;
                     break;
             }
+        };
+
+        $scope.changeErrorResolution = function(errorGroup) {
+            errorGroup.errors.forEach(function(error) {
+                error.resolution = errorGroup.resolution;
+            });
+        };
+
+        $scope.showErrorResolutionModal = function(visible, error) {
+          // TODO: Add error resolution modal
         };
 
         $scope.setCurrentPluginErrors = function(errors) {
