@@ -157,7 +157,7 @@ var writePWCharBuffer = function(value) {
     return buf;
 };
 
-var Fail = function (message) {
+var Fail = function(message) {
     try {
         var libMessage = GetExceptionMessage();
         if (libMessage) console.log(libMessage);
@@ -170,61 +170,61 @@ var Fail = function (message) {
 // wrapper functions
 var xelib = {
     // META FUNCTIONS
-    'Initialize': function () {
+    'Initialize': function() {
         lib.Initialize();
     },
-    'Finalize': function () {
+    'Finalize': function() {
         lib.Finalize();
     },
-    'GetBuffer': function () {
+    'GetBuffer': function() {
         var str = createTypedBuffer(4096, PWChar);
         lib.GetBuffer(str, 4096);
         return readPWCharString(str);
     },
-    'FlushBuffer': function () {
+    'FlushBuffer': function() {
         lib.FlushBuffer();
     },
-    'GetExceptionMessage': function () {
+    'GetExceptionMessage': function() {
         var str = createTypedBuffer(2048, PWChar);
         lib.GetExceptionMessage(str, 2048);
         return readPWCharString(str);
     },
-    'GetGlobal': function (keyValue) {
-        var str = createTypedBuffer(512, PWChar);
-        var key = writePWCharBuffer(keyValue);
-        if (!lib.GetGlobal(key, str, 512))
+    'GetGlobal': function(key) {
+        var _key = writePWCharBuffer(key);
+        var _value = createTypedBuffer(512, PWChar);
+        if (!lib.GetGlobal(_key, _value, 512))
             Fail("GetGlobal failed.");
-        return readPWCharString(str);
+        return readPWCharString(_value);
     },
-    'Release': function (_id) {
+    'Release': function(_id) {
         if (!lib.Release(_id))
             Fail("Failed to release interface #" + _id);
     },
-    'ResetStore': function () {
+    'ResetStore': function() {
         if (!lib.ResetStore())
             Fail("Failed to reset interface store");
     },
 
     // SETUP FUNCTIONS
-    'SetGameMode': function (gameMode) {
+    'SetGameMode': function(gameMode) {
         if (!lib.SetGameMode(gameMode))
             Fail("Failed to set game mode to " + gameMode);
     },
-    'GetLoadOrder': function () {
+    'GetLoadOrder': function() {
         var str = createTypedBuffer(8192, PWChar);
         if (lib.GetLoadOrder(str, 8192))
             return readPWCharString(str).trim();
         return null;
     },
-    'LoadPlugins': function (loadOrder) {
-        var buff = writePWCharBuffer(loadOrder);
-        if (!lib.LoadPlugins(buff))
+    'LoadPlugins': function(loadOrder) {
+        var _loadOrder = writePWCharBuffer(loadOrder);
+        if (!lib.LoadPlugins(_loadOrder))
             Fail("Failed to load plugins.");
     },
-    'GetLoaderDone': function () {
+    'GetLoaderDone': function() {
         return lib.GetLoaderDone();
     },
-    'GetGamePath': function (gameMode) {
+    'GetGamePath': function(gameMode) {
         var str = createTypedBuffer(512, PWChar);
         if (lib.GetGamePath(gameMode, str, 512))
             return readPWCharString(str);
@@ -232,65 +232,65 @@ var xelib = {
     },
 
     // FILE HANDLING METHODS
-    'AddFile': function (filename) {
-        var fName = writePWCharBuffer(filename);
+    'AddFile': function(filename) {
+        var _filename = writePWCharBuffer(filename);
         var _res = createTypedBuffer(4, PCardinal);
-        if (!lib.AddFile(fName, _res))
+        if (!lib.AddFile(_filename, _res))
             Fail("Failed to add new file: " + filename);
         return _res.readUInt32LE(0);
     },
-    'FileByIndex': function (index) {
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByIndex(index, _id))
+    'FileByIndex': function(index) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByIndex(index, _res))
             Fail("Failed to find file at index: " + index);
-        return _id.readUInt32LE(0);
+        return _res.readUInt32LE(0);
     },
-    'FileByLoadOrder': function (loadOrder) {
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByLoadOrder(loadOrder, _id))
+    'FileByLoadOrder': function(loadOrder) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByLoadOrder(loadOrder, _res))
             Fail("Failed to find file at load order: " + index);
-        return _id.readUInt32LE(0);
+        return _res.readUInt32LE(0);
     },
-    'FileByName': function (filename) {
-        var fName = writePWCharBuffer(filename);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByName(fName, _id))
+    'FileByName': function(filename) {
+        var _filename = writePWCharBuffer(filename);
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByName(_filename, _res))
             Fail("Failed to find file: " + filename);
-        return _id.readUInt32LE(0);
+        return _res.readUInt32LE(0);
     },
-    'FileByAuthor': function (author) {
-        var fAuthor = writePWCharBuffer(author);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByAuthor(fAuthor, _id))
+    'FileByAuthor': function(author) {
+        var _author = writePWCharBuffer(author);
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByAuthor(_author, _res))
             Fail("Failed to find file with author: " + author);
-        return _id.readUInt32LE(0);
+        return _res.readUInt32LE(0);
     },
-    'SaveFile': function (_id) {
+    'SaveFile': function(_id) {
         if (!lib.SaveFile(_id))
             Fail("Failed to save file: " + _id);
     },
 
     // MASTER HANDLING METHODS
-    'CleanMasters': function (_id) {
+    'CleanMasters': function(_id) {
         if (!lib.CleanMasters(_id))
             Fail("Failed to clean masters in: " + _id);
     },
-    'SortMasters': function (_id) {
+    'SortMasters': function(_id) {
         if (!lib.SortMasters(_id))
             Fail("Failed to sort masters in: " + _id);
     },
-    'AddMaster': function (_id, filename) {
-        var masterName = writePWCharBuffer(filename);
-        if (!lib.AddMaster(_id, masterName))
-            Fail("Failed to add master " + filename + " to file: " + _id);
+    'AddMaster': function(_id, filename) {
+        var _filename = writePWCharBuffer(filename);
+        if (!lib.AddMaster(_id, _filename))
+            Fail("Failed to add master \"" + filename + "\" to file: " + _id);
     },
-    'GetMaster': function (_id, index) {
+    'GetMaster': function(_id, index) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetMaster(_id, index))
             Fail("Failed to get master at " + index + " in file: " + _id);
         return _res.readUInt32LE(0);
     },
-    'GetMasters': function (_id) {
+    'GetMasters': function(_id) {
         var _res = createTypedBuffer(1024, PCardinal);
         if (!lib.GetMasters(_id, _res, 256))
           Fail("Failed to get child elements of " + _id);
@@ -298,11 +298,11 @@ var xelib = {
     },
 
     // ELEMENT HANDLING METHODS
-    'GetElements': function (_id) {
+    'GetElements': function(_id) {
         var size = _id == 0 ? 256 : this.ElementCount(_id);
         var _res = createTypedBuffer(size * 4, PCardinal);
         if (!lib.GetElements(_id, _res, size))
-            Fail("Failed to get child elements of " + _id);
+            Fail("Failed to get child elements for: " + _id);
         return readCardinalArray(_res);
     },
     'ElementCount': function(_id) {
@@ -313,7 +313,7 @@ var xelib = {
     },
 
     // ERROR CHECKING METHODS
-    'CheckForErrors': function (_id) {
+    'CheckForErrors': function(_id) {
         if (!lib.CheckForErrors(_id))
             Fail("Failed to check " + _id + " for errors.");
     },
