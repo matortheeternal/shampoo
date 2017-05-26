@@ -150,7 +150,8 @@ var readCardinalArray = function (buf) {
 };
 
 var writePWCharBuffer = function (value) {
-    var buf = new Buffer((value.length + 1) * 2);
+    var charLength = (value && value.length || 0) + 1;
+    var buf = new Buffer(charLength * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
     return buf;
