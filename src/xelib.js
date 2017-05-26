@@ -32,7 +32,7 @@ var lib = ffi.Library('XEditLib', {
     'GetLoaderDone': [WordBool, []],
     'GetGamePath': [WordBool, [Integer, PWChar, Integer]],
     // FILE HANDLING METHODS
-    'NewFile': [WordBool, [PWChar, PCardinal]],
+    'AddFile': [WordBool, [PWChar, PCardinal]],
     'FileByIndex': [WordBool, [Integer, PCardinal]],
     'FileByLoadOrder': [WordBool, [Integer, PCardinal]],
     'FileByName': [WordBool, [PWChar, PCardinal]],
@@ -61,13 +61,12 @@ var lib = ffi.Library('XEditLib', {
     'GetElements': [WordBool, [Cardinal, PCardinal, Integer]],
     'GetElementFile': [WordBool, [Cardinal, PCardinal]],
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
-    'NewElement': [WordBool, [Cardinal, PWChar, PCardinal]],
+    'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RemoveElement': [WordBool, [Cardinal, PWChar]],
-    'LinksTo': [WordBool, [Cardinal, PCardinal]],
+    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'ElementExists': [WordBool, [Cardinal, PWChar]],
     'ElementCount': [WordBool, [Cardinal, PInteger]],
-    'ElementAssigned': [WordBool, [Cardinal]],
-    'Equals': [WordBool, [Cardinal, Cardinal]],
+    'ElementEquals': [WordBool, [Cardinal, Cardinal]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
     'IsMaster': [WordBool, [Cardinal]],
     'IsInjected': [WordBool, [Cardinal]],
@@ -97,7 +96,6 @@ var lib = ffi.Library('XEditLib', {
     'SetUIntValue': [WordBool, [Cardinal, PWChar, Cardinal]],
     'GetFloatValue': [WordBool, [Cardinal, PWChar, PDouble]],
     'SetFloatValue': [WordBool, [Cardinal, PWChar, Double]],
-    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetFlag': [WordBool, [Cardinal, PWChar, PWChar, PWordBool]],
     'SetFlag': [WordBool, [Cardinal, PWChar, PWChar, WordBool]],
     'ToggleFlag': [WordBool, [Cardinal, PWChar, PWChar]],
@@ -233,12 +231,12 @@ var xelib = {
     },
 
     // FILE HANDLING METHODS
-    'NewFile': function (filename) {
+    'AddFile': function (filename) {
         var fName = writePWCharBuffer(filename);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.NewFile(fName, _id))
-            Fail("Failed to create new file: " + filename);
-        return _id.readUInt32LE(0);
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.AddFile(fName, _res))
+            Fail("Failed to add new file: " + filename);
+        return _res.readUInt32LE(0);
     },
     'FileByIndex': function (index) {
         var _id = createTypedBuffer(4, PCardinal);
