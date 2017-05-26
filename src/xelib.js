@@ -305,12 +305,48 @@ var xelib = {
     },
 
     // ELEMENT HANDLING METHODS
+    'GetElement': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.GetElement(_id, _path, _res))
+            Fail("Failed to get element at: " + elementContext(_id, path));
+        return _res.readUInt32LE(0);
+    },
     'GetElements': function(_id) {
         var size = _id == 0 ? 256 : this.ElementCount(_id);
         var _res = createTypedBuffer(size * 4, PCardinal);
         if (!lib.GetElements(_id, _res, size))
             Fail("Failed to get child elements for: " + _id);
         return readCardinalArray(_res);
+    },
+    'GetElementFile': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetElementFile(_id, _res))
+            Fail("Failed to get element file for: " + _id);
+        return _res.readUInt32LE(0);
+    },
+    'GetContainer': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetContainer(_id, _res))
+            Fail("Failed to get container for: " + _id);
+        return _res.readUInt32LE(0);
+    },
+    'AddElement': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.AddElement(_id, _path, _res))
+            Fail("Failed to create new element at: " + elementContext(_id, path));
+        return _res.readUInt32LE(0);
+    },
+    'RemoveElement': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        if (!lib.RemoveElement(_id, _path))
+            Fail("Failed to remove element at: " + elementContext(_id, path));
+    },
+    'ElementExists': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        if (!lib.ElementExists(_id, _path))
+            Fail("Failed to check if element exists at: " + elementContext(_id, path));
     },
     'ElementCount': function(_id) {
         var _res = createTypedBuffer(4, PInteger);
