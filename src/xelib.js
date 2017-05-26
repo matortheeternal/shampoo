@@ -475,6 +475,38 @@ var xelib = {
         if (!lib.GetEnabledFlags(_id, _path, _flags))
             Fail("Failed to get enabled flags at: " + elementContext(_id, path));
         return readPWCharString(_flags).split(',');
+    },
+
+    /*** WRAPPER METHODS ***/
+
+    // RECORD METHODS
+    'Translate': function(_id, vector) {
+        var position = this.GetElement(_id, "DATA\\Position");
+        ["X", "Y", "Z"].forEach(function(coord) {
+            if (vector.hasOwnProperty(coord)) {
+                var _value = createTypedBuffer(4, PDouble);
+                this.GetFloatValue(position, coord, _value);
+                var newValue = _value.readDoubleLE() + vector[coord];
+                this.SetFloatValue(position, coord, newValue);
+            }
+        });
+    },
+    'Rotate': function(_id, vector) {
+        var rotation = this.GetElement(_id, "DATA\\Rotation");
+        ["X", "Y", "Z"].forEach(function(coord) {
+            if (vector.hasOwnProperty(coord)) {
+                var _value = createTypedBuffer(4, PDouble);
+                this.GetFloatValue(rotation, coord, _value);
+                var newValue = _value.readDoubleLE() + vector[coord];
+                this.SetFloatValue(rotation, coord, newValue);
+            }
+        });
+    },
+    'GetRecordFlag': function(_id, name) {
+        return this.GetFlag(_id, "Record Header\\Record Flags", name);
+    },
+    'SetRecordFlag': function(_id, name, enabled) {
+        this.SetFlag(_id, "Record Header\\Record Flags", name, enabled);
     }
 };
 
