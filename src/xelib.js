@@ -125,21 +125,21 @@ var lib = ffi.Library('XEditLib', {
 });
 
 // helper functions
-var trimNull = function (str) {
+var trimNull = function(str) {
     return str.substring(0, str.indexOf('\0'));
 };
 
-var createTypedBuffer = function (size, type) {
+var createTypedBuffer = function(size, type) {
     var buf = new Buffer(size);
     buf.type = type;
     return buf;
 };
 
-var readPWCharString = function (buf) {
+var readPWCharString = function(buf) {
     return trimNull(wchar_t.toString(buf));
 };
 
-var readCardinalArray = function (buf) {
+var readCardinalArray = function(buf) {
     var a = [];
     for (var i = 0; i < buf.length; i+=4) {
       var c = buf.readUInt32LE(i);
@@ -149,9 +149,9 @@ var readCardinalArray = function (buf) {
     return a;
 };
 
-var writePWCharBuffer = function (value) {
-    var charLength = (value && value.length || 0) + 1;
-    var buf = new Buffer(charLength * 2);
+var writePWCharBuffer = function(value) {
+    if (!value) value = '';
+    var buf = new Buffer((value.length + 1) * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
     return buf;
