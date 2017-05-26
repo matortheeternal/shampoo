@@ -157,6 +157,14 @@ var writePWCharBuffer = function(value) {
     return buf;
 };
 
+var elementContext = function(_id, path) {
+    return _id + ", \"" + path + "\"";
+};
+
+var flagContext = function(_id, path, name) {
+    return _id + ", \"" + path + "\\" + name + "\"";
+};
+
 var Fail = function(message) {
     try {
         var libMessage = GetExceptionMessage();
@@ -172,6 +180,18 @@ var GetStringValue = function(_id, maxSize, method) {
     if (!lib[method](_id, str, maxSize))
         Fail(method + " failed on " + _id);
     return readPWCharString(str);
+};
+
+var GetNativeValue = function(_id, path, method, refType) {
+    var buff = createTypedBuffer(4, refType);
+    if (!lib[method](_id, path, buff))
+        Fail("Failed to " + method + " at: " + _id + ", " + path);
+    return buff;
+};
+
+var SetNativeValue = function(_id, path, method, value) {
+    if (!lib[method](_id, path, value))
+        Fail("Failed to " + method + " to " + value + " at: " + _id + ", " + path);
 };
 
 // wrapper functions
@@ -376,6 +396,85 @@ var xelib = {
     // ELEMENT VALUE METHODS
     'Name': function(_id) {
         return GetStringValue(_id, 1024, "Name");
+    },
+    'Path': function(_id) {
+        return GetStringValue(_id, 1024, "Path");
+    },
+    'EditorID': function(_id) {
+        return GetStringValue(_id, 1024, "EditorID");
+    },
+    'Signature': function(_id) {
+        return GetStringValue(_id, 1024, "Signature");
+    },
+    'FullName': function(_id) {
+        return GetStringValue(_id, 1024, "FullName");
+    },
+    'SortKey': function(_id) {
+        return GetStringValue(_id, 1024, "SortKey");
+    },
+    'ElementType': function(_id) {
+        return GetStringValue(_id, 1024, "ElementType");
+    },
+    'DefType': function(_id) {
+        return GetStringValue(_id, 1024, "DefType");
+    },
+    'GetValue': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        var _value = createTypedBuffer(4096, PWChar);
+        if (!lib.GetValue(_id, _path, _value, 4096))
+            Fail("Failed to get element value at: " + elementContext(_id, path));
+        return readPWCharString(_value);
+    },
+    'SetValue': function(_id, path, value) {
+        var _path = writePWCharBuffer(path);
+        var _value = writePWCharBuffer(value);
+        if (!lib.SetValue(_id, _path, _value))
+            Fail("Failed to set element value at: " + elementContext(_id, path));
+    },
+    'GetIntValue': function(_id, path) {
+        return GetNativeValue(_id, path, "GetIntValue", PInteger).readInt32LE();
+    },
+    'SetIntValue': function(_id, path, value) {
+        SetNativeValue(_id, path, "SetIntValue", value);
+    },
+    'GetUIntValue': function(_id, path) {
+        return GetNativeValue(_id, path, "GetUIntValue", PCardinal).readUInt32LE();
+    },
+    'SetUIntValue': function(_id, path, value) {
+        SetNativeValue(_id, path, "SetUIntValue", value);
+    },
+    'GetFloatValue': function(_id, path) {
+        return GetNativeValue(_id, path, "GetFloatValue", PDouble).readDoubleLE();
+    },
+    'SetFloatValue': function(_id, path, value) {
+        SetNativeValue(_id, path, "SetFloatValue", value);
+    },
+    'SetFlag': function(_id, path, name, enabled) {
+        var _path = writePWCharBuffer(path);
+        var _name = writePWCharBuffer(name);
+        if (!lib.SetFlag(_id, _path, _name, enabled))
+            Fail("Failed to set flag at: " + flagContext(_id, path, name) + " to " + enabled);
+    },
+    'GetFlag': function(_id, path, name) {
+        var _path = writePWCharBuffer(path);
+        var _name = writePWCharBuffer(name);
+        var _enabled = createTypedBuffer(1, PWordBool);
+        if (!lib.GetFlag(_id, _path, _name, _enabled))
+            Fail("Failed to get flag at: " + flagContext(_id, path, name));
+        return _enabled.readInt16LE() > 0;
+    },
+    'ToggleFlag': function(_id, path, name) {
+        var _path = writePWCharBuffer(path);
+        var _name = writePWCharBuffer(name);
+        if (!lib.ToggleFlag(_id, _path, _name))
+            Fail("Failed to toggle flag at: " + flagContext(_id, path, name));
+    },
+    'GetEnabledFlags': function(_id, path) {
+        var _path = writePWCharBuffer(path);
+        var _flags = createTypedBuffer(4096, PWChar);
+        if (!lib.GetEnabledFlags(_id, _path, _flags))
+            Fail("Failed to get enabled flags at: " + elementContext(_id, path));
+        return readPWCharString(_flags).split(',');
     }
 };
 
