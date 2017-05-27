@@ -1,0 +1,20 @@
+<div class="modal-container" ng-if="showResolveModal">
+    <div class="modal modal-full">
+        <form>
+            <div class="modal-header">
+                Resolve {{::$scope.errorsToResolve.length}} Errors
+                <button class="modal-close" ng-click="toggleResolveModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-repeat="resolution in currentError.resolutions" ng-click="selectResolution(resolution)">
+                    {{resolution.label}}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
