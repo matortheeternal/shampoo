@@ -150,7 +150,6 @@ var readCardinalArray = function(buf) {
 };
 
 var writePWCharBuffer = function(value) {
-    if (!value) value = '';
     var buf = new Buffer((value.length + 1) * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
@@ -158,11 +157,11 @@ var writePWCharBuffer = function(value) {
 };
 
 var elementContext = function(_id, path) {
-    return _id + ", \"" + path + "\"";
+    return `${_id}, "${path}"`;
 };
 
 var flagContext = function(_id, path, name) {
-    return _id + ", \"" + path + "\\" + name + "\"";
+    return `${_id}, "${path}\\${name}"`;
 };
 
 var Fail = function(message) {
@@ -178,20 +177,20 @@ var Fail = function(message) {
 var GetStringValue = function(_id, maxSize, method) {
     var str = createTypedBuffer(maxSize, PWChar);
     if (!lib[method](_id, str, maxSize))
-        Fail(method + " failed on " + _id);
+        Fail(`${method} failed on ${_id}`);
     return readPWCharString(str);
 };
 
 var GetNativeValue = function(_id, path, method, refType) {
     var buff = createTypedBuffer(4, refType);
     if (!lib[method](_id, path, buff))
-        Fail("Failed to " + method + " at: " + _id + ", " + path);
+        Fail(`Failed to ${method} at: ${_id}, ${path}`);
     return buff;
 };
 
 var SetNativeValue = function(_id, path, method, value) {
     if (!lib[method](_id, path, value))
-        Fail("Failed to " + method + " to " + value + " at: " + _id + ", " + path);
+        Fail(`Failed to ${method} to ${value} at: ${_id}, ${path}`);
 };
 
 // wrapper functions
@@ -220,22 +219,22 @@ var xelib = {
         var _key = writePWCharBuffer(key);
         var _value = createTypedBuffer(512, PWChar);
         if (!lib.GetGlobal(_key, _value, 512))
-            Fail("GetGlobal failed.");
+            Fail('GetGlobal failed.');
         return readPWCharString(_value);
     },
     'Release': function(_id) {
         if (!lib.Release(_id))
-            Fail("Failed to release interface #" + _id);
+            Fail(`Failed to release interface #${_id}`);
     },
     'ResetStore': function() {
         if (!lib.ResetStore())
-            Fail("Failed to reset interface store");
+            Fail('Failed to reset interface store');
     },
 
     // SETUP FUNCTIONS
     'SetGameMode': function(gameMode) {
         if (!lib.SetGameMode(gameMode))
-            Fail("Failed to set game mode to " + gameMode);
+            Fail(`Failed to set game mode to ${gameMode}`);
     },
     'GetLoadOrder': function() {
         var str = createTypedBuffer(8192, PWChar);
@@ -246,7 +245,7 @@ var xelib = {
     'LoadPlugins': function(loadOrder) {
         var _loadOrder = writePWCharBuffer(loadOrder);
         if (!lib.LoadPlugins(_loadOrder))
-            Fail("Failed to load plugins.");
+            Fail('Failed to load plugins.');
     },
     'GetLoaderDone': function() {
         return lib.GetLoaderDone();
@@ -263,122 +262,122 @@ var xelib = {
         var _filename = writePWCharBuffer(filename);
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.AddFile(_filename, _res))
-            Fail("Failed to add new file: " + filename);
+            Fail(`Failed to add new file: ${filename}`);
         return _res.readUInt32LE(0);
     },
     'FileByIndex': function(index) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.FileByIndex(index, _res))
-            Fail("Failed to find file at index: " + index);
+            Fail(`Failed to find file at index: ${index}`);
         return _res.readUInt32LE(0);
     },
     'FileByLoadOrder': function(loadOrder) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.FileByLoadOrder(loadOrder, _res))
-            Fail("Failed to find file at load order: " + index);
+            Fail(`Failed to find file at load order: ${loadOrder}`);
         return _res.readUInt32LE(0);
     },
     'FileByName': function(filename) {
         var _filename = writePWCharBuffer(filename);
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.FileByName(_filename, _res))
-            Fail("Failed to find file: " + filename);
+            Fail(`Failed to find file: ${filename}`);
         return _res.readUInt32LE(0);
     },
     'FileByAuthor': function(author) {
         var _author = writePWCharBuffer(author);
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.FileByAuthor(_author, _res))
-            Fail("Failed to find file with author: " + author);
+            Fail(`Failed to find file with author: ${author}`);
         return _res.readUInt32LE(0);
     },
     'SaveFile': function(_id) {
         if (!lib.SaveFile(_id))
-            Fail("Failed to save file: " + _id);
+            Fail(`Failed to save file: ${_id}`);
     },
 
     // MASTER HANDLING METHODS
     'CleanMasters': function(_id) {
         if (!lib.CleanMasters(_id))
-            Fail("Failed to clean masters in: " + _id);
+            Fail(`Failed to clean masters in: ${_id}`);
     },
     'SortMasters': function(_id) {
         if (!lib.SortMasters(_id))
-            Fail("Failed to sort masters in: " + _id);
+            Fail(`Failed to sort masters in: ${_id}`);
     },
     'AddMaster': function(_id, filename) {
         var _filename = writePWCharBuffer(filename);
         if (!lib.AddMaster(_id, _filename))
-            Fail("Failed to add master \"" + filename + "\" to file: " + _id);
+            Fail(`Failed to add master "${filename}" to file: ${_id}`);
     },
     'GetMaster': function(_id, index) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetMaster(_id, index))
-            Fail("Failed to get master at " + index + " in file: " + _id);
+            Fail(`'Failed to get master at index ${index} in file: ${_id}`);
         return _res.readUInt32LE(0);
     },
     'GetMasters': function(_id) {
         var _res = createTypedBuffer(1024, PCardinal);
         if (!lib.GetMasters(_id, _res, 256))
-          Fail("Failed to get child elements of " + _id);
+          Fail(`Failed to get child elements of ${_id}`);
         return readCardinalArray(_res);
     },
 
     // ELEMENT HANDLING METHODS
-    'GetElement': function(_id, path) {
+    'GetElement': function(_id, path = '') {
         var _path = writePWCharBuffer(path);
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetElement(_id, _path, _res))
-            Fail("Failed to get element at: " + elementContext(_id, path));
+            Fail(`Failed to get element at: ${elementContext(_id, path)}`);
         return _res.readUInt32LE(0);
     },
     'GetElements': function(_id) {
         var size = _id == 0 ? 256 : this.ElementCount(_id);
         var _res = createTypedBuffer(size * 4, PCardinal);
         if (!lib.GetElements(_id, _res, size))
-            Fail("Failed to get child elements for: " + _id);
+            Fail(`Failed to get child elements for: ${_id}`);
         return readCardinalArray(_res);
     },
     'GetElementFile': function(_id) {
         var _res = createTypedBuffer(4, PInteger);
         if (!lib.GetElementFile(_id, _res))
-            Fail("Failed to get element file for: " + _id);
+            Fail(`Failed to get element file for: ${_id}`);
         return _res.readUInt32LE(0);
     },
     'GetContainer': function(_id) {
         var _res = createTypedBuffer(4, PInteger);
         if (!lib.GetContainer(_id, _res))
-            Fail("Failed to get container for: " + _id);
+            Fail(`Failed to get container for: ${_id}`);
         return _res.readUInt32LE(0);
     },
-    'AddElement': function(_id, path) {
+    'AddElement': function(_id, path = '') {
         var _path = writePWCharBuffer(path);
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.AddElement(_id, _path, _res))
-            Fail("Failed to create new element at: " + elementContext(_id, path));
+            Fail(`Failed to create new element at: ${elementContext(_id, path)}`);
         return _res.readUInt32LE(0);
     },
-    'RemoveElement': function(_id, path) {
+    'RemoveElement': function(_id, path = '') {
         var _path = writePWCharBuffer(path);
         if (!lib.RemoveElement(_id, _path))
-            Fail("Failed to remove element at: " + elementContext(_id, path));
+            Fail(`Failed to remove element at: ${elementContext(_id, path)}`);
     },
-    'ElementExists': function(_id, path) {
+    'ElementExists': function(_id, path = '') {
         var _path = writePWCharBuffer(path);
         if (!lib.ElementExists(_id, _path))
-            Fail("Failed to check if element exists at: " + elementContext(_id, path));
+            Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
     },
     'ElementCount': function(_id) {
         var _res = createTypedBuffer(4, PInteger);
         if (!lib.ElementCount(_id, _res))
-          Fail("Failed to get element count for " + _id);
+          Fail(`Failed to get element count for ${_id}`);
         return _res.readInt32LE(0);
     },
 
     // ERROR CHECKING METHODS
     'CheckForErrors': function(_id) {
         if (!lib.CheckForErrors(_id))
-            Fail("Failed to check " + _id + " for errors.");
+            Fail(`Failed to check ${_id} for errors.`);
     },
     'GetErrorThreadDone': function() {
         return lib.GetErrorThreadDone();
@@ -386,94 +385,94 @@ var xelib = {
     'GetErrors': function() {
         var str = createTypedBuffer(1048576, PWChar);
         if (!lib.GetErrors(str, 1048576))
-            Fail("Failed to get errors");
+            Fail('Failed to get errors');
         return JSON.parse(readPWCharString(str)).errors;
     },
     'GetErrorString': function(_id) {
-        return GetStringValue(_id, 2048, "GetErrorString");
+        return GetStringValue(_id, 2048, 'GetErrorString');
     },
 
     // ELEMENT VALUE METHODS
     'Name': function(_id) {
-        return GetStringValue(_id, 1024, "Name");
+        return GetStringValue(_id, 1024, 'Name');
     },
     'Path': function(_id) {
-        return GetStringValue(_id, 1024, "Path");
+        return GetStringValue(_id, 1024, 'Path');
     },
     'EditorID': function(_id) {
-        return GetStringValue(_id, 1024, "EditorID");
+        return GetStringValue(_id, 1024, 'EditorID');
     },
     'Signature': function(_id) {
-        return GetStringValue(_id, 1024, "Signature");
+        return GetStringValue(_id, 1024, 'Signature');
     },
     'FullName': function(_id) {
-        return GetStringValue(_id, 1024, "FullName");
+        return GetStringValue(_id, 1024, 'FullName');
     },
     'SortKey': function(_id) {
-        return GetStringValue(_id, 1024, "SortKey");
+        return GetStringValue(_id, 1024, 'SortKey');
     },
     'ElementType': function(_id) {
-        return GetStringValue(_id, 1024, "ElementType");
+        return GetStringValue(_id, 1024, 'ElementType');
     },
     'DefType': function(_id) {
-        return GetStringValue(_id, 1024, "DefType");
+        return GetStringValue(_id, 1024, 'DefType');
     },
     'GetValue': function(_id, path) {
         var _path = writePWCharBuffer(path);
         var _value = createTypedBuffer(4096, PWChar);
         if (!lib.GetValue(_id, _path, _value, 4096))
-            Fail("Failed to get element value at: " + elementContext(_id, path));
+            Fail(`Failed to get element value at: ${elementContext(_id, path)}`);
         return readPWCharString(_value);
     },
     'SetValue': function(_id, path, value) {
         var _path = writePWCharBuffer(path);
         var _value = writePWCharBuffer(value);
         if (!lib.SetValue(_id, _path, _value))
-            Fail("Failed to set element value at: " + elementContext(_id, path));
+            Fail(`Failed to set element value at: ${elementContext(_id, path)}`);
     },
     'GetIntValue': function(_id, path) {
-        return GetNativeValue(_id, path, "GetIntValue", PInteger).readInt32LE();
+        return GetNativeValue(_id, path, 'GetIntValue', PInteger).readInt32LE();
     },
     'SetIntValue': function(_id, path, value) {
-        SetNativeValue(_id, path, "SetIntValue", value);
+        SetNativeValue(_id, path, 'SetIntValue', value);
     },
     'GetUIntValue': function(_id, path) {
-        return GetNativeValue(_id, path, "GetUIntValue", PCardinal).readUInt32LE();
+        return GetNativeValue(_id, path, 'GetUIntValue', PCardinal).readUInt32LE();
     },
     'SetUIntValue': function(_id, path, value) {
-        SetNativeValue(_id, path, "SetUIntValue", value);
+        SetNativeValue(_id, path, 'SetUIntValue', value);
     },
     'GetFloatValue': function(_id, path) {
-        return GetNativeValue(_id, path, "GetFloatValue", PDouble).readDoubleLE();
+        return GetNativeValue(_id, path, 'GetFloatValue', PDouble).readDoubleLE();
     },
     'SetFloatValue': function(_id, path, value) {
-        SetNativeValue(_id, path, "SetFloatValue", value);
+        SetNativeValue(_id, path, 'SetFloatValue', value);
     },
     'SetFlag': function(_id, path, name, enabled) {
         var _path = writePWCharBuffer(path);
         var _name = writePWCharBuffer(name);
         if (!lib.SetFlag(_id, _path, _name, enabled))
-            Fail("Failed to set flag at: " + flagContext(_id, path, name) + " to " + enabled);
+            Fail(`Failed to set flag value at: ${flagContext(_id, path, name)} to ${enabled}`);
     },
     'GetFlag': function(_id, path, name) {
         var _path = writePWCharBuffer(path);
         var _name = writePWCharBuffer(name);
         var _enabled = createTypedBuffer(1, PWordBool);
         if (!lib.GetFlag(_id, _path, _name, _enabled))
-            Fail("Failed to get flag at: " + flagContext(_id, path, name));
+            Fail(`Failed to get flag value at: ${flagContext(_id, path, name)}`);
         return _enabled.readInt16LE() > 0;
     },
     'ToggleFlag': function(_id, path, name) {
         var _path = writePWCharBuffer(path);
         var _name = writePWCharBuffer(name);
         if (!lib.ToggleFlag(_id, _path, _name))
-            Fail("Failed to toggle flag at: " + flagContext(_id, path, name));
+            Fail(`Failed to toggle flag at: ${flagContext(_id, path, name)}`);
     },
     'GetEnabledFlags': function(_id, path) {
         var _path = writePWCharBuffer(path);
         var _flags = createTypedBuffer(4096, PWChar);
         if (!lib.GetEnabledFlags(_id, _path, _flags))
-            Fail("Failed to get enabled flags at: " + elementContext(_id, path));
+            Fail(`Failed to get enabled flags at: ${elementContext(_id, path)}`);
         return readPWCharString(_flags).split(',');
     },
 
@@ -481,8 +480,8 @@ var xelib = {
 
     // RECORD METHODS
     'Translate': function(_id, vector) {
-        var position = this.GetElement(_id, "DATA\\Position");
-        ["X", "Y", "Z"].forEach(function(coord) {
+        var position = this.GetElement(_id, 'DATA\\Position');
+        ['X', 'Y', 'Z'].forEach(function(coord) {
             if (vector.hasOwnProperty(coord)) {
                 var _value = createTypedBuffer(4, PDouble);
                 this.GetFloatValue(position, coord, _value);
@@ -492,8 +491,8 @@ var xelib = {
         });
     },
     'Rotate': function(_id, vector) {
-        var rotation = this.GetElement(_id, "DATA\\Rotation");
-        ["X", "Y", "Z"].forEach(function(coord) {
+        var rotation = this.GetElement(_id, 'DATA\\Rotation');
+        ['X', 'Y', 'Z'].forEach(function(coord) {
             if (vector.hasOwnProperty(coord)) {
                 var _value = createTypedBuffer(4, PDouble);
                 this.GetFloatValue(rotation, coord, _value);
@@ -503,10 +502,10 @@ var xelib = {
         });
     },
     'GetRecordFlag': function(_id, name) {
-        return this.GetFlag(_id, "Record Header\\Record Flags", name);
+        return this.GetFlag(_id, 'Record Header\\Record Flags', name);
     },
     'SetRecordFlag': function(_id, name, enabled) {
-        this.SetFlag(_id, "Record Header\\Record Flags", name, enabled);
+        this.SetFlag(_id, 'Record Header\\Record Flags', name, enabled);
     }
 };
 
