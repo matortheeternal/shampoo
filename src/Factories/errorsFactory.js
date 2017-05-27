@@ -1,4 +1,4 @@
-export default function(ngapp) {
+export default function(ngapp, xelib) {
     ngapp.service('errorsFactory', function () {
         this.errorTypes = function () {
             return [
@@ -58,5 +58,105 @@ export default function(ngapp) {
                 }
             ];
         };
+
+        var deleteResolution = {
+            label: "Delete",
+            class: "red",
+            execute: function(handle) {
+                xelib.RemoveElement(handle);
+            }
+        };
+        var tweakEdidResolution = {
+            label: "Tweak EDID",
+            class: "green",
+            available: function(handle) {
+                return xelib.ElementExists(handle, "EDID");
+            },
+            execute: function(handle, error, tweak) {
+                if (!tweak) tweak = "-Intended";
+                var oldEdid = xelib.GetValue(handle, 'EDID');
+                xelib.SetValue(handle, 'EDID', oldEdid + tweak);
+            }
+        };
+        var tweakPositionResolution = {
+            label: "Tweak Position",
+            class: "green",
+            available: function(handle) {
+                return xelib.ElementExists(handle, "DATA\\Position");
+            },
+            execute: function(handle, error, tweak) {
+                if (!tweak) tweak = {
+                    X: -0.000005,
+                    Y:  0.000002,
+                    Z: -0.000001
+                };
+                xelib.Translate(handle, tweak);
+            }
+        };
+        var nullifyResolution = {
+            label: "Nullify",
+            class: "green",
+            available: function(handle, error) {
+                return error.data.indexOf("NULL") > -1;
+            },
+            execute: function(handle, error) {
+            }
+        };
+        var removeResolution = {
+            label: "Remove",
+            class: "red",
+            execute: function(handle, error) {
+
+            }
+        };
+        var ignoreResolution = {
+            label: "Ignore",
+            class: "yellow"
+        };
+        var identicalResolutions = [
+            deleteResolution,
+            tweakEdidResolution,
+            tweakPositionResolution,
+            ignoreResolution
+        ];
+
+        this.errorResolutions = {
+            ITM: identicalResolutions,
+            ITPO: identicalResolutions,
+            UDR: [
+                {
+                    label: "Undelete and Disable",
+                    class: "green",
+                    execute: function(handle) {
+                        xelib.SetRecordFlag(handle, "Deleted", false);
+                        xelib.SetRecordFlag(handle, "Initially Disabled", true);
+                    }
+                },
+                {
+                    label: "Restore",
+                    class: "red",
+                    execute: function(handle) {
+                        xelib.SetRecordFlag(handle, "Deleted", false);
+                    }
+                },
+                ignoreResolution
+            ],
+            UES: [
+                deleteResolution,
+                // TODO: Repair
+                ignoreResolution
+            ],
+            URR: [
+                nullifyResolution,
+                removeResolution,
+                ignoreResolution
+            ],
+            UER: [
+                ignoreResolution
+            ],
+            OE: [
+                ignoreResolution
+            ]
+        }
     });
 }
