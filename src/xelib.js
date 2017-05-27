@@ -373,6 +373,15 @@ var xelib = {
           Fail(`Failed to get element count for ${_id}`);
         return _res.readInt32LE(0);
     },
+    'ElementEquals': function(_id, _id2) {
+        return lib.ElementEquals(_id, _id2);
+    },
+    'CopyElement': function(_id, _id2, asNew = false, deepCopy = true) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.CopyElement(_id, _id2, asNew, deepCopy, _res))
+            Fail(`Failed to copy element from ${_id} to ${_id2}`);
+        return _res.readUInt32LE();
+    },
 
     // ERROR CHECKING METHODS
     'CheckForErrors': function(_id) {
