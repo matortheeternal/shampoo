@@ -9,7 +9,7 @@ export default function(ngapp, xelib) {
 
     ngapp.controller('mainController', function ($scope, $rootScope, $timeout, errorsFactory, xelibService) {
         $scope.loaded = false;
-        $scope.log = xelibService.getAndFlushBuffer();
+        $scope.log = xelibService.getAndClearMessages();
         $scope.checkedPlugins = 0;
         $scope.totalErrors = 0;
         $scope.plugins = [];
@@ -78,7 +78,7 @@ export default function(ngapp, xelib) {
                 $scope.pollErrorChecking();
             } catch (e) {
                 console.log(e);
-                xelibService.logXELibBuffer();
+                xelibService.logXELibMessages();
             }
         };
 
@@ -103,7 +103,7 @@ export default function(ngapp, xelib) {
 
         $scope.skipPlugin = function(filename) {
             var gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
-            return filename.endsWith(".dat") || filename === gameEsmFilename;
+            return filename.endsWith(".dat") || (filename === gameEsmFilename);
         };
 
         $scope.getPlugins = function () {
@@ -115,14 +115,14 @@ export default function(ngapp, xelib) {
                     filename: xelib.Name(_id),
                     status: "Queued",
                     skip: false
-                }
+                };
             }).filter(function (plugin) {
                 return !$scope.skipPlugin(plugin.filename);
             });
         };
 
         $scope.checkIfLoaded = function () {
-            $scope.log = $scope.log + xelibService.getAndFlushBuffer();
+            $scope.log = $scope.log + xelibService.getAndClearMessages();
             if (xelib.GetLoaderDone()) {
                 $scope.loaded = true;
                 $scope.getPlugins();

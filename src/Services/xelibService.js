@@ -4,7 +4,7 @@ export default function(ngapp, xelib) {
 
         this.getExceptionInformation = function () {
             try {
-                console.log(xelib.GetBuffer());
+                console.log(xelib.GetMessages());
                 console.log(xelib.GetExceptionMessage());
             } catch (e) {
                 console.log("Failed to get exception information: " + e);
@@ -20,15 +20,15 @@ export default function(ngapp, xelib) {
             }
         };
 
-        this.logXELibBuffer = function () {
-            console.log(xelib.GetBuffer());
+        this.logXELibMessages = function () {
+            console.log(xelib.GetMessages());
         };
 
-        this.getAndFlushBuffer = function () {
-            var log = xelib.GetBuffer();
+        this.getAndClearMessages = function () {
+            var log = xelib.GetMessages();
             if (log) {
-                xelib.FlushBuffer();
-                return log + "\n";
+                xelib.ClearMessages();
+                return log;
             }
             return "";
         };
