@@ -23,14 +23,5 @@ export default function(ngapp, xelib) {
         this.logXELibMessages = function () {
             console.log(xelib.GetMessages());
         };
-
-        this.getAndClearMessages = function () {
-            var log = xelib.GetMessages();
-            if (log) {
-                xelib.ClearMessages();
-                return log;
-            }
-            return "";
-        };
     });
 }

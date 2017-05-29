@@ -31,20 +31,25 @@ if (env.name !== 'production') {
 app.on('ready', function () {
     setApplicationMenu();
 
-    var mainWindow = createWindow('main', {
+    var appUrl = url.format({
+        pathname: path.join(__dirname, 'app.html'),
+        protocol: 'file:',
+        slashes: true
+    });
+
+    mainWindow = createWindow('main', {
         width: 1000,
         height: 600,
         frame: false
     });
 
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'app.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
-
     if (env.name === 'development') {
         mainWindow.openDevTools();
+        mainWindow.webContents.on('devtools-opened', function() {
+            mainWindow.loadURL(appUrl);
+        });
+    } else {
+        mainWindow.loadURL(appUrl);
     }
 });
 

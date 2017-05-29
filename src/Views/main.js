@@ -9,7 +9,7 @@ export default function(ngapp, xelib) {
 
     ngapp.controller('mainController', function ($scope, $rootScope, $timeout, errorsFactory, xelibService) {
         $scope.loaded = false;
-        $scope.log = xelibService.getAndClearMessages();
+        $scope.log = xelib.GetMessages();
         $scope.checkedPlugins = 0;
         $scope.totalErrors = 0;
         $scope.plugins = [];
@@ -55,9 +55,13 @@ export default function(ngapp, xelib) {
         };
 
         $scope.getErrors = function() {
-            var errors = xelib.GetErrors();
-            console.log(errors);
-            $scope.setCurrentPluginErrors(errors);
+            try {
+                var errors = xelib.GetErrors();
+                console.log(errors);
+                $scope.setCurrentPluginErrors(errors);
+            } catch (e) {
+                xelibService.getExceptionInformation();
+            }
         };
 
         $scope.pollErrorChecking = function() {
@@ -122,7 +126,7 @@ export default function(ngapp, xelib) {
         };
 
         $scope.checkIfLoaded = function () {
-            $scope.log = $scope.log + xelibService.getAndClearMessages();
+            $scope.log = $scope.log + xelib.GetMessages();
             if (xelib.GetLoaderDone()) {
                 $scope.loaded = true;
                 $scope.getPlugins();

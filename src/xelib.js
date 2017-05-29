@@ -20,10 +20,10 @@ var lib = ffi.Library('XEditLib', {
     'InitXEdit': [Void, []],
     'CloseXEdit': [Void, []],
     'GetMessagesLength': [Void, [PInteger]],
-    'GetMessages': [Void, [PWChar, Integer]],
+    'GetMessages': [WordBool, [PWChar, Integer]],
     'ClearMessages': [Void, []],
-    'GetResultString': [Void, [PWChar, Integer]],
-    'GetResultArray': [Void, [PCardinal, Integer]],
+    'GetResultString': [WordBool, [PWChar, Integer]],
+    'GetResultArray': [WordBool, [PCardinal, Integer]],
     'GetExceptionMessageLength': [Void, [PInteger]],
     'GetExceptionMessage': [WordBool, [PWChar, Integer]],
     'GetGlobal': [WordBool, [PWChar, PInteger]],
@@ -129,10 +129,6 @@ var lib = ffi.Library('XEditLib', {
 });
 
 // helper functions
-var trimNull = function(str) {
-    return str.substring(0, str.indexOf('\0'));
-};
-
 var createTypedBuffer = function(size, type) {
     var buf = new Buffer(size);
     buf.type = type;
@@ -140,7 +136,7 @@ var createTypedBuffer = function(size, type) {
 };
 
 var readPWCharString = function(buf) {
-    return trimNull(wchar_t.toString(buf));
+    return wchar_t.toString(buf);
 };
 
 var readCardinalArray = function(buf, len) {
@@ -155,22 +151,6 @@ var wcb = function(value) {
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
     return buf;
-};
-
-var GetString = function(_len, method = 'GetResultString') {
-    var len = _len.readInt16LE();
-    if (len == 0) return '';
-    var str = createTypedBuffer(len, PWChar);
-    lib[method](str, len);
-    return readPWCharString(str);
-};
-
-var GetArray = function(_len) {
-    var len = _len.readInt16LE();
-    if (len == 0) return [];
-    var a = createTypedBuffer(4 * len, PCardinal);
-    lib.GetResultArray(a, len);
-    return readCardinalArray(a, len);
 };
 
 var elementContext = function(_id, path) {
@@ -189,6 +169,24 @@ var Fail = function(message) {
         console.log('Unknown critical exception!');
     }
     throw message;
+};
+
+var GetString = function(_len, method = 'GetResultString') {
+    var len = _len.readInt32LE();
+    if (len == 0) return '';
+    var str = createTypedBuffer(2 * len, PWChar);
+    if (!lib[method](str, len))
+        Fail(`Failed to ${method}`);
+    return readPWCharString(str);
+};
+
+var GetArray = function(_len) {
+    var len = _len.readInt32LE();
+    if (len == 0) return [];
+    var a = createTypedBuffer(4 * len, PCardinal);
+    if (!lib.GetResultArray(a, len))
+        Fail('Failed to GetResultArray');
+    return readCardinalArray(a, len);
 };
 
 var GetBoolValue = function(_id, method) {
