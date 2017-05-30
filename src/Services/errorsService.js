@@ -61,7 +61,6 @@ export default function(ngapp, xelib) {
             ];
         };
 
-        var deleteResolution = {
         var removeRecordResolution = {
             label: "Delete",
             class: "red",
@@ -103,13 +102,26 @@ export default function(ngapp, xelib) {
                 return error.data.indexOf("NULL") > -1;
             },
             execute: function(handle, error) {
+                try {
+                    var element = xelib.GetElement(handle, error.path);
+                    xelib.SetUIntValue(element, 0);
+                } catch (e) {
+                    console.log(error);
+                    console.log('Failed to nullify element, ' + e);
+                }
             }
         };
         var removeResolution = {
             label: "Remove",
             class: "red",
             execute: function(handle, error) {
-
+                try {
+                    var element = xelib.GetElement(handle, error.path);
+                    xelib.RemoveElementOrParent(element);
+                } catch (e) {
+                    console.log(error);
+                    console.log('Failed to remove element, ' + e);
+                }
             }
         };
         var ignoreResolution = {
@@ -163,6 +175,11 @@ export default function(ngapp, xelib) {
                 // TODO: fix reporting/classify with fixes
                 ignoreResolution
             ]
+        };
+
+        this.getErrorResolutions = function(error) {
+            var acronym = service.errorAcronyms[error.group];
+            return service.errorResolutions[acronym];
         };
     });
 }
