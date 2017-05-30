@@ -14,6 +14,7 @@ export default function(ngapp) {
 
         $scope.setError = function() {
             $scope.error = $scope.errorsToResolve[$scope.errorIndex];
+            $scope.errorMessage = errorsService.getErrorMessage($scope.erro);
             $scope.resolutions = errorsService.getErrorResolutions($scope.error);
         };
 
