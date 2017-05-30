@@ -67,6 +67,7 @@ var lib = ffi.Library('XEditLib', {
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
     'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RemoveElement': [WordBool, [Cardinal, PWChar]],
+    'RemoveElementOrParent': [WordBool, [Cardinal]],
     'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'ElementExists': [WordBool, [Cardinal, PWChar, PWordBool]],
     'ElementCount': [WordBool, [Cardinal, PInteger]],
@@ -377,6 +378,10 @@ var xelib = {
     'RemoveElement': function(_id, path = '') {
         if (!lib.RemoveElement(_id, wcb(path)))
             Fail(`Failed to remove element at: ${elementContext(_id, path)}`);
+    },
+    'RemoveElementOrParent': function(_id) {
+        if (!lib.RemoveElementOrParent(_id))
+            Fail(`Failed to remove element ${_id}`);
     },
     'ElementExists': function(_id, path = '') {
         var _bool = createTypedBuffer(2, PWordBool);
