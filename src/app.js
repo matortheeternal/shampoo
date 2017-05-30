@@ -56,3 +56,4 @@ loadOrderModal(ngapp, xelib);
 baseView(ngapp, xelib, electron);
 startView(ngapp, xelib);
 mainView(ngapp, xelib);
+

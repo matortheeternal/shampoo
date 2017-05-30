@@ -16,7 +16,7 @@ export default function(ngapp, xelib) {
                 return item.filename;
             });
             console.log("Loading: \n" + loadOrder);
-            xelib.FlushBuffer();
+            xelib.ClearMessages();
             xelib.LoadPlugins(loadOrder.join('\n'));
             $state.go('base.main');
         };
