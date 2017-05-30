@@ -2,6 +2,16 @@ export default function(ngapp, xelib) {
     ngapp.service('errorsService', function () {
         var service = this;
 
+        this.errorAcronyms = [
+            "ITM",
+            "ITPO",
+            "UDR",
+            "UES",
+            "URR",
+            "UER",
+            "OE"
+        ];
+
         this.errorGroups = function () {
             return [
                 {
@@ -59,6 +69,32 @@ export default function(ngapp, xelib) {
                     errors: []
                 }
             ];
+        };
+
+        this.messageFormats = {
+            ITM: function(error) {
+                return error.name;
+            },
+            ITPO: function(error) {
+                return error.name;
+            },
+            UDR: function(error) {
+                return `${error.name}\n\r - Record marked as deleted but contains: ${error.data}`
+            },
+            UES: function(error) {
+                var dataParts = error.data.split(",");
+                return `${error.name}\n\r - Error: Record (${dataParts[0]}) contains unexpected (or out of ordeR) subrecord ${dataParts[1]}`;
+            },
+            URR: function(error) {
+                return `${error.name}\n\r - ${error.path}: [${error.data}] < Error: Could not be resolved >`;
+            },
+            UER: function(error) {
+                var dataParts = error.data.split(",");
+                return `${error.name}\n\r - ${error.path}: Found a (${dataParts[0]}) reference, expected: ${dataParts[1]}`;
+            },
+            OE: function(error) {
+                return error.data;
+            }
         };
 
         var removeRecordResolution = {
@@ -180,6 +216,11 @@ export default function(ngapp, xelib) {
         this.getErrorResolutions = function(error) {
             var acronym = service.errorAcronyms[error.group];
             return service.errorResolutions[acronym];
+        };
+
+        this.getErrorMessage = function(error) {
+            var acronym = service.errorAcronyms[error.group];
+            return service.messageFormats[acronym](error);
         };
     });
 }
