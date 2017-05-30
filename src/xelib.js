@@ -211,6 +211,10 @@ var GetNativeValue = function(_id, path, method, refType) {
 };
 
 var SetNativeValue = function(_id, path, method, value) {
+    if (value === undefined) {
+        value = path;
+        path = '';
+    }
     if (!lib[method](_id, wcb(path), value))
         Fail(`Failed to ${method} to ${value} at: ${_id}, ${path}`);
 };
@@ -469,6 +473,10 @@ var xelib = {
         return GetString(_len);
     },
     'SetValue': function(_id, path, value) {
+        if (value === undefined) {
+            value = path;
+            path = '';
+        }
         if (!lib.SetValue(_id, wcb(path), wcb(value)))
             Fail(`Failed to set element value at: ${elementContext(_id, path)}`);
     },
