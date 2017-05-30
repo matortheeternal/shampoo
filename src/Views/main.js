@@ -39,13 +39,33 @@ export default function(ngapp, xelib) {
         };
 
         $scope.groupErrors = function(plugin) {
-            plugin.errors.forEach(function(error) {
-                var group = $scope.groupedErrors[error.group];
-                group.errors.push(error);
+            plugin.groupedErrors = errorsService.errorGroups();
+            plugin.groupedErrors.forEach(function(errorGroup) {
+                errorGroup.currentResolution = ''; // TODO
+                errorGroup.showGroup = false;
+                errorGroup.errors = plugin.errors.filter(function(error) {
+                    return error.group === errorGroup.group;
+                });
+                $scope.changeErrorResolution(errorGroup);
+            });
+
+            $scope.groupedErrors.forEach(function(errorGroup, index) {
+                errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
             });
         };
 
+        $scope.changeErrorResolution = function(errorGroup) {
+            errorGroup.errors.forEach(function(error) {
+                error.resolution = errorGroup.resolution;
+            });
+        };
+
+        $scope.showErrorResolutionModal = function(visible, error) {
+            // TODO: Add error resolution modal
+        };
+
         $scope.setCurrentPluginErrors = function(errors) {
+            errorsService.getErrorMessages(errors);
             $scope.currentPlugin.errors = errors;
             $scope.currentPlugin.status = "Found " + errors.length + " errors";
             $scope.currentPlugin.checked = true;
@@ -118,7 +138,8 @@ export default function(ngapp, xelib) {
                     _id: _id,
                     filename: xelib.Name(_id),
                     status: "Queued",
-                    skip: false
+                    skip: false,
+                    showContent: false
                 };
             }).filter(function (plugin) {
                 return !$scope.skipPlugin(plugin.filename);

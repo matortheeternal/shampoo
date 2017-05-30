@@ -222,5 +222,9 @@ export default function(ngapp, xelib) {
             var acronym = service.errorAcronyms[error.group];
             return service.messageFormats[acronym](error);
         };
+
+        this.getErrorMessages = function(errors) {
+            errors.forEach(service.getErrorMessage);
+        };
     });
 }
