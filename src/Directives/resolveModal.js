@@ -19,7 +19,7 @@ export default function(ngapp) {
         };
 
         $scope.selectResolution = function(resolution) {
-            $scope.error.selectedResolution = resolution;
+            $scope.error.resolution = resolution;
         };
 
         $scope.nextError = function() {

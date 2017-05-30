@@ -60,8 +60,14 @@ export default function(ngapp, xelib) {
             });
         };
 
-        $scope.showErrorResolutionModal = function(visible, error) {
-            // TODO: Add error resolution modal
+        $scope.toggleResolveModal = function(visible) {
+            $scope.showResolveModal = visible;
+            $scope.$emit('toggleModal', visible);
+        };
+
+        $scope.resolveErrors = function(errors) {
+            $scope.errorsToResolve = errors;
+            $scope.toggleResolveModal(true);
         };
 
         $scope.setCurrentPluginErrors = function(errors) {

@@ -49,7 +49,7 @@
                                 </tr>
                                 <tr ng-repeat="error in group.errors">
                                     <td>{{ error.message }}</td>
-                                    <td><span class="action-box small" ng-click="showErrorResolutionModal(true, error)">{{ error.resolution }}</span></td>
+                                    <td><span class="action-box small" ng-click="resolveErrors([error])">{{ error.resolution }}</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -71,3 +71,5 @@
         <div class="log" ng-bind="log"></div>
     </div>
 </div>
+
+<resolve-modal ng-if="showResolveModal"></resolve-modal>
