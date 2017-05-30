@@ -39,10 +39,54 @@ export default function(ngapp, xelib) {
         };
 
         $scope.groupErrors = function(plugin) {
-            plugin.errors.forEach(function(error) {
-                var group = $scope.groupedErrors.slice(error.group - 1)[0];
-                group.errors.push(error);
+            plugin.groupedErrors = errorsFactory.errorTypes();
+            plugin.groupedErrors.forEach(function(errorGroup) {
+                errorGroup.resolution = 'auto';
+                errorGroup.showGroup = false;
+                errorGroup.errors = plugin.errors.filter(function(error) {
+                    return error.group === errorGroup.group;
+                });
+                $scope.changeErrorResolution(errorGroup);
             });
+
+            $scope.groupedErrors.forEach(function(errorGroup, index) {
+                errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
+            });
+
+        };
+
+        $scope.formatError = function(error) {
+            switch (error.group) {
+                case 3:
+                    return error.name +
+                        '\n\r - Record marked as deleted but contains: ' + error.data;
+                    break;
+                case 4:
+                    return error.name +
+                        '\n\r - Error: Record (' + error.data.split(",")[0] + ') contains unexpected (or out of order) subrecord '+ error.data.split(",")[1];
+                    break;
+                case 5:
+                    return error.name +
+                        '\n\r - ' + error.path + ': [' + error.data + '] < Error: Could not be resolved >';
+                    break;
+                case 6:
+                    return error.name +
+                        '\n\r - ' + error.path + ': Found a (' + error.data.split(",")[0] + ') reference, expected: ' + error.data.split(",")[1];
+                    break;
+                default:
+                    return error.name;
+                    break;
+            }
+        };
+
+        $scope.changeErrorResolution = function(errorGroup) {
+            errorGroup.errors.forEach(function(error) {
+                error.resolution = errorGroup.resolution;
+            });
+        };
+
+        $scope.showErrorResolutionModal = function(visible, error) {
+          // TODO: Add error resolution modal
         };
 
         $scope.setCurrentPluginErrors = function(errors) {
@@ -118,7 +162,8 @@ export default function(ngapp, xelib) {
                     _id: _id,
                     filename: xelib.Name(_id),
                     status: "Queued",
-                    skip: false
+                    skip: false,
+                    showContent: false
                 };
             }).filter(function (plugin) {
                 return !$scope.skipPlugin(plugin.filename);

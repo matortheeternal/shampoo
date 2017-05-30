@@ -25,14 +25,35 @@
         <div ng-repeat="plugin in plugins" class="content-block" ng-hide="checking && plugin.skip">
             <div class="content-title">{{::plugin.filename}}
                 <span ng-show="checking">({{plugin.status}})</span>
-            <span class="right" ng-show="!checking">
-                <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
-            </span>
+                <span class="right" ng-show="!checking">
+                    <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
+                </span>
             </div>
             <div class="content-container" ng-show="plugin.errors.length">
                 <div class="action-button-container" ng-show="plugin.checked">
-                    <span class="action-box">Manual</span>
-                    <span class="action-box">Auto</span>
+                    <div class="content-block" ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
+                        <div class="content-title">
+                            <span ng-click="group.showGroup = !group.showGroup" class="fa" ng-class="group.showGroup ? 'fa-chevron-down' : 'fa-chevron-right'"></span>
+                            <span>{{ group.errors.length }}</span> {{ ::group.name }}
+                            <select ng-model="group.resolution" class="right" ng-change="changeErrorResolution(group)">
+                                <option value="auto">Automatic</option>
+                                <option value="ignore">Ignore</option>
+                                <option value="manual">Manual</option>
+                            </select>
+                        </div>
+                        <div class="content-container" ng-show="group.showGroup">
+                            <table>
+                                <tr>
+                                    <th>Error Information</th>
+                                    <th>Resolution</th>
+                                </tr>
+                                <tr ng-repeat="error in group.errors">
+                                    <td>{{ formatError(error) }}</td>
+                                    <td><span class="action-box small" ng-click="showErrorResolutionModal(true, error)">{{ error.resolution }}</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

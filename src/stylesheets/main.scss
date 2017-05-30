@@ -369,6 +369,16 @@ input.invalid {
 
         span {
             color: #80ccff;
+
+            &.fa {
+                color: #fff;
+                float: left;
+                cursor: pointer;
+
+                &.fa-chevron-right {
+                    margin-left: 4px;
+                }
+            }
         }
 
         .right {
@@ -379,6 +389,28 @@ input.invalid {
 
     .content-container {
         margin: 20px;
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+
+            tr:nth-child(even) {
+                background-color: aliceblue;
+            }
+
+            th {
+                border-bottom: 1px solid #3a4751;
+
+                &:first-child {
+                    width: 85%;
+                    // TODO: Set min width for 2nd column on lower resolutions
+                }
+            }
+
+            td {
+                text-align: left;
+            }
+        }
     }
 }
 
