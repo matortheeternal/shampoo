@@ -1,8 +1,8 @@
 var ref = require('ref');
-var ArrayType = require('ref-array');
 var wchar_t = require('ref-wchar');
 var ffi = require('ffi');
 
+var Void = 'void';
 var WString = wchar_t.string;
 var Cardinal = ref.types.uint32;
 var Integer = ref.types.int32;
@@ -17,22 +17,26 @@ var PDouble = ref.refType(Double);
 // function binding
 var lib = ffi.Library('XEditLib', {
     // META FUNCTIONS
-    'Initialize': ['void', []],
-    'Finalize': ['void', []],
-    'GetBuffer': ['void', [PWChar, Integer]],
-    'FlushBuffer': ['void', []],
+    'InitXEdit': [Void, []],
+    'CloseXEdit': [Void, []],
+    'GetMessagesLength': [Void, [PInteger]],
+    'GetMessages': [WordBool, [PWChar, Integer]],
+    'ClearMessages': [Void, []],
+    'GetResultString': [WordBool, [PWChar, Integer]],
+    'GetResultArray': [WordBool, [PCardinal, Integer]],
+    'GetExceptionMessageLength': [Void, [PInteger]],
     'GetExceptionMessage': [WordBool, [PWChar, Integer]],
-    'GetGlobal': [WordBool, [PWChar, PWChar, Integer]],
+    'GetGlobal': [WordBool, [PWChar, PInteger]],
     'Release': [WordBool, [Cardinal]],
     'ResetStore': [WordBool, []],
     // SETUP FUNCTIONS
     'SetGameMode': [WordBool, [Integer]],
-    'GetLoadOrder': [WordBool, [PWChar, Integer]],
+    'GetLoadOrder': [WordBool, [PInteger]],
     'LoadPlugins': [WordBool, [PWChar]],
     'GetLoaderDone': [WordBool, []],
-    'GetGamePath': [WordBool, [Integer, PWChar, Integer]],
+    'GetGamePath': [WordBool, [Integer, PInteger]],
     // FILE HANDLING METHODS
-    'NewFile': [WordBool, [PWChar, PCardinal]],
+    'AddFile': [WordBool, [PWChar, PCardinal]],
     'FileByIndex': [WordBool, [Integer, PCardinal]],
     'FileByLoadOrder': [WordBool, [Integer, PCardinal]],
     'FileByName': [WordBool, [PWChar, PCardinal]],
@@ -48,48 +52,47 @@ var lib = ffi.Library('XEditLib', {
     'GetFileHeader': [WordBool, [Cardinal, PCardinal]],
     'GetNextObjectId': [WordBool, [Cardinal, PCardinal]],
     'SetNextObjectID': [WordBool, [Cardinal, Cardinal]],
-    'GetFileName': [WordBool, [Cardinal, PWChar, Integer]],
-    'GetAuthor': [WordBool, [Cardinal, PWChar, Integer]],
+    'GetFileName': [WordBool, [Cardinal, PInteger]],
+    'GetAuthor': [WordBool, [Cardinal, PInteger]],
     'SetAuthor': [WordBool, [Cardinal, PWChar]],
-    'GetDescription': [WordBool, [Cardinal, PWChar, Integer]],
+    'GetDescription': [WordBool, [Cardinal, PInteger]],
     'SetDescription': [WordBool, [Cardinal, PWChar]],
     'OverrideRecordCount': [WordBool, [Cardinal, PInteger]],
     'GetIsESM': [WordBool, [Cardinal, PWordBool]],
     'SetIsESM': [WordBool, [Cardinal, WordBool]],
     // ELEMENT HANDLING METHODS
     'GetElement': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetElements': [WordBool, [Cardinal, PCardinal, Integer]],
+    'GetElements': [WordBool, [Cardinal, PInteger]],
     'GetElementFile': [WordBool, [Cardinal, PCardinal]],
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
-    'NewElement': [WordBool, [Cardinal, PWChar, PCardinal]],
+    'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RemoveElement': [WordBool, [Cardinal, PWChar]],
-    'LinksTo': [WordBool, [Cardinal, PCardinal]],
-    'ElementExists': [WordBool, [Cardinal, PWChar]],
+    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
+    'ElementExists': [WordBool, [Cardinal, PWChar, PWordBool]],
     'ElementCount': [WordBool, [Cardinal, PInteger]],
-    'ElementAssigned': [WordBool, [Cardinal]],
-    'Equals': [WordBool, [Cardinal, Cardinal]],
+    'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
-    'IsMaster': [WordBool, [Cardinal]],
-    'IsInjected': [WordBool, [Cardinal]],
-    'IsOverride': [WordBool, [Cardinal]],
-    'IsWinningOverride': [WordBool, [Cardinal]],
+    'IsMaster': [WordBool, [Cardinal, PWordBool]],
+    'IsInjected': [WordBool, [Cardinal, PWordBool]],
+    'IsOverride': [WordBool, [Cardinal, PWordBool]],
+    'IsWinningOverride': [WordBool, [Cardinal, PWordBool]],
     // ERROR CHECKING METHODS
     'CheckForErrors': [WordBool, [Cardinal]],
     'GetErrorThreadDone': [WordBool, []],
-    'GetErrors': [WordBool, [PWChar, Integer]],
-    'GetErrorString': [WordBool, [Cardinal, PWChar, Integer]],
+    'GetErrors': [WordBool, [PInteger]],
+    'GetErrorString': [WordBool, [Cardinal, PInteger]],
     // SERIALIZATION METHODS
-    'ElementToJson': [WordBool, [Cardinal, PWChar, Integer]],
+    'ElementToJson': [WordBool, [Cardinal, PInteger]],
     // ELEMENT VALUE METHODS
-    'Name': [WordBool, [Cardinal, PWChar, Integer]],
-    'Path': [WordBool, [Cardinal, PWChar, Integer]],
-    'EditorID': [WordBool, [Cardinal, PWChar, Integer]],
-    'Signature': [WordBool, [Cardinal, PWChar, Integer]],
-    'FullName': [WordBool, [Cardinal, PWChar, Integer]],
-    'SortKey': [WordBool, [Cardinal, PWChar, Integer]],
-    'ElementType': [WordBool, [Cardinal, PWChar, Integer]],
-    'DefType': [WordBool, [Cardinal, PWChar, Integer]],
-    'GetValue': [WordBool, [Cardinal, PWChar, PWChar, Integer]],
+    'Name': [WordBool, [Cardinal, PInteger]],
+    'Path': [WordBool, [Cardinal, PInteger]],
+    'EditorID': [WordBool, [Cardinal, PInteger]],
+    'Signature': [WordBool, [Cardinal, PInteger]],
+    'FullName': [WordBool, [Cardinal, PInteger]],
+    'SortKey': [WordBool, [Cardinal, PInteger]],
+    'ElementType': [WordBool, [Cardinal, PInteger]],
+    'DefType': [WordBool, [Cardinal, PInteger]],
+    'GetValue': [WordBool, [Cardinal, PWChar, PInteger]],
     'SetValue': [WordBool, [Cardinal, PWChar, PWChar]],
     'GetIntValue': [WordBool, [Cardinal, PWChar, PInteger]],
     'SetIntValue': [WordBool, [Cardinal, PWChar, Integer]],
@@ -97,23 +100,22 @@ var lib = ffi.Library('XEditLib', {
     'SetUIntValue': [WordBool, [Cardinal, PWChar, Cardinal]],
     'GetFloatValue': [WordBool, [Cardinal, PWChar, PDouble]],
     'SetFloatValue': [WordBool, [Cardinal, PWChar, Double]],
-    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetFlag': [WordBool, [Cardinal, PWChar, PWChar, PWordBool]],
     'SetFlag': [WordBool, [Cardinal, PWChar, PWChar, WordBool]],
     'ToggleFlag': [WordBool, [Cardinal, PWChar, PWChar]],
-    'GetEnabledFlags': [WordBool, [Cardinal, PWChar, PWChar, Integer]],
+    'GetEnabledFlags': [WordBool, [Cardinal, PWChar, PInteger]],
     // GROUP HANDLING METHODS
     'HasGroup': [WordBool, [Cardinal, PWChar, PWordBool]],
     'AddGroup': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetGroupSignatures': [WordBool, [Cardinal, PWChar, Integer]],
+    'GetGroupSignatures': [WordBool, [Cardinal, PInteger]],
     'GetChildGroup': [WordBool, [Cardinal, PCardinal]],
-    'GroupSignatureFromName': [WordBool, [PWChar, PWChar]],
-    'GroupNameFromSignature': [WordBool, [PWChar, PWChar]],
-    'GetGroupSignatureNameMap': [WordBool, [PWChar, Integer]],
+    'GroupSignatureFromName': [WordBool, [PWChar, PInteger]],
+    'GroupNameFromSignature': [WordBool, [PWChar, PInteger]],
+    'GetGroupSignatureNameMap': [WordBool, [PInteger]],
     // RECORD HANDLING METHODS
     'AddRecord': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetRecords': [WordBool, [Cardinal, PCardinal, Integer]],
-    'RecordsBySignature': [WordBool, [Cardinal, PWChar, PCardinal, Integer]],
+    'GetRecords': [WordBool, [Cardinal, PInteger]],
+    'RecordsBySignature': [WordBool, [Cardinal, PWChar, PInteger]],
     'RecordByIndex': [WordBool, [Cardinal, Integer, PCardinal]],
     'RecordByFormID': [WordBool, [Cardinal, Cardinal, PCardinal]],
     'RecordByEditorID': [WordBool, [Cardinal, PWChar, PCardinal]],
@@ -123,44 +125,45 @@ var lib = ffi.Library('XEditLib', {
     'GetFormID': [WordBool, [Cardinal, PCardinal]],
     'SetFormID': [WordBool, [Cardinal, Cardinal]],
     'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
-    'GetReferences': [WordBool, [Cardinal, PCardinal, Integer]]
+    'GetReferences': [WordBool, [Cardinal, PInteger]]
 });
 
 // helper functions
-var trimNull = function (str) {
-    return str.substring(0, str.indexOf('\0'));
-};
-
-var createTypedBuffer = function (size, type) {
+var createTypedBuffer = function(size, type) {
     var buf = new Buffer(size);
     buf.type = type;
     return buf;
 };
 
-var readPWCharString = function (buf) {
-    return trimNull(wchar_t.toString(buf));
+var readPWCharString = function(buf) {
+    return wchar_t.toString(buf);
 };
 
-var readCardinalArray = function (buf) {
+var readCardinalArray = function(buf, len) {
     var a = [];
-    for (var i = 0; i < buf.length; i+=4) {
-      var c = buf.readUInt32LE(i);
-      if (c == 0) break;
-      a.push(c);
-    }
+    for (var i = 0; i < 4 * len; i+=4)
+      a.push(buf.readUInt32LE(i));
     return a;
 };
 
-var writePWCharBuffer = function (value) {
+var wcb = function(value) {
     var buf = new Buffer((value.length + 1) * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
     return buf;
 };
 
-var Fail = function (message) {
+var elementContext = function(_id, path) {
+    return `${_id}, "${path}"`;
+};
+
+var flagContext = function(_id, path, name) {
+    return `${_id}, "${path}\\${name}"`;
+};
+
+var Fail = function(message) {
     try {
-        var libMessage = GetExceptionMessage();
+        var libMessage = xelib.GetExceptionMessage();
         if (libMessage) console.log(libMessage);
     } catch (e) {
         console.log('Unknown critical exception!');
@@ -168,178 +171,374 @@ var Fail = function (message) {
     throw message;
 };
 
+var GetString = function(_len, method = 'GetResultString') {
+    var len = _len.readInt32LE();
+    if (len == 0) return '';
+    var str = createTypedBuffer(2 * len, PWChar);
+    if (!lib[method](str, len))
+        Fail(`Failed to ${method}`);
+    return readPWCharString(str);
+};
+
+var GetArray = function(_len) {
+    var len = _len.readInt32LE();
+    if (len == 0) return [];
+    var a = createTypedBuffer(4 * len, PCardinal);
+    if (!lib.GetResultArray(a, len))
+        Fail('Failed to GetResultArray');
+    return readCardinalArray(a, len);
+};
+
+var GetBoolValue = function(_id, method) {
+    var _bool = createTypedBuffer(2, PWordBool);
+    if (!lib[method](_id, _bool))
+        Fail(`Failed to call ${method} on ${_id}`);
+    return _bool.readInt16LE() > 0;
+};
+
+var GetStringValue = function(_id, method) {
+    var _len = createTypedBuffer(4, PInteger);
+    if (!lib[method](_id, _len))
+        Fail(`${method} failed on ${_id}`);
+    return GetString(_len);
+};
+
+var GetNativeValue = function(_id, path, method, refType) {
+    var buff = createTypedBuffer(4, refType);
+    if (!lib[method](_id, wcb(path), buff))
+        Fail(`Failed to ${method} at: ${_id}, ${path}`);
+    return buff;
+};
+
+var SetNativeValue = function(_id, path, method, value) {
+    if (!lib[method](_id, wcb(path), value))
+        Fail(`Failed to ${method} to ${value} at: ${_id}, ${path}`);
+};
+
 // wrapper functions
 var xelib = {
     // META FUNCTIONS
-    'Initialize': function () {
-        lib.Initialize();
+    'Initialize': function() {
+        lib.InitXEdit();
     },
-    'Finalize': function () {
-        lib.Finalize();
+    'Finalize': function() {
+        lib.CloseXEdit();
     },
-    'GetBuffer': function () {
-        var str = createTypedBuffer(4096, PWChar);
-        lib.GetBuffer(str, 4096);
-        return readPWCharString(str);
+    'GetMessages': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        lib.GetMessagesLength(_len);
+        return GetString(_len, 'GetMessages');
     },
-    'FlushBuffer': function () {
-        lib.FlushBuffer();
+    'ClearMessages': function() {
+        lib.ClearMessages();
     },
-    'GetExceptionMessage': function () {
-        var str = createTypedBuffer(2048, PWChar);
-        lib.GetExceptionMessage(str, 2048);
-        return readPWCharString(str);
+    'GetExceptionMessage': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        lib.GetExceptionMessageLength(_len);
+        return GetString(_len, 'GetExceptionMessage');
     },
-    'GetGlobal': function (keyValue) {
-        var str = createTypedBuffer(512, PWChar);
-        var key = writePWCharBuffer(keyValue);
-        if (!lib.GetGlobal(key, str, 512))
-            Fail("GetGlobal failed.");
-        return readPWCharString(str);
+    'GetGlobal': function(key) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetGlobal(wcb(key), _len))
+            Fail('GetGlobal failed.');
+        return GetString(_len);
     },
-    'Release': function (_id) {
+    'Release': function(_id) {
         if (!lib.Release(_id))
-            Fail("Failed to release interface #" + _id);
+            Fail(`Failed to release interface #${_id}`);
     },
-    'ResetStore': function () {
+    'ResetStore': function() {
         if (!lib.ResetStore())
-            Fail("Failed to reset interface store");
+            Fail('Failed to reset interface store');
     },
 
     // SETUP FUNCTIONS
-    'SetGameMode': function (gameMode) {
+    'SetGameMode': function(gameMode) {
         if (!lib.SetGameMode(gameMode))
-            Fail("Failed to set game mode to " + gameMode);
+            Fail(`Failed to set game mode to ${gameMode}`);
     },
-    'GetLoadOrder': function () {
-        var str = createTypedBuffer(8192, PWChar);
-        if (lib.GetLoadOrder(str, 8192))
-            return readPWCharString(str).trim();
-        return null;
+    'GetLoadOrder': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetLoadOrder(_len))
+            return null;
+        return GetString(_len);
     },
-    'LoadPlugins': function (loadOrder) {
-        var buff = writePWCharBuffer(loadOrder);
-        if (!lib.LoadPlugins(buff))
-            Fail("Failed to load plugins.");
+    'LoadPlugins': function(loadOrder) {
+        if (!lib.LoadPlugins(wcb(loadOrder)))
+            Fail('Failed to load plugins.');
     },
-    'GetLoaderDone': function () {
+    'GetLoaderDone': function() {
         return lib.GetLoaderDone();
     },
-    'GetGamePath': function (gameMode) {
-        var str = createTypedBuffer(512, PWChar);
-        if (lib.GetGamePath(gameMode, str, 512))
-            return readPWCharString(str);
-        return null;
+    'GetGamePath': function(gameMode) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetGamePath(gameMode, _len))
+            return null;
+        return GetString(_len);
     },
 
     // FILE HANDLING METHODS
-    'NewFile': function (filename) {
-        var fName = writePWCharBuffer(filename);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.NewFile(fName, _id))
-            Fail("Failed to create new file: " + filename);
-        return _id.readUInt32LE(0);
+    'AddFile': function(filename) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.AddFile(wcb(filename), _res))
+            Fail(`Failed to add new file: ${filename}`);
+        return _res.readUInt32LE(0);
     },
-    'FileByIndex': function (index) {
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByIndex(index, _id))
-            Fail("Failed to find file at index: " + index);
-        return _id.readUInt32LE(0);
+    'FileByIndex': function(index) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByIndex(index, _res))
+            Fail(`Failed to find file at index: ${index}`);
+        return _res.readUInt32LE(0);
     },
-    'FileByLoadOrder': function (loadOrder) {
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByLoadOrder(loadOrder, _id))
-            Fail("Failed to find file at load order: " + index);
-        return _id.readUInt32LE(0);
+    'FileByLoadOrder': function(loadOrder) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByLoadOrder(loadOrder, _res))
+            Fail(`Failed to find file at load order: ${loadOrder}`);
+        return _res.readUInt32LE(0);
     },
-    'FileByName': function (filename) {
-        var fName = writePWCharBuffer(filename);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByName(fName, _id))
-            Fail("Failed to find file: " + filename);
-        return _id.readUInt32LE(0);
+    'FileByName': function(filename) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByName(wcb(filename), _res))
+            Fail(`Failed to find file: ${filename}`);
+        return _res.readUInt32LE(0);
     },
-    'FileByAuthor': function (author) {
-        var fAuthor = writePWCharBuffer(author);
-        var _id = createTypedBuffer(4, PCardinal);
-        if (!lib.FileByAuthor(fAuthor, _id))
-            Fail("Failed to find file with author: " + author);
-        return _id.readUInt32LE(0);
+    'FileByAuthor': function(author) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.FileByAuthor(wcb(author), _res))
+            Fail(`Failed to find file with author: ${author}`);
+        return _res.readUInt32LE(0);
     },
-    'SaveFile': function (_id) {
+    'SaveFile': function(_id) {
         if (!lib.SaveFile(_id))
-            Fail("Failed to save file: " + _id);
+            Fail(`Failed to save file: ${_id}`);
     },
 
     // MASTER HANDLING METHODS
-    'CleanMasters': function (_id) {
+    'CleanMasters': function(_id) {
         if (!lib.CleanMasters(_id))
-            Fail("Failed to clean masters in: " + _id);
+            Fail(`Failed to clean masters in: ${_id}`);
     },
-    'SortMasters': function (_id) {
+    'SortMasters': function(_id) {
         if (!lib.SortMasters(_id))
-            Fail("Failed to sort masters in: " + _id);
+            Fail(`Failed to sort masters in: ${_id}`);
     },
-    'AddMaster': function (_id, filename) {
-        var masterName = writePWCharBuffer(filename);
-        if (!lib.AddMaster(_id, masterName))
-            Fail("Failed to add master " + filename + " to file: " + _id);
+    'AddMaster': function(_id, filename) {
+        if (!lib.AddMaster(_id, wcb(filename)))
+            Fail(`Failed to add master "${filename}" to file: ${_id}`);
     },
-    'GetMaster': function (_id, index) {
+    'GetMaster': function(_id, index) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetMaster(_id, index))
-            Fail("Failed to get master at " + index + " in file: " + _id);
+            Fail(`'Failed to get master at index ${index} in file: ${_id}`);
         return _res.readUInt32LE(0);
     },
-    'GetMasters': function (_id) {
-        var _res = createTypedBuffer(1024, PCardinal);
-        if (!lib.GetMasters(_id, _res, 256))
-          Fail("Failed to get child elements of " + _id);
-        return readCardinalArray(_res);
+    'GetMasters': function(_id) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetMasters(_id, _len))
+            Fail(`Failed to get child elements of ${_id}`);
+        return GetArray(_len);
     },
 
     // ELEMENT HANDLING METHODS
-    'GetElements': function (_id) {
-        var size = _id == 0 ? 256 : this.ElementCount(_id);
-        var _res = createTypedBuffer(size * 4, PCardinal);
-        if (!lib.GetElements(_id, _res, size))
-            Fail("Failed to get child elements of " + _id);
-        return readCardinalArray(_res);
+    'GetElement': function(_id, path = '') {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.GetElement(_id, wcb(path), _res))
+            Fail(`Failed to get element at: ${elementContext(_id, path)}`);
+        return _res.readUInt32LE(0);
+    },
+    'GetElements': function(_id) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetElements(_id,  _len))
+            Fail(`Failed to get child elements for: ${_id}`);
+        return GetArray(_len);
+    },
+    'GetElementFile': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetElementFile(_id, _res))
+            Fail(`Failed to get element file for: ${_id}`);
+        return _res.readUInt32LE(0);
+    },
+    'GetContainer': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetContainer(_id, _res))
+            Fail(`Failed to get container for: ${_id}`);
+        return _res.readUInt32LE(0);
+    },
+    'AddElement': function(_id, path = '') {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.AddElement(_id, wcb(path), _res))
+            Fail(`Failed to create new element at: ${elementContext(_id, path)}`);
+        return _res.readUInt32LE(0);
+    },
+    'RemoveElement': function(_id, path = '') {
+        if (!lib.RemoveElement(_id, wcb(path)))
+            Fail(`Failed to remove element at: ${elementContext(_id, path)}`);
+    },
+    'ElementExists': function(_id, path = '') {
+        var _bool = createTypedBuffer(2, PWordBool);
+        if (!lib.ElementExists(_id, wcb(path), _bool))
+            Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
+        return _bool.readInt16LE > 0;
     },
     'ElementCount': function(_id) {
         var _res = createTypedBuffer(4, PInteger);
         if (!lib.ElementCount(_id, _res))
-          Fail("Failed to get element count for " + _id);
+            Fail(`Failed to get element count for ${_id}`);
         return _res.readInt32LE(0);
+    },
+    'ElementEquals': function(_id, _id2) {
+        var _bool = createTypedBuffer(2, PWordBool);
+        if (!lib.ElementEquals(_id, _id2, _bool))
+            Fail(`Failed to check element equality for ${_id} and ${_id2}`);
+        return _bool.readInt16LE > 0;
+    },
+    'CopyElement': function(_id, _id2, asNew = false, deepCopy = true) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.CopyElement(_id, _id2, asNew, deepCopy, _res))
+            Fail(`Failed to copy element from ${_id} to ${_id2}`);
+        return _res.readUInt32LE();
+    },
+    'IsMaster': function(_id) {
+        return GetBoolValue(_id, "IsMaster");
+    },
+    'IsInjected': function(_id) {
+        return GetBoolValue(_id, "IsInjected");
+    },
+    'IsOverride': function(_id) {
+        return GetBoolValue(_id, "IsOverride");
+    },
+    'IsWinningOverride': function(_id) {
+        return GetBoolValue(_id, "IsWinningOverride");
     },
 
     // ERROR CHECKING METHODS
-    'CheckForErrors': function (_id) {
+    'CheckForErrors': function(_id) {
         if (!lib.CheckForErrors(_id))
-            Fail("Failed to check " + _id + " for errors.");
+            Fail(`Failed to check ${_id} for errors.`);
     },
     'GetErrorThreadDone': function() {
         return lib.GetErrorThreadDone();
     },
     'GetErrors': function() {
-        var str = createTypedBuffer(1048576, PWChar);
-        if (!lib.GetErrors(str, 1048576))
-            Fail("Failed to get errors");
-        return JSON.parse(readPWCharString(str)).errors;
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetErrors(_len))
+            Fail('Failed to get errors');
+        return JSON.parse(GetString(_len)).errors;
     },
     'GetErrorString': function(_id) {
-        var str = createTypedBuffer(2048, PWChar);
-        if (!lib.GetErrorString(_id, str, 1024))
-            Fail("Failed to get error string for " + _id);
-        return readPWCharString(str);
+        return GetStringValue(_id, 'GetErrorString');
+    },
+
+    // SERIALIZATION METHODS
+    'ElementToJSON': function(_id) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.ElementToJson(_id, _len))
+            Fail(`Failed to serialize element to JSON: ${_id}`);
+        return JSON.parse(GetString(_len));
     },
 
     // ELEMENT VALUE METHODS
-    'Name': function (_id) {
-        var str = createTypedBuffer(1024, PWChar);
-        if (!lib.Name(_id, str, 1024))
-            Fail("Failed to get name of " + _id);
-        return readPWCharString(str);
+    'Name': function(_id) {
+        return GetStringValue(_id, 'Name');
+    },
+    'Path': function(_id) {
+        return GetStringValue(_id, 'Path');
+    },
+    'EditorID': function(_id) {
+        return GetStringValue(_id, 'EditorID');
+    },
+    'Signature': function(_id) {
+        return GetStringValue(_id, 'Signature');
+    },
+    'FullName': function(_id) {
+        return GetStringValue(_id, 'FullName');
+    },
+    'SortKey': function(_id) {
+        return GetStringValue(_id, 'SortKey');
+    },
+    'ElementType': function(_id) {
+        return GetStringValue(_id, 'ElementType');
+    },
+    'DefType': function(_id) {
+        return GetStringValue(_id, 'DefType');
+    },
+    'GetValue': function(_id, path) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetValue(_id, wcb(_path), _len))
+            Fail(`Failed to get element value at: ${elementContext(_id, path)}`);
+        return GetString(_len);
+    },
+    'SetValue': function(_id, path, value) {
+        if (!lib.SetValue(_id, wcb(path), wcb(value)))
+            Fail(`Failed to set element value at: ${elementContext(_id, path)}`);
+    },
+    'GetIntValue': function(_id, path) {
+        return GetNativeValue(_id, path, 'GetIntValue', PInteger).readInt32LE();
+    },
+    'SetIntValue': function(_id, path, value) {
+        SetNativeValue(_id, path, 'SetIntValue', value);
+    },
+    'GetUIntValue': function(_id, path) {
+        return GetNativeValue(_id, path, 'GetUIntValue', PCardinal).readUInt32LE();
+    },
+    'SetUIntValue': function(_id, path, value) {
+        SetNativeValue(_id, path, 'SetUIntValue', value);
+    },
+    'GetFloatValue': function(_id, path) {
+        return GetNativeValue(_id, path, 'GetFloatValue', PDouble).readDoubleLE();
+    },
+    'SetFloatValue': function(_id, path, value) {
+        SetNativeValue(_id, path, 'SetFloatValue', value);
+    },
+    'SetFlag': function(_id, path, name, enabled) {
+        if (!lib.SetFlag(_id, wcb(path), wcb(name), enabled))
+            Fail(`Failed to set flag value at: ${flagContext(_id, path, name)} to ${enabled}`);
+    },
+    'GetFlag': function(_id, path, name) {
+        var _enabled = createTypedBuffer(1, PWordBool);
+        if (!lib.GetFlag(_id, wcb(path), wcb(name), _enabled))
+            Fail(`Failed to get flag value at: ${flagContext(_id, path, name)}`);
+        return _enabled.readInt16LE() > 0;
+    },
+    'ToggleFlag': function(_id, path, name) {
+        if (!lib.ToggleFlag(_id, wcb(path), wcb(name)))
+            Fail(`Failed to toggle flag at: ${flagContext(_id, path, name)}`);
+    },
+    'GetEnabledFlags': function(_id, path) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetEnabledFlags(_id, wcb(path), _len))
+            Fail(`Failed to get enabled flags at: ${elementContext(_id, path)}`);
+        return GetString(_len).split(',');
+    },
+
+    /*** WRAPPER METHODS ***/
+
+    // RECORD METHODS
+    'Translate': function(_id, vector) {
+        var xelib = this;
+        var position = xelib.GetElement(_id, 'DATA\\Position');
+        ['X', 'Y', 'Z'].forEach(function(coord) {
+            if (vector.hasOwnProperty(coord)) {
+                var newValue = xelib.GetFloatValue(position, coord) + vector[coord];
+                this.SetFloatValue(position, coord, newValue);
+            }
+        });
+    },
+    'Rotate': function(_id, vector) {
+        var xelib = this;
+        var rotation = xelib.GetElement(_id, 'DATA\\Rotation');
+        ['X', 'Y', 'Z'].forEach(function(coord) {
+            if (vector.hasOwnProperty(coord)) {
+                var newValue = xelib.GetFloatValue(rotation, coord) + vector[coord];
+                this.SetFloatValue(rotation, coord, newValue);
+            }
+        });
+    },
+    'GetRecordFlag': function(_id, name) {
+        return this.GetFlag(_id, 'Record Header\\Record Flags', name);
+    },
+    'SetRecordFlag': function(_id, name, enabled) {
+        this.SetFlag(_id, 'Record Header\\Record Flags', name, enabled);
     }
 };
 
