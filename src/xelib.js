@@ -73,10 +73,6 @@ var lib = ffi.Library('XEditLib', {
     'ElementCount': [WordBool, [Cardinal, PInteger]],
     'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
-    'IsMaster': [WordBool, [Cardinal, PWordBool]],
-    'IsInjected': [WordBool, [Cardinal, PWordBool]],
-    'IsOverride': [WordBool, [Cardinal, PWordBool]],
-    'IsWinningOverride': [WordBool, [Cardinal, PWordBool]],
     // ERROR CHECKING METHODS
     'CheckForErrors': [WordBool, [Cardinal]],
     'GetErrorThreadDone': [WordBool, []],
@@ -117,16 +113,18 @@ var lib = ffi.Library('XEditLib', {
     'AddRecord': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetRecords': [WordBool, [Cardinal, PInteger]],
     'RecordsBySignature': [WordBool, [Cardinal, PWChar, PInteger]],
-    'RecordByIndex': [WordBool, [Cardinal, Integer, PCardinal]],
     'RecordByFormID': [WordBool, [Cardinal, Cardinal, PCardinal]],
     'RecordByEditorID': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RecordByName': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'OverrideCount': [WordBool, [Cardinal, PInteger]],
-    'OverrideByIndex': [WordBool, [Cardinal, Integer, PCardinal]],
+    'GetOverrides': [WordBool, [Cardinal, PInteger]],
     'GetFormID': [WordBool, [Cardinal, PCardinal]],
     'SetFormID': [WordBool, [Cardinal, Cardinal]],
     'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
-    'GetReferences': [WordBool, [Cardinal, PInteger]]
+    'GetReferences': [WordBool, [Cardinal, PInteger]],
+    'IsMaster': [WordBool, [Cardinal, PWordBool]],
+    'IsInjected': [WordBool, [Cardinal, PWordBool]],
+    'IsOverride': [WordBool, [Cardinal, PWordBool]],
+    'IsWinningOverride': [WordBool, [Cardinal, PWordBool]]
 });
 
 // helper functions
