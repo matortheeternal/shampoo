@@ -2,7 +2,7 @@ export default function(ngapp, xelib) {
     ngapp.service('xelibService', function() {
         var service = this;
 
-        this.getExceptionInformation = function () {
+        this.getExceptionInformation = function() {
             try {
                 console.log(xelib.GetMessages());
                 console.log(xelib.GetExceptionMessage());
@@ -11,7 +11,7 @@ export default function(ngapp, xelib) {
             }
         };
 
-        this.testGetGlobal = function () {
+        this.testGetGlobal = function() {
             try {
                 console.log(xelib.GetGlobal('ProgramPath'));
             } catch (e) {
@@ -20,7 +20,7 @@ export default function(ngapp, xelib) {
             }
         };
 
-        this.logXELibMessages = function () {
+        this.logXELibMessages = function() {
             console.log(xelib.GetMessages());
         };
     });

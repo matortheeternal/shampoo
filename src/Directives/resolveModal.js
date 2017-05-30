@@ -8,12 +8,17 @@ export default function(ngapp) {
         }
     });
 
-    ngapp.controller('resolveModalController', function ($scope) {
+    ngapp.controller('resolveModalController', function ($scope, errorsService) {
         $scope.errorIndex = 0;
         $scope.setError();
 
         $scope.setError = function() {
-            $scope.currentError = $scope.errorsToResolve[$scope.errorIndex];
+            $scope.error = $scope.errorsToResolve[$scope.errorIndex];
+            $scope.resolutions = errorsService.getErrorResolutions($scope.error);
+        };
+
+        $scope.selectResolution = function(resolution) {
+            $scope.error.selectedResolution = resolution;
         };
 
         $scope.nextError = function() {
