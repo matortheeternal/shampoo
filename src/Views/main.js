@@ -7,13 +7,13 @@ export default function(ngapp, xelib) {
         });
     }]);
 
-    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, errorsFactory, xelibService) {
+    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, errorsService, xelibService) {
         $scope.loaded = false;
         $scope.log = xelib.GetMessages();
         $scope.checkedPlugins = 0;
         $scope.totalErrors = 0;
         $scope.plugins = [];
-        $scope.groupedErrors = errorsFactory.errorTypes();
+        $scope.groupedErrors = errorsService.errorGroups();
 
         $scope.spinnerOpts = {
             lines: 17, // The number of lines to draw
@@ -40,7 +40,7 @@ export default function(ngapp, xelib) {
 
         $scope.groupErrors = function(plugin) {
             plugin.errors.forEach(function(error) {
-                var group = $scope.groupedErrors.slice(error.group - 1)[0];
+                var group = $scope.groupedErrors[error.group];
                 group.errors.push(error);
             });
         };

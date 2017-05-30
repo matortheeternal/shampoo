@@ -1,9 +1,11 @@
 export default function(ngapp, xelib) {
-    ngapp.service('errorsFactory', function () {
-        this.errorTypes = function () {
+    ngapp.service('errorsService', function () {
+        var service = this;
+
+        this.errorGroups = function () {
             return [
                 {
-                    group: 1,
+                    group: 0,
                     name: "Identical to Master Records",
                     acronym: "ITM",
                     caption: "ITMs are dirty edits where a record has been overridden in a plugin file, but hasn't been changed.",
@@ -11,7 +13,7 @@ export default function(ngapp, xelib) {
                     errors: []
                 },
                 {
-                    group: 2,
+                    group: 1,
                     name: "Identical to Previous Override Records",
                     acronym: "ITPO",
                     caption: "ITPOs are dirty edits where a record has been overridden in a plugin file, but hasn't been changed relative to the previous override.",
@@ -19,21 +21,21 @@ export default function(ngapp, xelib) {
                     errors: []
                 },
                 {
-                    group: 3,
+                    group: 2,
                     name: "Deleted References",
                     acronym: "UDR",
                     caption: "UDRs are dirty edits where an object reference has been deleted instead of being disabled.",
                     errors: []
                 },
                 {
-                    group: 4,
+                    group: 3,
                     name: "Unexpected Subrecords",
                     acronym: "UES",
                     caption: "UESs are errors where the data structure of a record is abnormal.",
                     errors: []
                 },
                 {
-                    group: 5,
+                    group: 4,
                     name: "Unresolved References",
                     acronym: "URR",
                     caption: "URRs are errors where a record references another record that doesn't exist.",
@@ -41,7 +43,7 @@ export default function(ngapp, xelib) {
                     errors: []
                 },
                 {
-                    group: 6,
+                    group: 5,
                     name: "Unexpected References",
                     acronym: "UER",
                     caption: "UERs are errors where a record references another record in an abnormal fashion.",
@@ -49,7 +51,7 @@ export default function(ngapp, xelib) {
                     errors: []
                 },
                 {
-                    group: 0,
+                    group: 6,
                     name: "Other Errors",
                     acronym: "OE",
                     caption: "Errors that don't fall into the other groups are placed in this group.",
@@ -60,6 +62,7 @@ export default function(ngapp, xelib) {
         };
 
         var deleteResolution = {
+        var removeRecordResolution = {
             label: "Delete",
             class: "red",
             execute: function(handle) {
@@ -114,7 +117,7 @@ export default function(ngapp, xelib) {
             class: "yellow"
         };
         var identicalResolutions = [
-            deleteResolution,
+            removeRecordResolution,
             tweakEdidResolution,
             tweakPositionResolution,
             ignoreResolution
@@ -142,7 +145,7 @@ export default function(ngapp, xelib) {
                 ignoreResolution
             ],
             UES: [
-                deleteResolution,
+                removeRecordResolution,
                 // TODO: Repair
                 ignoreResolution
             ],
@@ -152,11 +155,14 @@ export default function(ngapp, xelib) {
                 ignoreResolution
             ],
             UER: [
+                nullifyResolution,
+                removeResolution,
                 ignoreResolution
             ],
             OE: [
+                // TODO: fix reporting/classify with fixes
                 ignoreResolution
             ]
-        }
+        };
     });
 }

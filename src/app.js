@@ -7,7 +7,7 @@ import xelib from './xelib.js';
 import xelibService from './Services/xelibService.js'
 import profileService from './Services/profileService.js'
 import formUtils from './Services/formUtils.js'
-import errorsFactory from './Factories/errorsFactory.js'
+import errorsService from './Services/errorsService.js'
 import profilesModal from './Directives/profilesModal.js'
 import loadOrderModal from './Directives/loadOrderModal.js'
 import baseView from './Views/base.js'
@@ -46,7 +46,7 @@ profileService(ngapp, xelib, electron);
 formUtils(ngapp);
 
 // FACTORIES
-errorsFactory(ngapp);
+errorsService(ngapp);
 
 // DIRECTIVES
 profilesModal(ngapp);
