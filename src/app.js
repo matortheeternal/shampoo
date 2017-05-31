@@ -46,7 +46,7 @@ profileService(ngapp, xelib, electron);
 formUtils(ngapp);
 
 // FACTORIES
-errorsService(ngapp);
+errorsService(ngapp, xelib);
 
 // DIRECTIVES
 profilesModal(ngapp);
