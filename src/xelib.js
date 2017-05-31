@@ -27,6 +27,7 @@ var lib = ffi.Library('XEditLib', {
     'GetExceptionMessageLength': [Void, [PInteger]],
     'GetExceptionMessage': [WordBool, [PWChar, Integer]],
     'GetGlobal': [WordBool, [PWChar, PInteger]],
+    'GetGlobals': [WordBool, [PInteger]],
     'Release': [WordBool, [Cardinal]],
     'ResetStore': [WordBool, []],
     // SETUP FUNCTIONS
@@ -188,6 +189,17 @@ var GetArray = function(_len) {
     return readCardinalArray(a, len);
 };
 
+var GetDictionary = function(_len) {
+    var str = GetString(_len);
+    var pairs = str.split('\n').slice(0, -1);
+    var dictionary = {};
+    pairs.forEach(function(pair) {
+        var n = pair.indexOf('=');
+        dictionary[pair.substr(0, n)] = pair.substr(n + 1, pair.length);
+    });
+    return dictionary;
+};
+
 var GetBoolValue = function(_id, method) {
     var _bool = createTypedBuffer(2, PWordBool);
     if (!lib[method](_id, _bool))
@@ -245,6 +257,12 @@ var xelib = {
         if (!lib.GetGlobal(wcb(key), _len))
             Fail('GetGlobal failed.');
         return GetString(_len);
+    },
+    'GetGlobals': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetGlobals( _len))
+            Fail('GetGlobals failed.');
+        return GetDictionary(_len);
     },
     'Release': function(_id) {
         if (!lib.Release(_id))
