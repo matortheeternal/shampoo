@@ -84,6 +84,8 @@ var lib = ffi.Library('XEditLib', {
     'ElementToJson': [WordBool, [Cardinal, PInteger]],
     // ELEMENT VALUE METHODS
     'Name': [WordBool, [Cardinal, PInteger]],
+    'LongName': [WordBool, [Cardinal, PInteger]],
+    'DisplayName': [WordBool, [Cardinal, PInteger]],
     'Path': [WordBool, [Cardinal, PInteger]],
     'EditorID': [WordBool, [Cardinal, PInteger]],
     'Signature': [WordBool, [Cardinal, PInteger]],
@@ -428,7 +430,7 @@ var xelib = {
         var _len = createTypedBuffer(4, PInteger);
         if (!lib.GetExpectedSignatures(_id))
             Fail(`Failed to get expected signatures for ${_id}`);
-        return GetString(_len);
+        return GetString(_len).split(',');
     },
 
     // ERROR CHECKING METHODS
@@ -460,6 +462,12 @@ var xelib = {
     // ELEMENT VALUE METHODS
     'Name': function(_id) {
         return GetStringValue(_id, 'Name');
+    },
+    'LongName': function(_id) {
+        return GetStringValue(_id, 'LongName');
+    },
+    'DisplayName': function(_id) {
+        return GetStringValue(_id, 'DisplayName');
     },
     'Path': function(_id) {
         return GetStringValue(_id, 'Path');
