@@ -203,16 +203,16 @@ export default function(ngapp, xelib) {
                 {
                     label: "Undelete and Disable",
                     class: "green",
-                    execute: function(handle) {
-                        xelib.SetRecordFlag(handle, "Deleted", false);
-                        xelib.SetRecordFlag(handle, "Initially Disabled", true);
+                    execute: function(error) {
+                        xelib.SetRecordFlag(error.handle, "Deleted", false);
+                        xelib.SetRecordFlag(error.handle, "Initially Disabled", true);
                     }
                 },
                 {
                     label: "Restore",
                     class: "red",
-                    execute: function(handle) {
-                        xelib.SetRecordFlag(handle, "Deleted", false);
+                    execute: function(error) {
+                        xelib.SetRecordFlag(error.handle, "Deleted", false);
                     }
                 },
                 ignoreResolution
