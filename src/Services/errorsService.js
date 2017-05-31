@@ -97,67 +97,92 @@ export default function(ngapp, xelib) {
             }
         };
 
+        var withErrorElement = function(error, callback, onException) {
+            var element = xelib.GetElement(error.handle, error.path);
+            try {
+                try {
+                    callback(element);
+                } catch(exception) {
+                    onException(error, exception);
+                }
+            } finally {
+                xelib.Release(element);
+            }
+        };
+
         var removeRecordResolution = {
             label: "Delete",
             class: "red",
-            execute: function(handle) {
-                xelib.RemoveElement(handle);
+            execute: function(error) {
+                xelib.RemoveElement(error.handle);
             }
         };
         var tweakEdidResolution = {
             label: "Tweak EDID",
             class: "green",
-            available: function(handle) {
-                return xelib.ElementExists(handle, "EDID");
+            available: function(error) {
+                return xelib.ElementExists(error.handle, "EDID");
             },
-            execute: function(handle, error, tweak) {
+            execute: function(error, tweak) {
                 if (!tweak) tweak = "-Intended";
-                var oldEdid = xelib.GetValue(handle, 'EDID');
-                xelib.SetValue(handle, 'EDID', oldEdid + tweak);
+                var oldEdid = xelib.GetValue(error.handle, 'EDID');
+                xelib.SetValue(error.handle, 'EDID', oldEdid + tweak);
             }
         };
         var tweakPositionResolution = {
             label: "Tweak Position",
             class: "green",
-            available: function(handle) {
-                return xelib.ElementExists(handle, "DATA\\Position");
+            available: function(error) {
+                return xelib.ElementExists(error.handle, "DATA\\Position");
             },
-            execute: function(handle, error, tweak) {
+            execute: function(error, tweak) {
                 if (!tweak) tweak = {
                     X: -0.000005,
                     Y:  0.000002,
                     Z: -0.000001
                 };
-                xelib.Translate(handle, tweak);
+                xelib.Translate(error.handle, tweak);
             }
         };
         var nullifyResolution = {
             label: "Nullify",
             class: "green",
-            available: function(handle, error) {
-                return error.data.indexOf("NULL") > -1;
-            },
-            execute: function(handle, error) {
-                try {
-                    var element = xelib.GetElement(handle, error.path);
-                    xelib.SetUIntValue(element, 0);
-                } catch (e) {
-                    console.log(error);
-                    console.log('Failed to nullify element, ' + e);
+            available: function(error) {
+                var expectedSignatures;
+                if (error.acronym === 'UER') {
+                    expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
+                } else {
+                    withErrorElement(error, function(element) {
+                        expectedSignatures = xelib.GetExpectedSignatures(element);
+                    }, function(error, exception) {
+                        console.log(error);
+                        console.log('Failed to get expected element signatures, ' + exception);
+                        expectedSignatures = [];
+                    });
                 }
+                return expectedSignatures.indexOf('NULL') > -1;
+            },
+            execute: function(error) {
+                withErrorElement(error, function(element) {
+                    xelib.SetUIntValue(element, 0);
+                    xelib.Release(element);
+                }, function(error, exception) {
+                    console.log(error);
+                    console.log('Failed to nullify element, ' + exception);
+                });
             }
         };
         var removeResolution = {
             label: "Remove",
             class: "red",
-            execute: function(handle, error) {
-                try {
-                    var element = xelib.GetElement(handle, error.path);
+            execute: function(error) {
+                withErrorElement(error, function(element) {
                     xelib.RemoveElementOrParent(element);
-                } catch (e) {
+                    xelib.Release(element);
+                }, function(error, exception) {
                     console.log(error);
-                    console.log('Failed to remove element, ' + e);
-                }
+                    console.log('Failed to remove element, ' + exception);
+                });
             }
         };
         var ignoreResolution = {
