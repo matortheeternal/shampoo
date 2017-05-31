@@ -74,6 +74,7 @@ var lib = ffi.Library('XEditLib', {
     'ElementCount': [WordBool, [Cardinal, PInteger]],
     'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
+    'GetExpectedSignatures': [WordBool, [Cardinal, PInteger]],
     // ERROR CHECKING METHODS
     'CheckForErrors': [WordBool, [Cardinal]],
     'GetErrorThreadDone': [WordBool, []],
@@ -423,17 +424,11 @@ var xelib = {
             Fail(`Failed to copy element from ${_id} to ${_id2}`);
         return _res.readUInt32LE();
     },
-    'IsMaster': function(_id) {
-        return GetBoolValue(_id, "IsMaster");
-    },
-    'IsInjected': function(_id) {
-        return GetBoolValue(_id, "IsInjected");
-    },
-    'IsOverride': function(_id) {
-        return GetBoolValue(_id, "IsOverride");
-    },
-    'IsWinningOverride': function(_id) {
-        return GetBoolValue(_id, "IsWinningOverride");
+    'GetExpectedSignatures': function(_id) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetExpectedSignatures(_id))
+            Fail(`Failed to get expected signatures for ${_id}`);
+        return GetString(_len);
     },
 
     // ERROR CHECKING METHODS
@@ -538,6 +533,20 @@ var xelib = {
         if (!lib.GetEnabledFlags(_id, wcb(path), _len))
             Fail(`Failed to get enabled flags at: ${elementContext(_id, path)}`);
         return GetString(_len).split(',');
+    },
+
+    // RECORD METHODS
+    'IsMaster': function(_id) {
+        return GetBoolValue(_id, "IsMaster");
+    },
+    'IsInjected': function(_id) {
+        return GetBoolValue(_id, "IsInjected");
+    },
+    'IsOverride': function(_id) {
+        return GetBoolValue(_id, "IsOverride");
+    },
+    'IsWinningOverride': function(_id) {
+        return GetBoolValue(_id, "IsWinningOverride");
     },
 
     /*** WRAPPER METHODS ***/
