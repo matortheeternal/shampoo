@@ -69,8 +69,9 @@ export default function(ngapp, xelib) {
             $scope.$emit('toggleModal', visible);
         };
 
-        $scope.resolveErrors = function(errors) {
-            $scope.errorsToResolve = errors;
+        $scope.resolveError = function(group, error) {
+            $scope.group.resolution = 'manual';
+            $scope.errorsToResolve = [error];
             $scope.toggleResolveModal(true);
         };
 

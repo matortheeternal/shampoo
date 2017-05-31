@@ -46,7 +46,7 @@
                         <tr ng-repeat="error in group.errors">
                             <td class="error-cell">{{ ::error.message }}</td>
                             <td class="resolution-cell">
-                                <span class="action-box small" ng-click="resolveErrors([error])">
+                                <span class="action-box small" ng-click="resolveError(group, error)">
                                     {{ error.resolution.label }}
                                 </span>
                             </td>
