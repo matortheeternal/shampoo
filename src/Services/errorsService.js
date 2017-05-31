@@ -253,5 +253,30 @@ export default function(ngapp, xelib) {
                 error.message = service.getErrorMessage(error);
             });
         };
+
+        this.getGroupResolution = function(errorGroup) {
+            if (errorGroup.resolution === 'auto') {
+                return service.errorResolutions[errorGroup.acronym][0];
+            } else {
+                return ignoreResolution;
+            }
+        };
+
+        this.setGroupResolutions = function(errorGroup) {
+            var resolution = service.getGroupResolution(errorGroup);
+            if (resolution.hasOwnProperty('available')) {
+                var resolutions = service.errorResolutions[errorGroup.acronym];
+                errorGroup.errors.forEach(function(error) {
+                    error.resolution = resolutions.find(function(resolution) {
+                        if (!resolution.hasOwnProperty('available')) return true;
+                        return resolution.available(error);
+                    });
+                });
+            } else {
+                errorGroup.errors.forEach(function(error) {
+                    error.resolution = resolution;
+                });
+            }
+        }
     });
 }
