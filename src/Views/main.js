@@ -136,7 +136,7 @@ export default function(ngapp, xelib) {
             return filename.endsWith(".dat") || (filename === gameEsmFilename);
         };
 
-        $scope.getPlugins = function () {
+        $scope.getPlugins = function() {
             var pluginIds = xelib.GetElements(0);
             console.log(pluginIds);
             $scope.plugins = pluginIds.map(function (_id) {
@@ -152,13 +152,19 @@ export default function(ngapp, xelib) {
             });
         };
 
-        $scope.checkIfLoaded = function () {
+        $scope.getLoadingMessage = function() {
+            $scope.loadingMessage = $scope.log.split('\n').slice(-2)[0];
+        };
+
+        $scope.checkIfLoaded = function() {
             $scope.log = $scope.log + xelib.GetMessages();
+            $scope.getLoadingMessage();
             if (xelib.GetLoaderDone()) {
+                console.log($scope.log);
                 $scope.loaded = true;
                 $scope.getPlugins();
             } else {
-                $timeout($scope.checkIfLoaded, 500);
+                $timeout($scope.checkIfLoaded, 250);
             }
         };
 
