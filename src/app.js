@@ -4,15 +4,15 @@ import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
 import env from './env';
 import xelib from './xelib.js';
-import xelibService from './Services/xelibService.js'
-import profileService from './Services/profileService.js'
-import formUtils from './Services/formUtils.js'
-import errorsService from './Services/errorsService.js'
-import profilesModal from './Directives/profilesModal.js'
-import loadOrderModal from './Directives/loadOrderModal.js'
-import baseView from './Views/base.js'
-import startView from './Views/start.js'
-import mainView from './Views/main.js'
+import xelibService from './Services/xelibService.js';
+import profileService from './Services/profileService.js';
+import formUtils from './Services/formUtils.js';
+import errorsService from './Services/errorsService.js';
+import profilesModal from './Directives/profilesModal.js';
+import loadOrderModal from './Directives/loadOrderModal.js';
+import baseView from './Views/base.js';
+import startView from './Views/start.js';
+import mainView from './Views/main.js';
 import 'angular-spinner';
 
 // set up electron application
