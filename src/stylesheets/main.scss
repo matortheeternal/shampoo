@@ -390,6 +390,7 @@ input.invalid {
         table {
             table-layout: fixed;
             width: 100%;
+            border-collapse: collapse;
 
             tr:nth-child(even) {
                 background-color: aliceblue;
@@ -406,6 +407,11 @@ input.invalid {
 
             td {
                 text-align: left;
+
+                &.error-cell {
+                    white-space: pre-line;
+                    font-size: 15px;
+                }
             }
         }
     }

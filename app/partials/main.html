@@ -48,7 +48,7 @@
                                     <th>Resolution</th>
                                 </tr>
                                 <tr ng-repeat="error in group.errors">
-                                    <td>{{ error.message }}</td>
+                                    <td class="error-cell">{{ ::error.message }}</td>
                                     <td><span class="action-box small" ng-click="resolveErrors([error])">{{ error.resolution }}</span></td>
                                 </tr>
                             </table>
@@ -68,7 +68,7 @@
 <div ng-if="!loaded" class="flex-container">
     <div>
         <div class="big-spinner" us-spinner="spinnerOpts"></div>
-        <div class="log" ng-bind="loadingMessage"></div>
+        <div class="loading-message" ng-bind="loadingMessage"></div>
     </div>
 </div>
 

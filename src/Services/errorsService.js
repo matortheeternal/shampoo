@@ -224,7 +224,9 @@ export default function(ngapp, xelib) {
         };
 
         this.getErrorMessages = function(errors) {
-            errors.forEach(service.getErrorMessage);
+            errors.forEach(function(error) {
+                error.message = service.getErrorMessage(error);
+            });
         };
     });
 }
