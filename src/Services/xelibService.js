@@ -11,9 +11,9 @@ export default function(ngapp, xelib) {
             }
         };
 
-        this.testGetGlobal = function() {
+        this.printGlobals = function() {
             try {
-                console.log(xelib.GetGlobal('ProgramPath'));
+                console.log(xelib.GetGlobals());
             } catch (e) {
                 console.log(e);
                 service.getExceptionInformation();

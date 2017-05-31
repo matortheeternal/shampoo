@@ -10,10 +10,9 @@ export default function(ngapp, xelib, electron) {
         });
     }]);
 
-    ngapp.controller('baseController', function ($scope, xelibService) {
+    ngapp.controller('baseController', function ($scope) {
         // initialize xedit-lib
         xelib.Initialize();
-        xelibService.testGetGlobal();
 
         $scope.helpClick = function () {
             //$scope.toggleHelpModal();

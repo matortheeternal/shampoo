@@ -14,6 +14,7 @@ export default function(ngapp, xelib) {
         $scope.totalErrors = 0;
         $scope.plugins = [];
         $scope.groupedErrors = errorsService.errorGroups();
+        xelibService.printGlobals();
 
         $scope.spinnerOpts = {
             lines: 17, // The number of lines to draw
@@ -41,7 +42,7 @@ export default function(ngapp, xelib) {
         $scope.groupErrors = function(plugin) {
             plugin.groupedErrors = errorsService.errorGroups();
             plugin.groupedErrors.forEach(function(errorGroup) {
-                errorGroup.currentResolution = ''; // TODO
+                errorGroup.currentResolution = 'auto';
                 errorGroup.showGroup = false;
                 errorGroup.errors = plugin.errors.filter(function(error) {
                     return error.group === errorGroup.group;
