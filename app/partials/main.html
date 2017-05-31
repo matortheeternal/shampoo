@@ -29,31 +29,29 @@
                     <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
                 </span>
             </div>
-            <div class="content-container" ng-show="plugin.errors.length">
-                <div class="action-button-container" ng-show="plugin.checked">
-                    <div class="content-block" ng-repeat="group in plugin.groupedErrors" ng-if="plugin.checked && group.errors.length">
-                        <div class="content-title">
-                            <span ng-click="group.showGroup = !group.showGroup" class="fa" ng-class="group.showGroup ? 'fa-chevron-down' : 'fa-chevron-right'"></span>
-                            <span>{{ group.errors.length }}</span> {{ ::group.name }}
-                            <select ng-model="group.resolution" class="right" ng-change="changeErrorResolution(group)">
-                                <option value="auto">Automatic</option>
-                                <option value="ignore">Ignore</option>
-                                <option value="manual">Manual</option>
-                            </select>
-                        </div>
-                        <div class="content-container" ng-show="group.showGroup">
-                            <table>
-                                <tr>
-                                    <th>Error Information</th>
-                                    <th>Resolution</th>
-                                </tr>
-                                <tr ng-repeat="error in group.errors">
-                                    <td class="error-cell">{{ ::error.message }}</td>
-                                    <td><span class="action-box small" ng-click="resolveErrors([error])">{{ error.resolution }}</span></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+            <div class="content-container" ng-if="plugin.groupedErrors">
+                <div class="error-group" ng-repeat="group in plugin.groupedErrors" ng-if="group.errors.length">
+                    <h2>
+                        <span class="title" ng-click="group.showGroup = !group.showGroup" >
+                            <span class="fa" ng-class="group.showGroup ? 'fa-chevron-down' : 'fa-chevron-right'"></span>
+                            {{ group.errors.length }} {{ ::group.name }}
+                        </span>
+                        <select ng-model="group.resolution" ng-change="changeErrorResolution(group)" title="Group resolution">
+                            <option value="auto">Automatic</option>
+                            <option value="ignore">Ignore</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                    </h2>
+                    <table ng-show="group.showGroup">
+                        <tr ng-repeat="error in group.errors">
+                            <td class="error-cell">{{ ::error.message }}</td>
+                            <td class="resolution-cell">
+                                <span class="action-box small" ng-click="resolveErrors([error])">
+                                    {{ error.resolution.label }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

@@ -42,7 +42,7 @@ export default function(ngapp, xelib) {
         $scope.groupErrors = function(plugin) {
             plugin.groupedErrors = errorsService.errorGroups();
             plugin.groupedErrors.forEach(function(errorGroup) {
-                errorGroup.currentResolution = 'auto';
+                errorGroup.resolution = 'auto';
                 errorGroup.showGroup = false;
                 errorGroup.errors = plugin.errors.filter(function(error) {
                     return error.group === errorGroup.group;

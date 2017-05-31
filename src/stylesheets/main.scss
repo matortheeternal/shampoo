@@ -387,6 +387,33 @@ input.invalid {
     .content-container {
         margin: 20px;
 
+        .error-group {
+            h2 {
+                user-select: none;
+                text-align: left;
+                font-size: 20px;
+                margin-bottom: 0.5em;
+
+                .title {
+                    cursor: pointer;
+                }
+
+                .fa {
+                    text-align: center;
+                    min-width: 1em;
+                    font-size: 18px;
+                }
+
+                select {
+                    margin-left: 10px;
+                    border: none;
+                    padding: 3px;
+                    margin-top: 1px;
+                    vertical-align: top;
+                }
+            }
+        }
+
         table {
             table-layout: fixed;
             width: 100%;
@@ -396,21 +423,18 @@ input.invalid {
                 background-color: aliceblue;
             }
 
-            th {
-                border-bottom: 1px solid #3a4751;
-
-                &:first-child {
-                    width: 85%;
-                    // TODO: Set min width for 2nd column on lower resolutions
-                }
-            }
-
             td {
                 text-align: left;
 
                 &.error-cell {
+                    padding: 0 4px;
                     white-space: pre-line;
                     font-size: 15px;
+                    width: 85%;
+                }
+
+                &.resolution-cell {
+                    text-align: center;
                 }
             }
         }
