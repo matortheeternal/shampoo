@@ -69,7 +69,7 @@ export default function(ngapp, xelib) {
         };
 
         $scope.resolveError = function(group, error) {
-            $scope.group.resolution = 'manual';
+            group.resolution = 'manual';
             $scope.errorsToResolve = [error];
             $scope.toggleResolveModal(true);
         };
