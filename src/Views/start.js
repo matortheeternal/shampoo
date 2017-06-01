@@ -21,12 +21,10 @@ export default function(ngapp, xelib) {
 
         $scope.toggleProfilesModal = function (visible) {
             $scope.showProfilesModal = visible;
-            $scope.$emit('toggleModal', visible);
         };
 
         $scope.toggleLoadOrderModal = function (visible) {
             $scope.showLoadOrderModal = visible;
-            $scope.$emit('toggleModal', visible);
         };
 
         $scope.getLoadOrder = function () {

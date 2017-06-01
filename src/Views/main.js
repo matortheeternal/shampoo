@@ -66,7 +66,6 @@ export default function(ngapp, xelib) {
 
         $scope.toggleResolveModal = function(visible) {
             $scope.showResolveModal = visible;
-            $scope.$emit('toggleModal', visible);
         };
 
         $scope.resolveError = function(group, error) {
