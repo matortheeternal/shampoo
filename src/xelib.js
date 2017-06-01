@@ -428,7 +428,7 @@ var xelib = {
     },
     'GetExpectedSignatures': function(_id) {
         var _len = createTypedBuffer(4, PInteger);
-        if (!lib.GetExpectedSignatures(_id))
+        if (!lib.GetExpectedSignatures(_id, _len))
             Fail(`Failed to get expected signatures for ${_id}`);
         return GetString(_len).split(',');
     },
