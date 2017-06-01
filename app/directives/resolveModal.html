@@ -1,19 +1,35 @@
 <div class="modal-container" ng-click="unfocusResolveModal($event)">
     <div class="modal huge-modal">
         <form>
-            <div class="modal-header">
-                Resolve {{::$scope.errorsToResolve.length}} Errors
-                <button class="modal-close" ng-click="toggleResolveModal()">&times;</button>
+            <div class="close-modal">
+                <span class="fa fa-times" ng-click="toggleResolveModal()"></span>
             </div>
+
+            <h2 ng-show="errorsToResolve.length == 1">Resolve Error</h2>
+            <h2 ng-show="errorsToResolve.length > 1">Resolve Errors {{errorIndex + 1}}/{{::errorsToResolve.length}}</h2>
 
             <div class="modal-body">
                 {{errorMessage}}
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-repeat="resolution in resolutions" ng-click="selectResolution(resolution)">
-                    {{resolution.label}}
-                </button>
+                <div>
+                    <span class="action-box" ng-click="previousError()" ng-show="errorIndex">
+                        <span class="fa fa-chevron-left"></span>
+                        Previous
+                    </span>
+                </div>
+                <div class="resolutions">
+                    <span class="action-box" ng-repeat="resolution in resolutions" ng-click="selectResolution(resolution)" ng-class="{ 'selected' : $index == selectedIndex }">
+                        {{:: $index + 1 }}. {{:: resolution.label }}
+                    </span>
+                </div>
+                <div>
+                    <span class="action-box" ng-click="nextError()" ng-show="errorIndex < errorsToResolve.length - 1">
+                        Next
+                        <span class="fa fa-chevron-right"></span>
+                    </span>
+                </div>
             </div>
         </form>
     </div>

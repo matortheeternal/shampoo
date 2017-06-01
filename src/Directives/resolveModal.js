@@ -8,18 +8,23 @@ export default function(ngapp) {
         }
     });
 
-    ngapp.controller('resolveModalController', function ($scope, errorsService) {
-        $scope.errorIndex = 0;
-        $scope.setError();
+    ngapp.controller('resolveModalController', function ($scope, errorsService, formUtils) {
+        $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
 
         $scope.setError = function() {
+            if ($scope.errorIndex >= $scope.errorsToResolve.length) {
+                $scope.toggleResolveModal();
+                return;
+            }
             $scope.error = $scope.errorsToResolve[$scope.errorIndex];
-            $scope.errorMessage = errorsService.getErrorMessage($scope.erro);
+            $scope.errorMessage = errorsService.getErrorMessage($scope.error);
             $scope.resolutions = errorsService.getErrorResolutions($scope.error);
+            $scope.selectedIndex = $scope.resolutions.indexOf($scope.error.resolution);
         };
 
         $scope.selectResolution = function(resolution) {
             $scope.error.resolution = resolution;
+            $scope.nextError();
         };
 
         $scope.nextError = function() {
@@ -31,5 +36,9 @@ export default function(ngapp) {
             $scope.errorIndex--;
             $scope.setError();
         };
+
+        // initialize error
+        $scope.errorIndex = 0;
+        $scope.setError();
     });
 }
