@@ -9,6 +9,10 @@ html, body {
     overflow: hidden;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 a {
     text-decoration: none;
 }
@@ -20,7 +24,7 @@ ui-view {
         padding: 20px 40px;
         background-color: aliceblue;
         overflow-y: auto;
-        height: calc(100vh - 151px);
+        height: calc(100vh - 112px);
 
         .center-column {
             margin: auto;
