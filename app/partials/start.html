@@ -15,7 +15,7 @@
             <span class="action-box" ng-click="startSession()">Start Session</span>
         </div>
 
-        <profiles-modal></profiles-modal>
-        <load-order-modal></load-order-modal>
+        <profiles-modal ng-if="showProfilesModal" ></profiles-modal>
+        <load-order-modal ng-if="showLoadOrderModal" ></load-order-modal>
     </div>
 </div>
