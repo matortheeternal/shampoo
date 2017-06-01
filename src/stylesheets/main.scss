@@ -220,7 +220,7 @@ ui-view {
 
     .modal {
         position: relative;
-        width: 400px;
+        max-width: 400px;
         padding: 40px;
         margin: 150px auto;
         box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
@@ -236,14 +236,62 @@ ui-view {
         .content-message {
             margin: 20px 0 0;
         }
+
+        .modal-body {
+            margin-bottom: 100px;
+        }
+
+        .modal-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 30px 45px;
+
+            > div {
+                min-width: 110px;
+            }
+
+            .action-box {
+                min-width: 105px;
+            }
+
+            .resolutions {
+                max-width: 490px;
+                text-align: left;
+
+                .action-box {
+                    min-width: 240px;
+                    text-align: left;
+                    color: #000 !important;
+                    background: none;
+
+                    &.selected {
+                        background: #E0FFE8;
+                    }
+
+                    &:hover {
+                        background: #E0F0FF;
+                    }
+                }
+            }
+        }
+    }
+
+    .huge-modal {
+        max-width: 900px;
+        min-height: 400px;
     }
 
     .big-modal {
-        width: 600px;
+        max-width: 600px;
     }
 
     .skinny-modal {
-        width: 400px;
+        max-width: 400px;
     }
 
     .close-modal {
