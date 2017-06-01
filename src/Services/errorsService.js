@@ -156,7 +156,7 @@ export default function(ngapp, xelib) {
                         expectedSignatures = xelib.GetExpectedSignatures(element);
                     }, function(error, exception) {
                         console.log(error);
-                        console.log('Failed to get expected element signatures, ' + exception);
+                        console.log(exception);
                         expectedSignatures = [];
                     });
                 }
@@ -168,7 +168,7 @@ export default function(ngapp, xelib) {
                     xelib.Release(element);
                 }, function(error, exception) {
                     console.log(error);
-                    console.log('Failed to nullify element, ' + exception);
+                    console.log(exception);
                 });
             }
         };
@@ -181,7 +181,7 @@ export default function(ngapp, xelib) {
                     xelib.Release(element);
                 }, function(error, exception) {
                     console.log(error);
-                    console.log('Failed to remove element, ' + exception);
+                    console.log(exception);
                 });
             }
         };
