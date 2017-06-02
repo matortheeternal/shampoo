@@ -81,7 +81,7 @@ var lib = ffi.Library('XEditLib', {
     'GetErrors': [WordBool, [PInteger]],
     'GetErrorString': [WordBool, [Cardinal, PInteger]],
     // SERIALIZATION METHODS
-    'ElementToJson': [WordBool, [Cardinal, PInteger]],
+    'ElementToJson': [WordBool, [Cardinal, PInteger, WordBool]],
     // ELEMENT VALUE METHODS
     'Name': [WordBool, [Cardinal, PInteger]],
     'LongName': [WordBool, [Cardinal, PInteger]],
@@ -452,11 +452,14 @@ var xelib = {
     },
 
     // SERIALIZATION METHODS
-    'ElementToJSON': function(_id) {
+    'ElementToJSON': function(_id, editValues = true) {
         var _len = createTypedBuffer(4, PInteger);
-        if (!lib.ElementToJson(_id, _len))
+        if (!lib.ElementToJson(_id, _len, editValues))
             Fail(`Failed to serialize element to JSON: ${_id}`);
-        return JSON.parse(GetString(_len));
+        return GetString(_len);
+    },
+    'ElementToObject': function(_id, editValues = true) {
+        return JSON.parse(this.ElementToJSON(_id, editValues));
     },
 
     // ELEMENT VALUE METHODS
