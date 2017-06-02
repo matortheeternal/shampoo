@@ -313,10 +313,10 @@ resolve-modal {
 /* css for modals */
 .modal-container {
     position: fixed;
-    top: 0;
+    top: 45px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 45px);
     overflow-y: auto;
     z-index: 200;
     background-color: rgba(0, 0, 0, 0.4);
@@ -343,7 +343,8 @@ resolve-modal {
 
     .huge-modal {
         max-width: 900px;
-        min-height: 400px;
+        min-height: 500px;
+        margin: 100px auto;
     }
 
     .big-modal {
