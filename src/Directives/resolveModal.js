@@ -8,8 +8,9 @@ export default function(ngapp) {
         }
     });
 
-    ngapp.controller('resolveModalController', function ($scope, errorsService, formUtils) {
+    ngapp.controller('resolveModalController', function ($scope, errorsService, xelibService, formUtils) {
         $scope.unfocusResolveModal = formUtils.unfocusModal($scope.toggleResolveModal);
+        $scope.errorGroups = errorsService.errorGroups();
 
         $scope.setError = function() {
             if ($scope.errorIndex >= $scope.errorsToResolve.length) {
@@ -17,7 +18,7 @@ export default function(ngapp) {
                 return;
             }
             $scope.error = $scope.errorsToResolve[$scope.errorIndex];
-            $scope.errorMessage = errorsService.getErrorMessage($scope.error);
+            $scope.group = $scope.errorGroups[$scope.error.group];
             $scope.resolutions = errorsService.getErrorResolutions($scope.error);
             $scope.selectedIndex = $scope.resolutions.indexOf($scope.error.resolution);
         };
