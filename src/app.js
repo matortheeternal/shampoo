@@ -11,6 +11,7 @@ import errorsService from './Services/errorsService.js';
 import profilesModal from './Directives/profilesModal.js';
 import loadOrderModal from './Directives/loadOrderModal.js';
 import resolveModal from './Directives/resolveModal.js';
+import elementView from './Directives/elementView.js';
 import baseView from './Views/base.js';
 import startView from './Views/start.js';
 import mainView from './Views/main.js';
@@ -53,6 +54,7 @@ errorsService(ngapp, xelib);
 profilesModal(ngapp);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
+elementView(ngapp);
 
 // VIEWS
 baseView(ngapp, xelib, electron);

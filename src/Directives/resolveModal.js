@@ -19,6 +19,7 @@ export default function(ngapp) {
             }
             $scope.error = $scope.errorsToResolve[$scope.errorIndex];
             $scope.group = $scope.errorGroups[$scope.error.group];
+            $scope.element = xelibService.getRecordView($scope.error);
             $scope.resolutions = errorsService.getErrorResolutions($scope.error);
             $scope.selectedIndex = $scope.resolutions.indexOf($scope.error.resolution);
         };
