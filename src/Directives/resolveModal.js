@@ -9,7 +9,7 @@ export default function(ngapp) {
     });
 
     ngapp.controller('resolveModalController', function ($scope, errorsService, formUtils) {
-        $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
+        $scope.unfocusResolveModal = formUtils.unfocusModal($scope.toggleResolveModal);
 
         $scope.setError = function() {
             if ($scope.errorIndex >= $scope.errorsToResolve.length) {
