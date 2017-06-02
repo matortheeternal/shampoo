@@ -277,6 +277,6 @@ export default function(ngapp, xelib) {
                     error.resolution = resolution;
                 });
             }
-        }
+        };
     });
 }

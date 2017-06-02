@@ -23,5 +23,35 @@ export default function(ngapp, xelib) {
         this.logXELibMessages = function() {
             console.log(xelib.GetMessages());
         };
+
+        this.buildObjectView = function(obj) {
+            var children = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    var child = { key: obj.Constructor === Array ? '[' + key + ']' : key };
+                    if (typeof(obj[key]) === 'object') {
+                        if (Object.keys(obj).length == 0) {
+                            child.value = '';
+                        } else {
+                            child.children = service.buildObjectView(obj[key]);
+                        }
+                    } else {
+                        child.value = obj[key];
+                    }
+                    children.push(child);
+                }
+            }
+            return children;
+        };
+
+        this.getRecordView = function(handle) {
+            try {
+                var obj = xelib.ElementToObject(handle);
+                return service.buildObjectView(obj);
+            } catch (e) {
+                console.log(e);
+                return [];
+            }
+        };
     });
 }
