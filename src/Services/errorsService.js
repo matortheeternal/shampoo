@@ -149,9 +149,11 @@ export default function(ngapp, xelib) {
             class: "green",
             available: function(error) {
                 var expectedSignatures;
-                if (error.acronym === 'UER') {
+                if (error.group == 5) {
+                    // if error is UER, get expected signatures from error data
                     expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
                 } else {
+                    // else get the expected signatures through xelib
                     withErrorElement(error, function(element) {
                         expectedSignatures = xelib.GetExpectedSignatures(element);
                     }, function(error, exception) {
