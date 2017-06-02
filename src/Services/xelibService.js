@@ -53,5 +53,30 @@ export default function(ngapp, xelib) {
                 return [];
             }
         };
+
+        this.highlightElement = function(view, path) {
+            try {
+                var parts = path.split('\\');
+                var nodes = view;
+                parts.forEach(function(part) {
+                    if (part.startsWith('[') && part.endsWith(']')) {
+                        part = part.slice(1, -1);
+                    }
+                    var nextNode = nodes.find(function(node) {
+                        return (node.key === part);
+                    });
+                    if (!nextNode) {
+                        throw "Could not find node " + part;
+                    } else if (nextNode.hasOwnProperty('children')) {
+                        nextNode.showChildren = true;
+                        nodes = nextNode.children;
+                    } else {
+                        nextNode.highlight = true;
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        };
     });
 }
