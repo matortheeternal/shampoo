@@ -240,7 +240,10 @@ export default function(ngapp, xelib) {
 
         this.getErrorResolutions = function(error) {
             var acronym = service.errorAcronyms[error.group];
-            return service.errorResolutions[acronym];
+            return service.errorResolutions[acronym].filter(function(resolution) {
+                if (!resolution.hasOwnProperty('available')) return true;
+                return resolution.available(error);
+            });
         };
 
         this.getErrorMessage = function(error) {
