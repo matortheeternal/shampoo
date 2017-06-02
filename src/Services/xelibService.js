@@ -54,24 +54,24 @@ export default function(ngapp, xelib) {
             }
         };
 
-        this.highlightElement = function(view, path) {
+        this.highlightField = function(view, path) {
             try {
                 var parts = path.split('\\');
-                var nodes = view;
+                var fields = view;
                 parts.forEach(function(part) {
                     if (part.startsWith('[') && part.endsWith(']')) {
                         part = part.slice(1, -1);
                     }
-                    var nextNode = nodes.find(function(node) {
-                        return (node.key === part);
+                    var nextField = fields.find(function(field) {
+                        return (field.key === part);
                     });
-                    if (!nextNode) {
-                        throw "Could not find node " + part;
-                    } else if (nextNode.hasOwnProperty('children')) {
-                        nextNode.showChildren = true;
-                        nodes = nextNode.children;
+                    if (!nextField) {
+                        throw "Could not find field " + part;
+                    } else if (nextField.hasOwnProperty('children')) {
+                        nextField.showChildren = true;
+                        fields = nextField.children;
                     } else {
-                        nextNode.highlight = true;
+                        nextField.highlight = true;
                     }
                 });
             } catch (e) {
