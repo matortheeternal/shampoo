@@ -86,7 +86,7 @@ var lib = ffi.Library('XEditLib', {
     'Name': [WordBool, [Cardinal, PInteger]],
     'LongName': [WordBool, [Cardinal, PInteger]],
     'DisplayName': [WordBool, [Cardinal, PInteger]],
-    'Path': [WordBool, [Cardinal, PInteger]],
+    'Path': [WordBool, [Cardinal, WordBool, PInteger]],
     'EditorID': [WordBool, [Cardinal, PInteger]],
     'Signature': [WordBool, [Cardinal, PInteger]],
     'FullName': [WordBool, [Cardinal, PInteger]],
@@ -473,7 +473,16 @@ var xelib = {
         return GetStringValue(_id, 'DisplayName');
     },
     'Path': function(_id) {
-        return GetStringValue(_id, 'Path');
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.Path(_id, false, _len))
+            Fail(`Path failed on ${_id}`);
+        return GetString(_len);
+    },
+    'FullPath': function(_id) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.Path(_id, true, _len))
+            Fail(`Path failed on ${_id}`);
+        return GetString(_len);
     },
     'EditorID': function(_id) {
         return GetStringValue(_id, 'EditorID');
