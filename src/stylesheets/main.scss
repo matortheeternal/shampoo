@@ -251,6 +251,65 @@ element-view {
     }
 }
 
+resolve-modal {
+    h2, h3 {
+        margin-top: 0;
+    }
+
+    h3 {
+        margin-bottom: 0;
+
+        &.limit-text {
+            padding: 0 50px;
+        }
+    }
+
+    .modal-body {
+        margin: 18px 40px 100px;
+        max-height: 600px;
+        overflow: auto;
+    }
+
+    .modal-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 30px 45px;
+
+        > div {
+            min-width: 110px;
+        }
+
+        .action-box {
+            min-width: 105px;
+        }
+
+        .resolutions {
+            max-width: 490px;
+            text-align: left;
+
+            .action-box {
+                min-width: 240px;
+                text-align: left;
+                color: #000 !important;
+                background: none;
+
+                &.selected {
+                    background: #E0FFE8;
+                }
+
+                &:hover {
+                    background: #E0F0FF;
+                }
+            }
+        }
+    }
+}
+
 /* css for modals */
 .modal-container {
     position: fixed;
@@ -279,49 +338,6 @@ element-view {
 
         .content-message {
             margin: 20px 0 0;
-        }
-
-        .modal-body {
-            margin-bottom: 100px;
-        }
-
-        .modal-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 30px 45px;
-
-            > div {
-                min-width: 110px;
-            }
-
-            .action-box {
-                min-width: 105px;
-            }
-
-            .resolutions {
-                max-width: 490px;
-                text-align: left;
-
-                .action-box {
-                    min-width: 240px;
-                    text-align: left;
-                    color: #000 !important;
-                    background: none;
-
-                    &.selected {
-                        background: #E0FFE8;
-                    }
-
-                    &:hover {
-                        background: #E0F0FF;
-                    }
-                }
-            }
         }
     }
 
