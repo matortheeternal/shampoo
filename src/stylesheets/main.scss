@@ -207,6 +207,25 @@ ui-view {
     }
 }
 
+.highlight {
+    color: #53b6bf;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.limit-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: bottom;
+    max-width: 100%;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
 /* css for modals */
 .modal-container {
     position: fixed;
