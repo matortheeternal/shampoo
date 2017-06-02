@@ -1,4 +1,4 @@
-<div ng-repeat="field in element">
+<div ng-repeat="field in element" ng-class="{ 'error' : field.highlight }">
     <span class="clickable" ng-if="::field.children" ng-click="field.showChildren = !field.showChildren">
         <span class="fa {{field.showChildren ? 'fa-minus-square' : 'fa-plus-square' }}"></span>
         <span class="key">{{::field.key}}:</span>
