@@ -233,6 +233,24 @@ ui-view {
     cursor: pointer;
 }
 
+element-view {
+    display: block;
+    text-align: left;
+    margin-left: 2em;
+
+    span.fa, span.no-button {
+        min-width: 1em;
+        text-align: center;
+    }
+
+    .key {
+        font-weight: 500;
+        margin-bottom: 2px;
+        margin-right: 4px;
+        display: inline-block;
+    }
+}
+
 /* css for modals */
 .modal-container {
     position: fixed;
