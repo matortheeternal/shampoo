@@ -1,4 +1,4 @@
-export default function(ngapp, xelib) {
+export default function(ngapp, xelib, remote) {
     ngapp.config(['$stateProvider', function ($stateProvider) {
         $stateProvider.state('base.main', {
             templateUrl: 'partials/main.html',
@@ -70,6 +70,12 @@ export default function(ngapp, xelib) {
 
         $scope.toggleSettingsModal = function(visible) {
             $scope.showSettingsModal = visible;
+        };
+
+        $scope.toggleSaveModal = function(visible) {
+            $scope.$applyAsync(function() {
+                $scope.showSaveModal = visible;
+            });
         };
 
         $scope.resolveError = function(group, error) {
@@ -174,6 +180,13 @@ export default function(ngapp, xelib) {
             } else {
                 $timeout($scope.checkIfLoaded, 250);
             }
+        };
+
+        // terminate xelib when application is done
+        window.onbeforeunload = function(e) {
+            if (remote.app.forceClose) return;
+            $scope.toggleSaveModal(true);
+            e.returnValue = false;
         };
 
         $scope.checkIfLoaded();

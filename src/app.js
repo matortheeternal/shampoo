@@ -13,6 +13,7 @@ import errorsService from './Services/errorsService.js';
 import profilesModal from './Directives/profilesModal.js';
 import loadOrderModal from './Directives/loadOrderModal.js';
 import settingsModal from './Directives/settingsModal.js';
+import saveModal from './Directives/saveModal.js';
 import resolveModal from './Directives/resolveModal.js';
 import elementView from './Directives/elementView.js';
 import baseView from './Views/base.js';
@@ -20,7 +21,11 @@ import startView from './Views/start.js';
 import mainView from './Views/main.js';
 import 'angular-spinner';
 
+// set up helpers
 var fileHelpers = fh(remote, jetpack);
+
+// initialize xelib when application starts
+xelib.Initialize();
 
 // set up angular application
 var ngapp = angular.module('shampoo', [
@@ -56,9 +61,9 @@ profilesModal(ngapp);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
 settingsModal(ngapp);
+saveModal(ngapp, xelib);
 
 // VIEWS
 baseView(ngapp, xelib, remote);
 startView(ngapp, xelib);
-mainView(ngapp, xelib);
-
+mainView(ngapp, xelib, remote);

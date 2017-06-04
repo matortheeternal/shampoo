@@ -9,30 +9,31 @@ export default function(ngapp, xelib, remote) {
     }]);
 
     ngapp.controller('baseController', function ($scope) {
-        // initialize xedit-lib
-        xelib.Initialize();
+        var hostWindow = remote.getCurrentWindow();
 
         $scope.helpClick = function () {
             //$scope.toggleHelpModal();
         };
 
         $scope.minimizeClick = function () {
-            var window = remote.getCurrentWindow();
-            window.minimize();
+            hostWindow.minimize();
         };
 
         $scope.restoreClick = function () {
-            var window = remote.getCurrentWindow();
-            if (window.isMaximized()) {
-                window.unmaximize();
+            if (hostWindow.isMaximized()) {
+                hostWindow.unmaximize();
             } else {
-                window.maximize();
+                hostWindow.maximize();
             }
         };
 
         $scope.closeClick = function () {
-            var window = remote.getCurrentWindow();
-            window.close();
+            hostWindow.close();
         };
+
+        $scope.$on('terminate', function() {
+            remote.app.forceClose = true;
+            $scope.closeClick();
+        });
     });
 }

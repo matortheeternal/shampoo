@@ -58,7 +58,7 @@
     </div>
 
     <div class="main-actions">
-        <span class="action-box" ng-click="save()" title="Applies error resolutions, saves plugins to disk, and closes the application.">
+        <span class="action-box" ng-click="toggleSaveModal(true)" title="Applies error resolutions, saves plugins to disk, and closes the application.">
             Save and Close
         </span>
         <span class="action-box" ng-click="toggleSettingsModal(true)" title="Opens the settings modal.">Settings</span>
@@ -74,3 +74,4 @@
 
 <resolve-modal ng-if="showResolveModal"></resolve-modal>
 <settings-modal ng-if="showSettingsModal"></settings-modal>
+<save-modal ng-if="showSaveModal"></save-modal>
