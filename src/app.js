@@ -12,6 +12,7 @@ import formUtils from './Services/formUtils.js';
 import errorsService from './Services/errorsService.js';
 import profilesModal from './Directives/profilesModal.js';
 import loadOrderModal from './Directives/loadOrderModal.js';
+import settingsModal from './Directives/settingsModal.js';
 import resolveModal from './Directives/resolveModal.js';
 import elementView from './Directives/elementView.js';
 import baseView from './Views/base.js';
@@ -50,10 +51,11 @@ settingsService(ngapp, fileHelpers);
 errorsService(ngapp, xelib);
 
 // DIRECTIVES
+elementView(ngapp);
 profilesModal(ngapp);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
-elementView(ngapp);
+settingsModal(ngapp);
 
 // VIEWS
 baseView(ngapp, xelib, remote);
