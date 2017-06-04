@@ -7,7 +7,7 @@ export default function(ngapp, xelib) {
         });
     }]);
 
-    ngapp.controller('startController', function ($scope, $rootScope, profileService) {
+    ngapp.controller('startController', function ($scope, $rootScope, profileService, settingsService) {
         $scope.profiles = profileService.getProfiles();
         $scope.selectedProfile = ($scope.profiles.length > 0) && $scope.profiles[0];
 
@@ -39,8 +39,9 @@ export default function(ngapp, xelib) {
         };
 
         $scope.startSession = function () {
-            console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
             $rootScope.selectedProfile = $scope.selectedProfile;
+            settingsService.loadSettings($scope.selectedProfile.name);
+            console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
             xelib.SetGameMode($scope.selectedProfile.gameMode);
             $scope.getLoadOrder();
             $scope.toggleLoadOrderModal(true);

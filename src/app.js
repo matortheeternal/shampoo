@@ -5,6 +5,7 @@ import jetpack from 'fs-jetpack'; // module loaded from npm
 import fh from './helpers/fileHelpers.js';
 import env from './env';
 import xelib from './xelib.js';
+import settingsService from './Services/settingsService.js';
 import xelibService from './Services/xelibService.js';
 import profileService from './Services/profileService.js';
 import formUtils from './Services/formUtils.js';
