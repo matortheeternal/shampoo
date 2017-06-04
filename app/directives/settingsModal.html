@@ -1,0 +1,38 @@
+<div class="modal-container" ng-click="unfocusSettingsModal($event)">
+    <div class="modal big-modal">
+        <form>
+            <div class="close-modal">
+                <span class="fa fa-times" ng-click="saveSettings()"></span>
+            </div>
+
+            <h3>{{::profileName}} Settings</h3>
+
+            <h4>Error caching</h4>
+            <section>
+                <div class="subsection">
+                    <label>
+                        <input type="checkbox" ng-model="settings.cacheErrors"/>
+                        Cache errors to disk
+                    </label>
+                </div>
+                <div class="subsection">
+                    <span class="action-box" ng-click="manageErrorCache()">
+                        Manage plugin error cache
+                    </span>
+                </div>
+            </section>
+
+            <h4>Display</h4>
+            <section>
+                <div class="subsection">
+                    <span class="input-label">Theme</span>
+                    <select ng-model="settings.theme" ng-options="theme as theme.name for theme in themes"></select>
+                </div>
+            </section>
+
+            <div class="action-button-container">
+                <span class="action-box" ng-click="saveSettings()">OK</span>
+            </div>
+        </form>
+    </div>
+</div>
