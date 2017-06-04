@@ -315,6 +315,20 @@ resolve-modal {
     }
 }
 
+settings-modal {
+    h3 {
+        margin-top: 0;
+    }
+
+    h4 {
+        margin: 8px 0;
+    }
+
+    form {
+        text-align: left;
+    }
+}
+
 /* css for modals */
 .modal-container {
     position: fixed;
@@ -408,6 +422,10 @@ form {
             span, input {
                 display: inline-block;
                 vertical-align: middle;
+            }
+
+            span.action-box {
+                font-size: 16px;
             }
 
             .fa {
