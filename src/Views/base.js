@@ -1,6 +1,4 @@
-export default function(ngapp, xelib, electron) {
-    var remote = electron.remote;
-
+export default function(ngapp, xelib, remote) {
     ngapp.config(['$stateProvider', function ($stateProvider) {
         $stateProvider.state('base', {
             url: '',

@@ -1,25 +1,12 @@
-export default function(ngapp, xelib, electron) {
-    var jetpack = electron.jetpack;
-    var app = electron.remote.app;
-    var appDir = jetpack.cwd(app.getAppPath());
-
-    // helper function for loading json file
-    var loadJsonFile = function (filename, defaultValue) {
-        if (appDir.exists(filename) === 'file') {
-            return appDir.read(filename, 'json');
-        } else {
-            return defaultValue || [];
-        }
-    };
-
+export default function(ngapp, xelib, fileHelpers) {
     ngapp.service('profileService', function() {
         var service = this;
 
-        this.games = loadJsonFile('app/games.json');
-        this.profiles = loadJsonFile('app/profiles.json');
+        this.games = fileHelpers.loadJsonFile('app/games.json');
+        this.profiles = fileHelpers.loadJsonFile('app/profiles.json');
 
         this.saveProfiles = function (profiles) {
-            appDir.write('app/profiles.json', JSON.stringify(profiles));
+            fileHelpers.saveJsonFile('app/profiles.json', profiles);
         };
 
         this.createProfile = function (game) {
@@ -59,7 +46,7 @@ export default function(ngapp, xelib, electron) {
 
         this.gamePathValid = function (gameMode, path) {
             var game = service.getGame(gameMode);
-            return jetpack.exists(path + game.exeName);
+            return fileHelpers.jetpack.exists(path + game.exeName);
         };
     });
 }

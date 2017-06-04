@@ -2,6 +2,7 @@
 import os from 'os'; // native node.js module
 import { remote } from 'electron'; // native electron module
 import jetpack from 'fs-jetpack'; // module loaded from npm
+import fh from './helpers/fileHelpers.js';
 import env from './env';
 import xelib from './xelib.js';
 import xelibService from './Services/xelibService.js';
@@ -17,11 +18,7 @@ import startView from './Views/start.js';
 import mainView from './Views/main.js';
 import 'angular-spinner';
 
-// set up electron application
-var electron = {
-    remote: remote,
-    jetpack: jetpack
-};
+var fileHelpers = fh(remote, jetpack);
 
 // set up angular application
 var ngapp = angular.module('shampoo', [
@@ -44,10 +41,11 @@ ngapp.run(['$rootScope', '$state', function ($rootScope, $state) {
 
 // SERVICES
 xelibService(ngapp, xelib);
-profileService(ngapp, xelib, electron);
+profileService(ngapp, xelib, fileHelpers);
 formUtils(ngapp);
 
 // FACTORIES
+settingsService(ngapp, fileHelpers);
 errorsService(ngapp, xelib);
 
 // DIRECTIVES
@@ -57,7 +55,7 @@ resolveModal(ngapp);
 elementView(ngapp);
 
 // VIEWS
-baseView(ngapp, xelib, electron);
+baseView(ngapp, xelib, remote);
 startView(ngapp, xelib);
 mainView(ngapp, xelib);
 
