@@ -37,15 +37,6 @@ ngapp.config(function ($urlMatcherFactoryProvider) {
     $urlMatcherFactoryProvider.strictMode(false);
 });
 
-ngapp.run(['$rootScope', '$state', function ($rootScope, $state) {
-    $rootScope.$on('$stateChangeStart', function (evt, toState, params, fromState) {
-        if (toState.redirectTo) {
-            evt.preventDefault();
-            $state.go(toState.redirectTo, params, {location: 'replace'});
-        }
-    });
-}]);
-
 // SERVICES
 xelibService(ngapp, xelib);
 profileService(ngapp, xelib, fileHelpers);
