@@ -9,6 +9,7 @@ import settingsService from './Services/settingsService.js';
 import xelibService from './Services/xelibService.js';
 import profileService from './Services/profileService.js';
 import formUtils from './Services/formUtils.js';
+import spinnerService from './Services/spinnerService.js';
 import errorsService from './Services/errorsService.js';
 import profilesModal from './Directives/profilesModal.js';
 import loadOrderModal from './Directives/loadOrderModal.js';
@@ -52,6 +53,7 @@ profileService(ngapp, xelib, fileHelpers);
 formUtils(ngapp);
 
 // FACTORIES
+spinnerService(ngapp);
 settingsService(ngapp, fileHelpers);
 errorsService(ngapp, xelib);
 
