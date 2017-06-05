@@ -25,8 +25,11 @@
         <div ng-repeat="plugin in plugins" class="content-block" ng-hide="checking && plugin.skip">
             <div class="content-title">{{::plugin.filename}}
                 <span ng-show="checking">({{plugin.status}})</span>
-                <span class="right" ng-show="!checking">
+                <span class="right" ng-hide="checking">
                     <span class="action-box small {{plugin.skip ? 'red-box' : 'green-box'}}" ng-click="plugin.skip = !plugin.skip">{{plugin.skip ? 'Skip' : 'Process'}}</span>
+                </span>
+                <span class="right" ng-show="plugin.checking">
+                    <span class="fa fa-circle-o-notch fa-spin" title="Error check in progress..."></span>
                 </span>
             </div>
             <div class="content-container" ng-if="plugin.groupedErrors">

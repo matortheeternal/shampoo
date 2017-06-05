@@ -518,6 +518,12 @@ input.invalid {
         .right {
             float: right;
             margin-top: -3px;
+
+            .fa-circle-o-notch {
+                cursor: default;
+                font-size: 18px;
+                margin-top: 4px;
+            }
         }
     }
 

@@ -66,6 +66,7 @@ export default function(ngapp, xelib, remote) {
             errorsService.getErrorMessages(errors);
             $scope.currentPlugin.errors = errors;
             $scope.currentPlugin.status = "Found " + errors.length + " errors";
+            $scope.currentPlugin.checking = false;
             $scope.currentPlugin.checked = true;
             $scope.checkedPlugins++;
             $scope.totalErrors += errors.length;
@@ -94,6 +95,7 @@ export default function(ngapp, xelib, remote) {
 
         $scope.checkPluginForErrors = function(plugin) {
             plugin.status = "Checking for errors...";
+            plugin.checking = true;
             try {
                 xelib.CheckForErrors(plugin._id);
                 $scope.currentPlugin = plugin;
