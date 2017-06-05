@@ -8,31 +8,35 @@ var Cardinal = ref.types.uint32;
 var Integer = ref.types.int32;
 var WordBool = ref.types.bool;
 var Double = ref.types.double;
+var Byte = ref.types.byte;
 var PWChar = ref.refType(WString);
 var PCardinal = ref.refType(Cardinal);
 var PInteger = ref.refType(Integer);
 var PWordBool = ref.refType(WordBool);
 var PDouble = ref.refType(Double);
+var PByte = ref.refType(Byte);
 
 // function binding
 var lib = ffi.Library('XEditLib', {
     // META FUNCTIONS
     'InitXEdit': [Void, []],
     'CloseXEdit': [Void, []],
-    'GetMessagesLength': [Void, [PInteger]],
-    'GetMessages': [WordBool, [PWChar, Integer]],
-    'ClearMessages': [Void, []],
     'GetResultString': [WordBool, [PWChar, Integer]],
     'GetResultArray': [WordBool, [PCardinal, Integer]],
-    'GetExceptionMessageLength': [Void, [PInteger]],
-    'GetExceptionMessage': [WordBool, [PWChar, Integer]],
     'GetGlobal': [WordBool, [PWChar, PInteger]],
     'GetGlobals': [WordBool, [PInteger]],
     'Release': [WordBool, [Cardinal]],
     'ResetStore': [WordBool, []],
+    // MESSAGE FUNCTIONS
+    'GetMessagesLength': [Void, [PInteger]],
+    'GetMessages': [WordBool, [PWChar, Integer]],
+    'ClearMessages': [Void, []],
+    'GetExceptionMessageLength': [Void, [PInteger]],
+    'GetExceptionMessage': [WordBool, [PWChar, Integer]],
     // SETUP FUNCTIONS
     'SetGameMode': [WordBool, [Integer]],
     'GetLoadOrder': [WordBool, [PInteger]],
+    'GetActivePlugins': [WordBool, [PInteger]],
     'LoadPlugins': [WordBool, [PWChar]],
     'GetLoaderDone': [WordBool, []],
     'GetGamePath': [WordBool, [Integer, PInteger]],
@@ -47,8 +51,9 @@ var lib = ffi.Library('XEditLib', {
     'CleanMasters': [WordBool, [Cardinal]],
     'SortMasters': [WordBool, [Cardinal]],
     'AddMaster': [WordBool, [Cardinal, PWChar]],
-    'GetMaster': [WordBool, [Cardinal, Integer, PCardinal]],
-    'GetMasters': [WordBool, [Cardinal, PCardinal, Integer]],
+    'AddMasters': [WordBool, [Cardinal, PWChar]],
+    'GetMasters': [WordBool, [Cardinal, PInteger]],
+    'GetRequiredBy': [WordBool, [Cardinal, PInteger]],
     // FILE VALUE METHODS
     'GetFileHeader': [WordBool, [Cardinal, PCardinal]],
     'GetNextObjectId': [WordBool, [Cardinal, PCardinal]],
@@ -69,12 +74,16 @@ var lib = ffi.Library('XEditLib', {
     'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RemoveElement': [WordBool, [Cardinal, PWChar]],
     'RemoveElementOrParent': [WordBool, [Cardinal]],
-    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'ElementExists': [WordBool, [Cardinal, PWChar, PWordBool]],
     'ElementCount': [WordBool, [Cardinal, PInteger]],
+    'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
     'GetExpectedSignatures': [WordBool, [Cardinal, PInteger]],
+    'SortKey': [WordBool, [Cardinal, PInteger]],
+    'ElementType': [WordBool, [Cardinal, PByte]],
+    'DefType': [WordBool, [Cardinal, PByte]],
+    'SmashType': [WordBool, [Cardinal, PByte]],
     // ERROR CHECKING METHODS
     'CheckForErrors': [WordBool, [Cardinal]],
     'GetErrorThreadDone': [WordBool, []],
@@ -87,12 +96,7 @@ var lib = ffi.Library('XEditLib', {
     'LongName': [WordBool, [Cardinal, PInteger]],
     'DisplayName': [WordBool, [Cardinal, PInteger]],
     'Path': [WordBool, [Cardinal, WordBool, PInteger]],
-    'EditorID': [WordBool, [Cardinal, PInteger]],
     'Signature': [WordBool, [Cardinal, PInteger]],
-    'FullName': [WordBool, [Cardinal, PInteger]],
-    'SortKey': [WordBool, [Cardinal, PInteger]],
-    'ElementType': [WordBool, [Cardinal, PInteger]],
-    'DefType': [WordBool, [Cardinal, PInteger]],
     'GetValue': [WordBool, [Cardinal, PWChar, PInteger]],
     'SetValue': [WordBool, [Cardinal, PWChar, PWChar]],
     'GetIntValue': [WordBool, [Cardinal, PWChar, PInteger]],
@@ -104,15 +108,15 @@ var lib = ffi.Library('XEditLib', {
     'GetFlag': [WordBool, [Cardinal, PWChar, PWChar, PWordBool]],
     'SetFlag': [WordBool, [Cardinal, PWChar, PWChar, WordBool]],
     'ToggleFlag': [WordBool, [Cardinal, PWChar, PWChar]],
+    'GetAllFlags': [WordBool, [Cardinal, PWChar, PInteger]],
     'GetEnabledFlags': [WordBool, [Cardinal, PWChar, PInteger]],
+    'SignatureFromName': [WordBool, [PWChar, PInteger]],
+    'NameFromSignature': [WordBool, [PWChar, PInteger]],
+    'GetSignatureNameMap': [WordBool, [PInteger]],
     // GROUP HANDLING METHODS
     'HasGroup': [WordBool, [Cardinal, PWChar, PWordBool]],
     'AddGroup': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetGroupSignatures': [WordBool, [Cardinal, PInteger]],
     'GetChildGroup': [WordBool, [Cardinal, PCardinal]],
-    'GroupSignatureFromName': [WordBool, [PWChar, PInteger]],
-    'GroupNameFromSignature': [WordBool, [PWChar, PInteger]],
-    'GetGroupSignatureNameMap': [WordBool, [PInteger]],
     // RECORD HANDLING METHODS
     'AddRecord': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetRecords': [WordBool, [Cardinal, PInteger]],
@@ -121,15 +125,35 @@ var lib = ffi.Library('XEditLib', {
     'RecordByEditorID': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RecordByName': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetOverrides': [WordBool, [Cardinal, PInteger]],
-    'GetFormID': [WordBool, [Cardinal, PCardinal]],
-    'SetFormID': [WordBool, [Cardinal, Cardinal]],
-    'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
     'GetReferences': [WordBool, [Cardinal, PInteger]],
+    'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
     'IsMaster': [WordBool, [Cardinal, PWordBool]],
     'IsInjected': [WordBool, [Cardinal, PWordBool]],
     'IsOverride': [WordBool, [Cardinal, PWordBool]],
-    'IsWinningOverride': [WordBool, [Cardinal, PWordBool]]
+    'IsWinningOverride': [WordBool, [Cardinal, PWordBool]],
+    'ConflictThis': [WordBool, [Cardinal, PByte]],
+    'ConflictAll': [WordBool, [Cardinal, PByte]],
+    // RECORD VALUE METHODS
+    'EditorID': [WordBool, [Cardinal, PInteger]],
+    'FullName': [WordBool, [Cardinal, PInteger]],
+    'GetFormID': [WordBool, [Cardinal, PCardinal]],
+    'SetFormID': [WordBool, [Cardinal, Cardinal]]
 });
+
+// ENUMERATIONS
+var elementTypes = ['etFile', 'etMainRecord', 'etGroupRecord', 'etSubRecord', 'etSubRecordStruct', 'etSubRecordArray',
+    'etSubRecordUnion', 'etArray', 'etStruct', 'etValue', 'etFlag', 'etStringListTerminator', 'etUnion',
+    'etStructChapter'];
+var defTypes = [ 'dtRecord', 'dtSubRecord', 'dtSubRecordArray', 'dtSubRecordStruct', 'dtSubRecordUnion', 'dtString',
+    'dtLString', 'dtLenString', 'dtByteArray', 'dtInteger', 'dtIntegerFormater', 'dtIntegerFormaterUnion', 'dtFlag',
+    'dtFloat', 'dtArray', 'dtStruct', 'dtUnion', 'dtEmpty', 'dtStructChapter'];
+var smashTypes = ['stUnknown', 'stRecord', 'stString', 'stInteger', 'stFlag', 'stFloat', 'stStruct', 'stUnsortedArray',
+    'stUnsortedStructArray', 'stSortedArray', 'stSortedStructArray', 'stByteArray', 'stUnion'];
+var conflictThis = [ 'ctUnknown', 'ctIgnored', 'ctNotDefined', 'ctIdenticalToMaster', 'ctOnlyOne', 'ctHiddenByModGroup',
+    'ctMaster', 'ctConflictBenign', 'ctOverride', 'ctIdenticalToMasterWinsConflict', 'ctConflictWins',
+    'ctConflictLoses'];
+var conflictAll = [ 'caUnknown', 'caOnlyOne', 'caNoConflict', 'caConflictBenign', 'caOverride', 'caConflict',
+    'caConflictCritical'];
 
 // helper functions
 var createTypedBuffer = function(size, type) {
@@ -242,19 +266,6 @@ var xelib = {
     'Finalize': function() {
         lib.CloseXEdit();
     },
-    'GetMessages': function() {
-        var _len = createTypedBuffer(4, PInteger);
-        lib.GetMessagesLength(_len);
-        return GetString(_len, 'GetMessages');
-    },
-    'ClearMessages': function() {
-        lib.ClearMessages();
-    },
-    'GetExceptionMessage': function() {
-        var _len = createTypedBuffer(4, PInteger);
-        lib.GetExceptionMessageLength(_len);
-        return GetString(_len, 'GetExceptionMessage');
-    },
     'GetGlobal': function(key) {
         var _len = createTypedBuffer(4, PInteger);
         if (!lib.GetGlobal(wcb(key), _len))
@@ -276,6 +287,21 @@ var xelib = {
             Fail('Failed to reset interface store');
     },
 
+    // MESSAGE FUNCTIONS
+    'GetMessages': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        lib.GetMessagesLength(_len);
+        return GetString(_len, 'GetMessages');
+    },
+    'ClearMessages': function() {
+        lib.ClearMessages();
+    },
+    'GetExceptionMessage': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        lib.GetExceptionMessageLength(_len);
+        return GetString(_len, 'GetExceptionMessage');
+    },
+
     // SETUP FUNCTIONS
     'SetGameMode': function(gameMode) {
         if (!lib.SetGameMode(gameMode))
@@ -284,7 +310,13 @@ var xelib = {
     'GetLoadOrder': function() {
         var _len = createTypedBuffer(4, PInteger);
         if (!lib.GetLoadOrder(_len))
-            return null;
+            Fail('Failed to get load order');
+        return GetString(_len);
+    },
+    'GetActivePlugins': function() {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetActivePlugins(_len))
+            Fail('Failed to get active plugins');
         return GetString(_len);
     },
     'LoadPlugins': function(loadOrder) {
@@ -349,12 +381,6 @@ var xelib = {
     'AddMaster': function(_id, filename) {
         if (!lib.AddMaster(_id, wcb(filename)))
             Fail(`Failed to add master "${filename}" to file: ${_id}`);
-    },
-    'GetMaster': function(_id, index) {
-        var _res = createTypedBuffer(4, PCardinal);
-        if (!lib.GetMaster(_id, index))
-            Fail(`'Failed to get master at index ${index} in file: ${_id}`);
-        return _res.readUInt32LE(0);
     },
     'GetMasters': function(_id) {
         var _len = createTypedBuffer(4, PInteger);
@@ -484,14 +510,8 @@ var xelib = {
             Fail(`Path failed on ${_id}`);
         return GetString(_len);
     },
-    'EditorID': function(_id) {
-        return GetStringValue(_id, 'EditorID');
-    },
     'Signature': function(_id) {
         return GetStringValue(_id, 'Signature');
-    },
-    'FullName': function(_id) {
-        return GetStringValue(_id, 'FullName');
     },
     'SortKey': function(_id) {
         return GetStringValue(_id, 'SortKey');
@@ -555,7 +575,7 @@ var xelib = {
         return GetString(_len).split(',');
     },
 
-    // RECORD METHODS
+    // RECORD HANDLING METHODS
     'IsMaster': function(_id) {
         return GetBoolValue(_id, "IsMaster");
     },
@@ -569,9 +589,17 @@ var xelib = {
         return GetBoolValue(_id, "IsWinningOverride");
     },
 
+    // RECORD VALUE METHODS
+    'EditorID': function(_id) {
+        return GetStringValue(_id, 'EditorID');
+    },
+    'FullName': function(_id) {
+        return GetStringValue(_id, 'FullName');
+    },
+
     /*** WRAPPER METHODS ***/
 
-    // RECORD METHODS
+    // RECORD VALUE METHODS
     'Translate': function(_id, vector) {
         var xelib = this;
         var position = xelib.GetElement(_id, 'DATA\\Position');

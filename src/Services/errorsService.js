@@ -162,7 +162,7 @@ export default function(ngapp, xelib) {
                         expectedSignatures = [];
                     });
                 }
-                return expectedSignatures.indexOf('NULL') > -1;
+                return expectedSignatures.indexOf('*') > -1 || expectedSignatures.indexOf('NULL') > -1;
             },
             execute: function(error) {
                 withErrorElement(error, function(element) {
