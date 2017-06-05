@@ -8,23 +8,39 @@ export default function(ngapp) {
         }
     });
 
-    ngapp.controller('resolveModalController', function ($scope, errorsService, xelibService, formUtils) {
+    ngapp.controller('resolveModalController', function ($scope, $element, errorsService, xelibService, formUtils) {
         $scope.unfocusResolveModal = formUtils.unfocusModal($scope.toggleResolveModal);
         $scope.errorGroups = errorsService.errorGroups();
 
+        $scope.getAllowedKeys = function() {
+            $scope.allowedKeys = [];
+            for (var i = 1; i <= $scope.resolutions.length; i++) {
+                $scope.allowedKeys.push(48 + i, 96 + i);
+            }
+        };
+
+        $scope.prepareView = function() {
+            $scope.element = xelibService.getRecordView($scope.error.handle);
+            if ($scope.error.path) {
+                xelibService.highlightField($scope.element, $scope.error.path)
+            }
+        };
+
+        $scope.prepareResolutions = function() {
+            $scope.resolutions = errorsService.getErrorResolutions($scope.error);
+            $scope.selectedIndex = $scope.resolutions.indexOf($scope.error.resolution);
+            $scope.getAllowedKeys();
+        };
+
         $scope.setError = function() {
-            if ($scope.errorIndex >= $scope.errorsToResolve.length) {
+            if ($scope.errorIndex + 1 >= $scope.errorsToResolve.length) {
                 $scope.toggleResolveModal();
                 return;
             }
             $scope.error = $scope.errorsToResolve[$scope.errorIndex];
             $scope.group = $scope.errorGroups[$scope.error.group];
-            $scope.element = xelibService.getRecordView($scope.error.handle);
-            if ($scope.error.path) {
-                xelibService.highlightField($scope.element, $scope.error.path)
-            }
-            $scope.resolutions = errorsService.getErrorResolutions($scope.error);
-            $scope.selectedIndex = $scope.resolutions.indexOf($scope.error.resolution);
+            $scope.prepareView();
+            $scope.prepareResolutions();
         };
 
         $scope.selectResolution = function(resolution) {
@@ -40,6 +56,25 @@ export default function(ngapp) {
         $scope.previousError = function() {
             $scope.errorIndex--;
             $scope.setError();
+        };
+
+        $scope.onKeyPress = function(e) {
+            var n = $scope.allowedKeys.indexOf(e.keyCode);
+            if (n > -1) {
+                $scope.selectResolution($scope.resolutions[Math.floor(n / 2)]);
+            }
+            // next error on w or right arrow key
+            else if (e.keyCode == 87 || e.keyCode == 39) {
+                $scope.nextError();
+            }
+            // previous error on q or left arrow key
+            else if (e.keyCode == 81 || e.keyCode == 37) {
+                $scope.previousError();
+            }
+            // close on escape
+            else if (e.keyCode == 27) {
+                $scope.toggleResolveModal();
+            }
         };
 
         // initialize error

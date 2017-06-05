@@ -1,5 +1,5 @@
 <div class="modal-container" ng-click="unfocusResolveModal($event)">
-    <div class="modal huge-modal">
+    <div class="modal huge-modal" tabindex="0" ng-keypress="onKeyPress($event)">
         <form>
             <div class="close-modal">
                 <span class="fa fa-times" ng-click="toggleResolveModal()"></span>

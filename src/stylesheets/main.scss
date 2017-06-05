@@ -269,6 +269,10 @@ resolve-modal {
             padding: 0 50px;
         }
     }
+    .modal:focus {
+        outline: none;
+    }
+
 
     .modal-body {
         margin: 18px 40px 100px;
