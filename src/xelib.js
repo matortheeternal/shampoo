@@ -440,6 +440,12 @@ var xelib = {
             Fail(`Failed to get element count for ${_id}`);
         return _res.readInt32LE(0);
     },
+    'GetLinksTo': function(_id, path) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.ElementEquals(_id, wcb(path), _res))
+            Fail(`Failed to get link at: ${elementContext(_id, path)}`);
+        return _res.readUInt32LE();
+    },
     'ElementEquals': function(_id, _id2) {
         var _bool = createTypedBuffer(2, PWordBool);
         if (!lib.ElementEquals(_id, _id2, _bool))
@@ -595,6 +601,16 @@ var xelib = {
     },
     'FullName': function(_id) {
         return GetStringValue(_id, 'FullName');
+    },
+    'GetFormID': function(_id) {
+        var _res = createTypedBuffer(4, PCardinal);
+        if (!lib.GetFormID(_id, _res))
+            Fail(`Failed to get FormID for ${_id}`);
+        return _res.readUInt32LE();
+    },
+    'SetFormID': function(_id, newFormID) {
+        if (!lib.SetFormID(_id, newFormID))
+            Fail(`Failed to set FormID on ${_id} to ${newFormID}`);
     },
 
     /*** WRAPPER METHODS ***/
