@@ -68,7 +68,7 @@ var lib = ffi.Library('XEditLib', {
     'SetIsESM': [WordBool, [Cardinal, WordBool]],
     // ELEMENT HANDLING METHODS
     'GetElement': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetElements': [WordBool, [Cardinal, PInteger]],
+    'GetElements': [WordBool, [Cardinal, PWChar, PInteger]],
     'GetElementFile': [WordBool, [Cardinal, PCardinal]],
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
     'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
@@ -396,10 +396,10 @@ var xelib = {
             Fail(`Failed to get element at: ${elementContext(_id, path)}`);
         return _res.readUInt32LE(0);
     },
-    'GetElements': function(_id) {
+    'GetElements': function(_id, path = '') {
         var _len = createTypedBuffer(4, PInteger);
-        if (!lib.GetElements(_id,  _len))
-            Fail(`Failed to get child elements for: ${_id}`);
+        if (!lib.GetElements(_id, wcb(path), _len))
+            Fail(`Failed to get child elements at: ${elementContext(_id, path)}`);
         return GetArray(_len);
     },
     'GetElementFile': function(_id) {
