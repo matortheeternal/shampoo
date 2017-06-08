@@ -80,5 +80,9 @@ export default function(ngapp) {
         // initialize error
         $scope.errorIndex = 0;
         $scope.setError();
+
+        // focus modal
+        var modalElement = $element[0].firstElementChild.firstElementChild;
+        modalElement.focus();
     });
 }

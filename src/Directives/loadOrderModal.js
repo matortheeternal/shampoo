@@ -8,7 +8,7 @@ export default function(ngapp, xelib) {
         }
     });
 
-    ngapp.controller('loadOrderModalController', function ($scope, $state) {
+    ngapp.controller('loadOrderModalController', function ($scope, $state, $element) {
         $scope.prevIndex = undefined;
 
         $scope.updateIndexes = function() {
@@ -54,6 +54,10 @@ export default function(ngapp, xelib) {
             else if (e.keyCode == 27) {
                 $scope.clearSelection();
             }
+            // load plugins on enter
+            else if (e.keyCode == 13) {
+                $scope.loadPlugins();
+            }
         };
 
         $scope.loadPlugins = function() {
@@ -68,7 +72,12 @@ export default function(ngapp, xelib) {
             $state.go('base.main');
         };
 
+        // initialize view model properties
         $scope.updateIndexes();
         $scope.clearSelection();
+
+        // focus modal
+        var modalElement = $element[0].firstElementChild.firstElementChild;
+        modalElement.focus();
     });
 }
