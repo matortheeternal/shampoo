@@ -578,6 +578,16 @@ var xelib = {
             Fail(`Failed to get enabled flags at: ${elementContext(_id, path)}`);
         return GetString(_len).split(',');
     },
+    'SetEnabledFlags': function(_id, path, flags) {
+        if (!lib.SetEnabledFlags(_id, wcb(path), wcb(flags.join(','))))
+            Fail(`Failed to set enabled flags at: ${elementContext(_id, path)}`);
+    },
+    'GetAllFlags': function(_id, path) {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetAllFlags(_id, wcb(path), _len))
+            Fail(`Failed to get all flags at: ${elementContext(_id, path)}`);
+        return GetString(_len).split(',');
+    },
 
     // RECORD HANDLING METHODS
     'IsMaster': function(_id) {
