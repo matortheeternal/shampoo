@@ -67,18 +67,20 @@ var lib = ffi.Library('XEditLib', {
     'GetIsESM': [WordBool, [Cardinal, PWordBool]],
     'SetIsESM': [WordBool, [Cardinal, WordBool]],
     // ELEMENT HANDLING METHODS
+    'HasElement': [WordBool, [Cardinal, PWChar, PWordBool]],
     'GetElement': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetElements': [WordBool, [Cardinal, PWChar, PInteger]],
-    'GetElementFile': [WordBool, [Cardinal, PCardinal]],
-    'GetContainer': [WordBool, [Cardinal, PCardinal]],
     'AddElement': [WordBool, [Cardinal, PWChar, PCardinal]],
     'RemoveElement': [WordBool, [Cardinal, PWChar]],
     'RemoveElementOrParent': [WordBool, [Cardinal]],
-    'ElementExists': [WordBool, [Cardinal, PWChar, PWordBool]],
-    'ElementCount': [WordBool, [Cardinal, PInteger]],
+    'GetElements': [WordBool, [Cardinal, PWChar, PInteger]],
     'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
+    'GetContainer': [WordBool, [Cardinal, PCardinal]],
+    'GetElementFile': [WordBool, [Cardinal, PCardinal]],
+    'ElementCount': [WordBool, [Cardinal, PInteger]],
     'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
+    'ElementMatches': [WordBool, [Cardinal, PWChar, PWChar, PWordBool]],
     'CopyElement': [WordBool, [Cardinal, Cardinal, WordBool, WordBool, PCardinal]],
+    'MoveElement': [WordBool, [Cardinal, Integer]],
     'GetExpectedSignatures': [WordBool, [Cardinal, PInteger]],
     'SortKey': [WordBool, [Cardinal, PInteger]],
     'ElementType': [WordBool, [Cardinal, PByte]],
@@ -107,9 +109,9 @@ var lib = ffi.Library('XEditLib', {
     'SetFloatValue': [WordBool, [Cardinal, PWChar, Double]],
     'GetFlag': [WordBool, [Cardinal, PWChar, PWChar, PWordBool]],
     'SetFlag': [WordBool, [Cardinal, PWChar, PWChar, WordBool]],
-    'ToggleFlag': [WordBool, [Cardinal, PWChar, PWChar]],
-    'GetAllFlags': [WordBool, [Cardinal, PWChar, PInteger]],
     'GetEnabledFlags': [WordBool, [Cardinal, PWChar, PInteger]],
+    'SetEnabledFlags': [WordBool, [Cardinal, PWChar]],
+    'GetAllFlags': [WordBool, [Cardinal, PWChar, PInteger]],
     'SignatureFromName': [WordBool, [PWChar, PInteger]],
     'NameFromSignature': [WordBool, [PWChar, PInteger]],
     'GetSignatureNameMap': [WordBool, [PInteger]],
@@ -390,28 +392,16 @@ var xelib = {
     },
 
     // ELEMENT HANDLING METHODS
+    'HasElement': function(_id, path = '') {
+        var _bool = createTypedBuffer(2, PWordBool);
+        if (!lib.HasElement(_id, wcb(path), _bool))
+            Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
+        return _bool.readInt16LE > 0;
+    },
     'GetElement': function(_id, path = '') {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetElement(_id, wcb(path), _res))
             Fail(`Failed to get element at: ${elementContext(_id, path)}`);
-        return _res.readUInt32LE(0);
-    },
-    'GetElements': function(_id, path = '') {
-        var _len = createTypedBuffer(4, PInteger);
-        if (!lib.GetElements(_id, wcb(path), _len))
-            Fail(`Failed to get child elements at: ${elementContext(_id, path)}`);
-        return GetArray(_len);
-    },
-    'GetElementFile': function(_id) {
-        var _res = createTypedBuffer(4, PInteger);
-        if (!lib.GetElementFile(_id, _res))
-            Fail(`Failed to get element file for: ${_id}`);
-        return _res.readUInt32LE(0);
-    },
-    'GetContainer': function(_id) {
-        var _res = createTypedBuffer(4, PInteger);
-        if (!lib.GetContainer(_id, _res))
-            Fail(`Failed to get container for: ${_id}`);
         return _res.readUInt32LE(0);
     },
     'AddElement': function(_id, path = '') {
@@ -428,23 +418,35 @@ var xelib = {
         if (!lib.RemoveElementOrParent(_id))
             Fail(`Failed to remove element ${_id}`);
     },
-    'ElementExists': function(_id, path = '') {
-        var _bool = createTypedBuffer(2, PWordBool);
-        if (!lib.ElementExists(_id, wcb(path), _bool))
-            Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
-        return _bool.readInt16LE > 0;
-    },
-    'ElementCount': function(_id) {
-        var _res = createTypedBuffer(4, PInteger);
-        if (!lib.ElementCount(_id, _res))
-            Fail(`Failed to get element count for ${_id}`);
-        return _res.readInt32LE(0);
+    'GetElements': function(_id, path = '') {
+        var _len = createTypedBuffer(4, PInteger);
+        if (!lib.GetElements(_id, wcb(path), _len))
+            Fail(`Failed to get child elements at: ${elementContext(_id, path)}`);
+        return GetArray(_len);
     },
     'GetLinksTo': function(_id, path) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.ElementEquals(_id, wcb(path), _res))
             Fail(`Failed to get link at: ${elementContext(_id, path)}`);
         return _res.readUInt32LE();
+    },
+    'GetContainer': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetContainer(_id, _res))
+            Fail(`Failed to get container for: ${_id}`);
+        return _res.readUInt32LE(0);
+    },
+    'GetElementFile': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.GetElementFile(_id, _res))
+            Fail(`Failed to get element file for: ${_id}`);
+        return _res.readUInt32LE(0);
+    },
+    'ElementCount': function(_id) {
+        var _res = createTypedBuffer(4, PInteger);
+        if (!lib.ElementCount(_id, _res))
+            Fail(`Failed to get element count for ${_id}`);
+        return _res.readInt32LE(0);
     },
     'ElementEquals': function(_id, _id2) {
         var _bool = createTypedBuffer(2, PWordBool);
@@ -569,10 +571,6 @@ var xelib = {
         if (!lib.GetFlag(_id, wcb(path), wcb(name), _enabled))
             Fail(`Failed to get flag value at: ${flagContext(_id, path, name)}`);
         return _enabled.readInt16LE() > 0;
-    },
-    'ToggleFlag': function(_id, path, name) {
-        if (!lib.ToggleFlag(_id, wcb(path), wcb(name)))
-            Fail(`Failed to toggle flag at: ${flagContext(_id, path, name)}`);
     },
     'GetEnabledFlags': function(_id, path) {
         var _len = createTypedBuffer(4, PInteger);
