@@ -17,6 +17,7 @@ import settingsModal from './Directives/settingsModal.js';
 import saveModal from './Directives/saveModal.js';
 import resolveModal from './Directives/resolveModal.js';
 import elementView from './Directives/elementView.js';
+import hexFilter from './Filters/hexFilter.js';
 import baseView from './Views/base.js';
 import startView from './Views/start.js';
 import mainView from './Views/main.js';
@@ -56,6 +57,9 @@ formUtils(ngapp);
 spinnerService(ngapp);
 settingsService(ngapp, fileHelpers);
 errorsService(ngapp, xelib);
+
+// FILTERS
+hexFilter(ngapp);
 
 // DIRECTIVES
 elementView(ngapp);

@@ -9,7 +9,14 @@ export default function(ngapp, xelib) {
     });
 
     ngapp.controller('loadOrderModalController', function ($scope, $state) {
-        $scope.loadPlugins = function () {
+        $scope.updateIndexes = function() {
+            var n = 0;
+            $scope.loadOrder.forEach(function(item) {
+                if (item.active) item.index = n++;
+            });
+        };
+
+        $scope.loadPlugins = function() {
             var loadOrder = $scope.loadOrder.filter(function (item) {
                 return item.active;
             }).map(function (item) {
@@ -20,5 +27,7 @@ export default function(ngapp, xelib) {
             xelib.LoadPlugins(loadOrder.join('\n'));
             $state.go('base.main');
         };
+
+        $scope.updateIndexes();
     });
 }
