@@ -28,12 +28,14 @@ export default function(ngapp, xelib) {
         };
 
         $scope.getLoadOrder = function () {
-            var loadOrder = xelib.GetLoadOrder().split('\n');
-            console.log(loadOrder);
+            var loadOrder = xelib.GetLoadOrder().split('\r\n');
+            var activePlugins = xelib.GetActivePlugins().split('\r\n');
+            console.log('Load Order:\n' + loadOrder);
+            console.log('Active Plugins:\n' + activePlugins);
             $scope.loadOrder = loadOrder.map(function (filename) {
                 return {
                     filename: filename,
-                    active: false
+                    active: activePlugins.indexOf(filename) > -1
                 }
             });
         };
