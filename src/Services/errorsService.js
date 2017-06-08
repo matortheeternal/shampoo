@@ -1,5 +1,5 @@
 export default function(ngapp, xelib) {
-    ngapp.service('errorsService', function () {
+    ngapp.service('errorsService', function (xelibService) {
         var service = this;
 
         this.errorAcronyms = [
@@ -197,28 +197,57 @@ export default function(ngapp, xelib) {
             tweakPositionResolution,
             ignoreResolution
         ];
+        var deletedResolutions = [
+            {
+                label: "Undelete and Disable",
+                class: "green",
+                available: function(error) {
+                    return error.signature !== 'NAVM';
+                },
+                execute: function(error) {
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
+                    xelib.SetRecordFlag(error.handle, "Initially Disabled", true);
+                }
+            },
+            {
+                label: "Restore",
+                class: "red",
+                available: function(error) {
+                    return error.signature !== 'NAVM';
+                },
+                execute: function(error) {
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
+                }
+            },
+            {
+                label: "Bury Navmesh",
+                class: "green",
+                available: function(error) {
+                    return error.signature === 'NAVM';
+                },
+                execute: function(error) {
+                    xelibService.MoveVerticesUnderground(error.handle);
+                    xelibService.RemoveEdgeLinks(error.handle);
+                    xelibService.UpdateMinMaxZ(error.handle);
+                }
+            },
+            {
+                label: "Replace Navmesh",
+                class: "red",
+                available: function(error) {
+                    return error.signature === 'NAVM';
+                },
+                execute: function(error) {
+                    // TODO
+                }
+            },
+            ignoreResolution
+        ];
 
         this.errorResolutions = {
             ITM: identicalResolutions,
             ITPO: identicalResolutions,
-            UDR: [
-                {
-                    label: "Undelete and Disable",
-                    class: "green",
-                    execute: function(error) {
-                        xelib.SetRecordFlag(error.handle, "Deleted", false);
-                        xelib.SetRecordFlag(error.handle, "Initially Disabled", true);
-                    }
-                },
-                {
-                    label: "Restore",
-                    class: "red",
-                    execute: function(error) {
-                        xelib.SetRecordFlag(error.handle, "Deleted", false);
-                    }
-                },
-                ignoreResolution
-            ],
+            UDR: deletedResolutions,
             UES: [
                 removeRecordResolution,
                 // TODO: Repair
