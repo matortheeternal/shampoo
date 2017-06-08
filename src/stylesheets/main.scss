@@ -257,6 +257,12 @@ element-view {
     }
 }
 
+load-order-modal {
+    li.selected {
+        background-color: #E0F0FF;
+    }
+}
+
 resolve-modal {
     h2, h3 {
         margin-top: 0;
@@ -269,10 +275,6 @@ resolve-modal {
             padding: 0 50px;
         }
     }
-    .modal:focus {
-        outline: none;
-    }
-
 
     .modal-body {
         margin: 18px 40px 100px;
@@ -351,6 +353,10 @@ settings-modal {
         margin: 150px auto;
         box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.8);
         background-color: #fff;
+
+        &:focus {
+            outline: none;
+        }
 
         .section-title {
             display: block;
