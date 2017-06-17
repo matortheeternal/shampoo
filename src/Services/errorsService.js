@@ -82,8 +82,7 @@ export default function(ngapp, xelib) {
                 return [error.name, `Record marked as deleted but contains: ${error.data}`];
             },
             UES: function(error) {
-                var dataParts = error.data.split(',');
-                return [error.name, `Error: Record (${dataParts[0]}) contains unexpected (or out of order) subrecord ${dataParts[1]}`];
+                return [error.name, `Error: Record contains unexpected (or out of order) subrecord ${error.data}`];
             },
             URR: function(error) {
                 return [error.name, `${error.path}: [${error.data}] < Error: Could not be resolved >`];
