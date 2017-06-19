@@ -54,18 +54,6 @@ var lib = ffi.Library('XEditLib', {
     'AddMasters': [WordBool, [Cardinal, PWChar]],
     'GetMasters': [WordBool, [Cardinal, PInteger]],
     'GetRequiredBy': [WordBool, [Cardinal, PInteger]],
-    // FILE VALUE METHODS
-    'GetFileHeader': [WordBool, [Cardinal, PCardinal]],
-    'GetNextObjectId': [WordBool, [Cardinal, PCardinal]],
-    'SetNextObjectID': [WordBool, [Cardinal, Cardinal]],
-    'GetFileName': [WordBool, [Cardinal, PInteger]],
-    'GetAuthor': [WordBool, [Cardinal, PInteger]],
-    'SetAuthor': [WordBool, [Cardinal, PWChar]],
-    'GetDescription': [WordBool, [Cardinal, PInteger]],
-    'SetDescription': [WordBool, [Cardinal, PWChar]],
-    'OverrideRecordCount': [WordBool, [Cardinal, PInteger]],
-    'GetIsESM': [WordBool, [Cardinal, PWordBool]],
-    'SetIsESM': [WordBool, [Cardinal, WordBool]],
     // ELEMENT HANDLING METHODS
     'HasElement': [WordBool, [Cardinal, PWChar, PWordBool]],
     'GetElement': [WordBool, [Cardinal, PWChar, PCardinal]],
@@ -115,10 +103,6 @@ var lib = ffi.Library('XEditLib', {
     'SignatureFromName': [WordBool, [PWChar, PInteger]],
     'NameFromSignature': [WordBool, [PWChar, PInteger]],
     'GetSignatureNameMap': [WordBool, [PInteger]],
-    // GROUP HANDLING METHODS
-    'HasGroup': [WordBool, [Cardinal, PWChar, PWordBool]],
-    'AddGroup': [WordBool, [Cardinal, PWChar, PCardinal]],
-    'GetChildGroup': [WordBool, [Cardinal, PCardinal]],
     // RECORD HANDLING METHODS
     'AddRecord': [WordBool, [Cardinal, PWChar, PCardinal]],
     'GetRecords': [WordBool, [Cardinal, PInteger]],
@@ -604,12 +588,6 @@ var xelib = {
     },
 
     // RECORD VALUE METHODS
-    'EditorID': function(_id) {
-        return GetStringValue(_id, 'EditorID');
-    },
-    'FullName': function(_id) {
-        return GetStringValue(_id, 'FullName');
-    },
     'GetFormID': function(_id) {
         var _res = createTypedBuffer(4, PCardinal);
         if (!lib.GetFormID(_id, _res))
@@ -623,14 +601,63 @@ var xelib = {
 
     /*** WRAPPER METHODS ***/
 
+    // GROUP HANDLING METHODS
+    'HasGroup': function(_id, signature) {
+        return this.HasElement(_id, signature);
+    },
+    'AddGroup': function(_id, signature) {
+        return this.AddElement(_id, signature);
+    },
+    'GetChildGroup': function(_id) {
+        return this.GetElement(_id, 'Child Group');
+    },
+
+    // FILE VALUE METHODS
+    'GetFileHeader': function(_id) {
+        return this.GetElement(_id, 'File Header');
+    },
+    'GetNextObjectID': function(_id) {
+        return this.GetUIntValue(_id, 'File Header\\HEDR\\Next Object ID');
+    },
+    'SetNextObjectID': function(_id, nextObjectID) {
+        this.SetUIntValue(_id, 'File Header\\HEDR\\Next Object ID', nextObjectID);
+    },
+    'GetFileName': function(_id) {
+        return this.Name(_id);
+    },
+    'GetAuthor': function(_id) {
+        return this.GetValue(_id, 'File Header\\CNAM');
+    },
+    'SetAuthor': function(_id, author) {
+        return this.SetValue(_id, 'File Header\\CNAM', wcb(author));
+    },
+    'GetDescription': function(_id) {
+        return this.GetValue(_id, 'File Header\\SNAM');
+    },
+    'SetDescription': function(_id, description) {
+        return this.SetValue(_id, 'File Header\\SNAM', wcb(description));
+    },
+    'GetIsESM': function(_id) {
+        return this.GetFlag(_id, 'File Header\\Record Header\\Record Flags', 'ESM');
+    },
+    'SetIsESM': function(_id, enabled) {
+        return this.SetFlag(_id, 'File Header\\Record Header\\Record Flags', 'ESM', enabled);
+    },
+
     // RECORD VALUE METHODS
+    'EditorID': function(_id) {
+        return this.GetValue(_id, 'EDID');
+    },
+    'FullName': function(_id) {
+        return this.GetValue(_id, 'FULL');
+    },
     'Translate': function(_id, vector) {
         var xelib = this;
         var position = xelib.GetElement(_id, 'DATA\\Position');
         ['X', 'Y', 'Z'].forEach(function(coord) {
             if (vector.hasOwnProperty(coord)) {
                 var newValue = xelib.GetFloatValue(position, coord) + vector[coord];
-                this.SetFloatValue(position, coord, newValue);
+                xelib.SetFloatValue(position, coord, newValue);
             }
         });
     },
@@ -640,7 +667,7 @@ var xelib = {
         ['X', 'Y', 'Z'].forEach(function(coord) {
             if (vector.hasOwnProperty(coord)) {
                 var newValue = xelib.GetFloatValue(rotation, coord) + vector[coord];
-                this.SetFloatValue(rotation, coord, newValue);
+                xelib.SetFloatValue(rotation, coord, newValue);
             }
         });
     },
