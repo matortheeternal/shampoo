@@ -478,11 +478,11 @@ var xelib = {
                 Fail(`Failed to copy element from ${_id} to ${_id2}`);
         });
     },
-    'GetExpectedSignatures': function(_id) {
-        return GetString(function(_len) {
-            if (!lib.GetExpectedSignatures(_id, _len))
-                Fail(`Failed to get expected signatures for ${_id}`);
-        }).split(',');
+    'GetSignatureAllowed': function(_id, signature) {
+        return GetBool(function(_bool) {
+            if (!lib.GetSignatureAllowed(_id, wcb(signature), _bool))
+                Fail(`Failed to check if signature ${signature} is allowed on ${_id}`);
+        });
     },
 
     // ERROR CHECKING METHODS

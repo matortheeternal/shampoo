@@ -147,21 +147,17 @@ export default function(ngapp, xelib) {
             label: "Nullify",
             class: "green",
             available: function(error) {
-                var expectedSignatures;
+                var allowed;
                 if (error.group == 5) {
                     // if error is UER, get expected signatures from error data
-                    expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
+                    var expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
+                    allowed = expectedSignatures.indexOf('NULL') > -1;
                 } else {
-                    // else get the expected signatures through xelib
                     withErrorElement(error, function(element) {
-                        expectedSignatures = xelib.GetExpectedSignatures(element);
-                    }, function(error, exception) {
-                        console.log(error);
-                        console.log(exception);
-                        expectedSignatures = [];
+                        allowed = xelib.GetSignatureAllowed(element, 'NULL');
                     });
                 }
-                return expectedSignatures.indexOf('*') > -1 || expectedSignatures.indexOf('NULL') > -1;
+                return allowed;
             },
             execute: function(error) {
                 withErrorElement(error, function(element) {
