@@ -321,6 +321,12 @@ resolve-modal {
     }
 }
 
+profiles-modal {
+    .modal {
+        max-width: 700px !important;
+    }
+}
+
 settings-modal {
     h3 {
         margin-top: 0;
