@@ -69,7 +69,7 @@ var lib = ffi.Library('XEditLib', {
     'GetElements': [WordBool, [Cardinal, PWChar, PInteger]],
     'GetContainer': [WordBool, [Cardinal, PCardinal]],
     'GetElementFile': [WordBool, [Cardinal, PCardinal]],
-    'GetElementRecord': [WordBool, [Cardinal, PCardinal]],
+    //'GetElementRecord': [WordBool, [Cardinal, PCardinal]], TODO: Uncomment when this is exported.
     'GetLinksTo': [WordBool, [Cardinal, PWChar, PCardinal]],
     'ElementCount': [WordBool, [Cardinal, PInteger]],
     'ElementEquals': [WordBool, [Cardinal, Cardinal, PWordBool]],
@@ -188,8 +188,9 @@ var Fail = function(message) {
 };
 
 var GetString = function(callback, method = 'GetResultString') {
-    var len = createTypedBuffer(4, PInteger);
-    callback(len);
+    var _len = createTypedBuffer(4, PInteger);
+    callback(_len);
+    var len = _len.readInt32LE(0);
     if (len == 0) return '';
     var str = createTypedBuffer(2 * len, PWChar);
     if (!lib[method](str, len))
@@ -212,12 +213,13 @@ var GetInteger = function(callback) {
 var GetBool = function(callback) {
     var _bool = createTypedBuffer(2, PWordBool);
     callback(_bool);
-    return _bool.readInt16LE > 0;
+    return _bool.readInt16LE(0) > 0;
 };
 
 var GetArray = function(callback) {
-    var len = createTypedBuffer(4, PInteger);
-    callback(len);
+    var _len = createTypedBuffer(4, PInteger);
+    callback(_len);
+    var len = _len.readInt32LE(0);
     if (len == 0) return [];
     var a = createTypedBuffer(4 * len, PCardinal);
     if (!lib.GetResultArray(a, len))
@@ -310,9 +312,12 @@ var xelib = {
         lib.ClearMessages();
     },
     'GetExceptionMessage': function() {
-        return GetString(function(_len) {
-            lib.GetExceptionMessageLength(_len);
-        }, 'GetExceptionMessage');
+        var len = createTypedBuffer(4, PInteger);
+        if (!lib.GetExceptionMessageLength(len) || len == 0)
+            return '';
+        var str = createTypedBuffer(2 * len, PWChar);
+        lib.GetExceptionMessage(str, len);
+        return readPWCharString(str);
     },
 
     // SETUP FUNCTIONS
@@ -340,10 +345,12 @@ var xelib = {
         return lib.GetLoaderDone();
     },
     'GetGamePath': function(gameMode) {
-        return GetString(function(_len) {
-            if (!lib.GetGamePath(gameMode, _len))
-                Fail(`Failed to get game path for game mode: ${gameMode}`);
-        });
+        var len = createTypedBuffer(4, PInteger);
+        if (!lib.GetGamePath(gameMode, len) || len == 0)
+            return '';
+        var str = createTypedBuffer(2 * len, PWChar);
+        lib.GetResultString(str, len);
+        return readPWCharString(str);
     },
 
     // FILE HANDLING METHODS
