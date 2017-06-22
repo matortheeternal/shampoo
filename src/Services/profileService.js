@@ -10,13 +10,10 @@ export default function(ngapp, xelib, fileHelpers) {
         };
 
         this.createProfile = function (game) {
-            var installPath = xelib.GetGamePath(game.mode);
-            if (installPath) {
-                return {
-                    name: game.name,
-                    gameMode: game.mode,
-                    installPath: installPath
-                }
+            return {
+                name: game.name,
+                gameMode: game.mode,
+                installPath: xelib.GetGamePath(game.mode)
             }
         };
 
