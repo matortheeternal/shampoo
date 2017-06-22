@@ -1,5 +1,5 @@
 export default function(ngapp, xelib) {
-    ngapp.service('errorsService', function () {
+    ngapp.service('errorsService', function (xelibService) {
         var service = this;
 
         this.errorAcronyms = [
@@ -219,8 +219,20 @@ export default function(ngapp, xelib) {
                 ignoreResolution
             ],
             UES: [
+                {
+                    label: "Repair",
+                    class: "green",
+                    execute: function(error) {
+                        xelibService.withElement(xelib.GetElementFile(error.handle), function(file) {
+                            var copy = xelib.CopyElement(error.handle, file, true);
+                            var formID = xelib.GetFormID(error.handle);
+                            xelib.RemoveElement(error.handle);
+                            xelib.SetFormID(copy, formID);
+                            xelib.Switch(error.handle, copy);
+                        });
+                    }
+                },
                 removeRecordResolution,
-                // TODO: Repair
                 ignoreResolution
             ],
             URR: [
