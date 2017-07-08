@@ -281,7 +281,11 @@ export default function(ngapp, xelib) {
                 errorGroup.errors.forEach(function(error) {
                     error.resolution = resolutions.find(function(resolution) {
                         if (!resolution.hasOwnProperty('available')) return true;
-                        return resolution.available(error);
+                        try {
+                            return resolution.available(error);
+                        } catch (x) {
+                            return false;
+                        }
                     });
                 });
             } else {
