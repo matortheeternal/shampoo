@@ -16,6 +16,14 @@ export default function(ngapp, xelib) {
         });
         $scope.total = $scope.pluginsToSave.length;
 
+        var alertException = function(callback) {
+            try {
+                callback();
+            } catch (x) {
+                alert(x);
+            }
+        };
+
         $scope.save = function() {
             $timeout(function() {
                 if ($scope.pluginsToSave.length > 0) {
@@ -35,7 +43,9 @@ export default function(ngapp, xelib) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
                 plugin.errors.forEach(function(error) {
                     if (error.resolution && error.resolution.hasOwnProperty('execute')) {
-                        error.resolution.execute(error);
+                        alertException(function() {
+                            error.resolution.execute(error);
+                        });
                     }
                 });
             });
@@ -47,7 +57,9 @@ export default function(ngapp, xelib) {
             });
             $scope.pluginsToSave.forEach(function(plugin, index) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
-                xelib.SaveFile(plugin._id);
+                alertException(function() {
+                    xelib.SaveFile(plugin._id);
+                });
             });
         };
 
