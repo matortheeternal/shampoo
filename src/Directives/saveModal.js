@@ -1,4 +1,4 @@
-export default function(ngapp, xelib) {
+export default function(ngapp, xelib, fileHelpers) {
     ngapp.directive('saveModal', function () {
         return {
             restrict: 'E',
@@ -63,8 +63,28 @@ export default function(ngapp, xelib) {
             });
         };
 
+        var buildCache = function() {
+            var cache = [];
+            $scope.pluginsToSave.forEach(function(plugin, index) {
+                $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
+                cache.push({
+                    filename: plugin.filename,
+                    hash: xelib.MD5Hash(plugin.handle),
+                    errors: plugin.errors
+                });
+            });
+            return cache;
+        };
+
         $scope.saveCache = function() {
-            // TODO
+            $scope.$applyAsync(function() {
+                $scope.message = 'Caching errors';
+            });
+            var cache = buildCache();
+            cache.forEach(function(entry) {
+                var filename = `cache\\${entry.filename}-${entry.hash}.json`;
+                fileHelpers.saveJsonFile(filename, entry.errors);
+            });
         };
 
         $scope.finalize = function() {

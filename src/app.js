@@ -67,7 +67,7 @@ profilesModal(ngapp);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
 settingsModal(ngapp);
-saveModal(ngapp, xelib);
+saveModal(ngapp, xelib, fileHelpers);
 
 // VIEWS
 baseView(ngapp, xelib, remote);
