@@ -72,4 +72,4 @@ saveModal(ngapp, xelib, fileHelpers);
 // VIEWS
 baseView(ngapp, xelib, remote);
 startView(ngapp, xelib);
-mainView(ngapp, xelib, remote);
+mainView(ngapp, xelib, remote, fileHelpers);
