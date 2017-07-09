@@ -78,6 +78,19 @@ export default function(ngapp, xelib, fileHelpers) {
             return cache;
         };
 
+        var sanitizeErrors = function(errors) {
+            return errors.map(function(error) {
+                let x = {
+                    g: error.group,
+                    f: error.form_id
+                };
+                if (error.hasOwnProperty('data')) {
+                    x.d = error.data;
+                }
+                return x;
+            });
+        };
+
         $scope.saveCache = function() {
             $scope.$applyAsync(function() {
                 $scope.message = 'Caching errors';
@@ -85,7 +98,7 @@ export default function(ngapp, xelib, fileHelpers) {
             var cache = buildCache();
             cache.forEach(function(entry) {
                 var filename = `cache\\${entry.filename}-${entry.hash}.json`;
-                fileHelpers.saveJsonFile(filename, entry.errors);
+                fileHelpers.saveJsonFile(filename, sanitizeErrors(entry.errors));
             });
         };
 
