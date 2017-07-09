@@ -137,6 +137,7 @@ export default function(ngapp, xelib, remote) {
                 return {
                     _id: _id,
                     filename: xelib.Name(_id),
+                    hash: xelib.MD5Hash(_id),
                     status: "Queued",
                     skip: false,
                     showContent: false

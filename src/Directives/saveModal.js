@@ -69,7 +69,7 @@ export default function(ngapp, xelib, fileHelpers) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
                 cache.push({
                     filename: plugin.filename,
-                    hash: xelib.MD5Hash(plugin.handle),
+                    hash: plugin.hash,
                     errors: plugin.errors
                 });
             });
