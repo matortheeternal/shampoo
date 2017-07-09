@@ -80,7 +80,7 @@ export default function(ngapp, xelib) {
         };
 
         this.intToHex = function(n, padding) {
-            var str = Number(n).toString(16);
+            var str = Number(n).toString(16).toUpperCase();
             while (str.length < padding) {
                 str = '0' + str;
             }
