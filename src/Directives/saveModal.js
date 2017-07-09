@@ -43,6 +43,7 @@ export default function(ngapp, xelib, fileHelpers) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
                 plugin.errors.forEach(function(error) {
                     if (error.resolution && error.resolution.hasOwnProperty('execute')) {
+                        if (!plugin.errorsResolved) plugin.errorsResolved = true;
                         alertException(function() {
                             error.resolution.execute(error);
                         });
@@ -57,6 +58,7 @@ export default function(ngapp, xelib, fileHelpers) {
             });
             $scope.pluginsToSave.forEach(function(plugin, index) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
+                if (!plugin.errorsResolved) return;
                 alertException(function() {
                     xelib.SaveFile(plugin._id);
                 });
