@@ -84,7 +84,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
         };
 
         $scope.pollErrorChecking = function() {
-            var done = xelib.GetErrorThreadDone();
+            let done = xelib.GetErrorThreadDone();
             if (done) {
                 $scope.getErrors();
                 $scope.checkNextPlugin();
@@ -107,7 +107,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
         };
 
         $scope.checkNextPlugin = function () {
-            var nextPlugin = $scope.plugins.find(function(plugin) {
+            let nextPlugin = $scope.plugins.find(function(plugin) {
                 return !plugin.skip && plugin.status === "Queued";
             });
             if (!nextPlugin) {
@@ -126,7 +126,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
         };
 
         $scope.skipPlugin = function(filename) {
-            var gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
+            let gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
             return filename.endsWith(".dat") || (filename === gameEsmFilename);
         };
 
@@ -149,7 +149,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
 
         $scope.buildErrors = function(plugin, errors) {
             return errors.map(function(error) {
-                let _id = xelib.GetElement(plugin._id, xelibService.intToHex(error.f));
+                let _id = xelib.GetElement(plugin._id, xelibService.intToHex(error.f, 8));
                 let x = {
                     handle: _id,
                     group: error.g,
@@ -163,10 +163,12 @@ export default function(ngapp, xelib, remote, fileHelpers) {
 
         $scope.loadCache = function() {
             $scope.plugins.forEach(function(plugin) {
-                var filePath = `cache\\${plugin.filename}-${plugin.hash}.json`;
+                let filePath = `cache\\${plugin.filename}-${plugin.hash}.json`;
                 if (fileHelpers.appDir.exists(filePath)) {
-                    var cachedErrors = fileHelpers.loadJsonFile(filePath, {});
-                    $scope.buildErrors(plugin, cachedErrors);
+                    let cachedErrors = fileHelpers.loadJsonFile(filePath, {});
+                    let errors = $scope.buildErrors(plugin, cachedErrors);
+                    $scope.setPluginErrors(plugin, errors);
+                    plugin.skip = true;
                 }
             });
         };
