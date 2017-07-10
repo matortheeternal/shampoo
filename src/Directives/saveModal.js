@@ -58,8 +58,8 @@ export default function(ngapp, xelib, fileHelpers) {
             if ($scope.pluginsToSave.length > 0) {
                 $scope.applyErrorResolutions();
                 $scope.savePlugins();
-                $scope.saveCache();
             }
+            $scope.saveCache();
             $scope.finalize();
         };
 
