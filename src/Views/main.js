@@ -7,13 +7,13 @@ export default function(ngapp, xelib, remote, fileHelpers) {
         });
     }]);
 
-    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, spinnerService, errorsService, xelibService) {
+    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, spinnerFactory, errorsService, xelibService) {
         $scope.loaded = false;
         $scope.log = xelib.GetMessages();
         $scope.checkedPlugins = 0;
         $scope.totalErrors = 0;
         $scope.plugins = [];
-        $scope.spinnerOpts = spinnerService.defaultOptions;
+        $scope.spinnerOpts = spinnerFactory.defaultOptions;
         $scope.groupedErrors = errorsService.errorGroups();
         xelibService.printGlobals();
 

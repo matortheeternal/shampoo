@@ -1,5 +1,5 @@
 export default function(ngapp) {
-    ngapp.service('spinnerService', function() {
+    ngapp.service('spinnerFactory', function() {
         this.defaultOptions ={
             lines: 17, // The number of lines to draw
             length: 0, // The length of each line
