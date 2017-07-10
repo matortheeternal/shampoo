@@ -11,12 +11,9 @@ export default function(ngapp, xelib, fileHelpers) {
     ngapp.controller('saveModalController', function($scope, $timeout, listViewFactory) {
         // initialize scope variables
         $scope.saving = false;
-        $scope.message = 'Saving data';
-        $scope.detailedMessage = '';
         $scope.pluginsToProcess = $scope.plugins.filter(function(plugin) {
             return plugin.hasOwnProperty('errors');
         });
-        $scope.total = $scope.pluginsToSave.length;
 
         // build shared functions
         listViewFactory.build($scope, 'pluginsToProcess', 'save');
@@ -57,19 +54,24 @@ export default function(ngapp, xelib, fileHelpers) {
         };
 
         // scope functions
+        $scope.saveData = function() {
+            if ($scope.pluginsToSave.length > 0) {
+                $scope.applyErrorResolutions();
+                $scope.savePlugins();
+                $scope.saveCache();
+            }
+            $scope.finalize();
+        };
+
         $scope.save = function() {
             $scope.saving = true;
+            $scope.message = 'Saving data';
+            $scope.detailedMessage = '';
             $scope.pluginsToSave = $scope.pluginsToProcess.filter(function(plugin) {
                 return plugin.active;
             });
-            $timeout(function() {
-                if ($scope.pluginsToSave.length > 0) {
-                    $scope.applyErrorResolutions();
-                    $scope.savePlugins();
-                    $scope.saveCache();
-                }
-                $scope.finalize();
-            }, 50);
+            $scope.total = $scope.pluginsToSave.length;
+            $timeout($scope.saveData, 50);
         };
 
         $scope.applyErrorResolutions = function() {
