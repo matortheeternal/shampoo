@@ -120,7 +120,7 @@ export default function(ngapp, xelib) {
             label: "Tweak EDID",
             class: "green",
             available: function(error) {
-                return xelib.ElementExists(error.handle, "EDID");
+                return xelib.HasElement(error.handle, "EDID");
             },
             execute: function(error, tweak) {
                 if (!tweak) tweak = "-Intended";
@@ -132,7 +132,7 @@ export default function(ngapp, xelib) {
             label: "Tweak Position",
             class: "green",
             available: function(error) {
-                return xelib.ElementExists(error.handle, "DATA\\Position");
+                return xelib.HasElement(error.handle, "DATA\\Position");
             },
             execute: function(error, tweak) {
                 if (!tweak) tweak = {

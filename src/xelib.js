@@ -425,7 +425,7 @@ var xelib = {
 
     // ELEMENT HANDLING METHODS
     'HasElement': function(_id, path = '') {
-        return GetBoolean(function(_bool) {
+        return GetBool(function(_bool) {
             if (!lib.HasElement(_id, wcb(path), _bool))
                 Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
         });
