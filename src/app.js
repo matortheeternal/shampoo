@@ -58,7 +58,7 @@ errorsService(ngapp, xelib);
 
 // FACTORIES
 spinnerFactory(ngapp);
-listViewFactory(ngApp);
+listViewFactory(ngapp);
 
 // FILTERS
 hexFilter(ngapp);

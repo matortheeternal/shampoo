@@ -8,14 +8,20 @@ export default function(ngapp, xelib, fileHelpers) {
         }
     });
 
-    ngapp.controller('saveModalController', function($scope, $timeout) {
+    ngapp.controller('saveModalController', function($scope, $timeout, listViewFactory) {
+        // initialize scope variables
+        $scope.saving = false;
         $scope.message = 'Saving data';
         $scope.detailedMessage = '';
-        $scope.pluginsToSave = $scope.plugins.filter(function(plugin) {
+        $scope.pluginsToProcess = $scope.plugins.filter(function(plugin) {
             return plugin.hasOwnProperty('errors');
         });
         $scope.total = $scope.pluginsToSave.length;
 
+        // build shared functions
+        listViewFactory.build($scope, 'pluginsToProcess', 'save');
+
+        // helper functions
         var alertException = function(callback) {
             try {
                 callback();
@@ -24,7 +30,38 @@ export default function(ngapp, xelib, fileHelpers) {
             }
         };
 
+        var buildCache = function() {
+            var cache = [];
+            $scope.pluginsToProcess.forEach(function(plugin, index) {
+                $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
+                cache.push({
+                    filename: plugin.filename,
+                    hash: plugin.hash,
+                    errors: plugin.errors
+                });
+            });
+            return cache;
+        };
+
+        var sanitizeErrors = function(errors) {
+            return errors.map(function(error) {
+                let x = {
+                    g: error.group,
+                    f: error.form_id
+                };
+                if (error.hasOwnProperty('data')) {
+                    x.d = error.data;
+                }
+                return x;
+            });
+        };
+
+        // scope functions
         $scope.save = function() {
+            $scope.saving = true;
+            $scope.pluginsToSave = $scope.pluginsToProcess.filter(function(plugin) {
+                return plugin.active;
+            });
             $timeout(function() {
                 if ($scope.pluginsToSave.length > 0) {
                     $scope.applyErrorResolutions();
@@ -65,32 +102,6 @@ export default function(ngapp, xelib, fileHelpers) {
             });
         };
 
-        var buildCache = function() {
-            var cache = [];
-            $scope.pluginsToSave.forEach(function(plugin, index) {
-                $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
-                cache.push({
-                    filename: plugin.filename,
-                    hash: plugin.hash,
-                    errors: plugin.errors
-                });
-            });
-            return cache;
-        };
-
-        var sanitizeErrors = function(errors) {
-            return errors.map(function(error) {
-                let x = {
-                    g: error.group,
-                    f: error.form_id
-                };
-                if (error.hasOwnProperty('data')) {
-                    x.d = error.data;
-                }
-                return x;
-            });
-        };
-
         $scope.saveCache = function() {
             $scope.$applyAsync(function() {
                 $scope.message = 'Caching errors';
@@ -110,8 +121,5 @@ export default function(ngapp, xelib, fileHelpers) {
             xelib.Finalize();
             $scope.$emit('terminate');
         };
-
-        // save things
-        $scope.save();
     });
 }
