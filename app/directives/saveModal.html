@@ -8,8 +8,8 @@
             <h3>Select Plugins to Save</h3>
             <section>
                 <ul class="checkbox-list">
-                    <li ng-repeat="item in pluginsToSave" ng-class="{ 'selected' : item.selected }" ng-click="select($event, item, $index)">
-                        <input type="checkbox" ng-model="item.active" ng-change="updateIndexes()" />
+                    <li ng-repeat="item in pluginsToProcess" ng-class="{ 'selected' : item.selected }" ng-click="select($event, item, $index)">
+                        <input type="checkbox" ng-model="item.active"/>
                         {{::item.filename}}
                     </li>
                 </ul>
