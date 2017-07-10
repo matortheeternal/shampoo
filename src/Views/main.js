@@ -27,10 +27,6 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                 });
                 $scope.changeErrorResolution(errorGroup);
             });
-
-            $scope.groupedErrors.forEach(function(errorGroup, index) {
-                errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
-            });
         };
 
         $scope.changeErrorResolution = function(errorGroup) {
@@ -93,9 +89,17 @@ export default function(ngapp, xelib, remote, fileHelpers) {
             }
         };
 
+        $scope.clearErrors = function(plugin) {
+            if (!plugin.hasOwnProperty('errors')) return;
+            $scope.totalErrors -= plugin.errors.length;
+            delete plugin.errors;
+            delete plugin.groupedErrors;
+        };
+
         $scope.checkPluginForErrors = function(plugin) {
             plugin.status = "Checking for errors...";
             plugin.checking = true;
+            $scope.clearErrors(plugin);
             try {
                 xelib.CheckForErrors(plugin._id);
                 $scope.currentPlugin = plugin;
@@ -106,12 +110,22 @@ export default function(ngapp, xelib, remote, fileHelpers) {
             }
         };
 
-        $scope.checkNextPlugin = function () {
+        $scope.endErrorCheck = function() {
+            $scope.checkingDone = true;
+            $scope.plugins.forEach(function(plugin) {
+                if (!plugin.hasOwnProperty('groupedErrors')) return;
+                $scope.groupedErrors.forEach(function(errorGroup, index) {
+                    errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
+                });
+            });
+        };
+
+        $scope.checkNextPlugin = function() {
             let nextPlugin = $scope.plugins.find(function(plugin) {
                 return !plugin.skip && plugin.status === "Queued";
             });
             if (!nextPlugin) {
-                $scope.checkingDone = true;
+                $scope.endErrorCheck();
                 return;
             }
             $scope.checkPluginForErrors(nextPlugin);
@@ -125,7 +139,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
             $scope.checking = true;
         };
 
-        $scope.skipPlugin = function(filename) {
+        $scope.ignorePlugin = function(filename) {
             let gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
             return filename.endsWith(".dat") || (filename === gameEsmFilename);
         };
@@ -143,7 +157,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                     showContent: false
                 };
             }).filter(function (plugin) {
-                return !$scope.skipPlugin(plugin.filename);
+                return !$scope.ignorePlugin(plugin.filename);
             });
         };
 
@@ -169,6 +183,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                     let errors = $scope.buildErrors(plugin, cachedErrors);
                     $scope.setPluginErrors(plugin, errors);
                     plugin.skip = true;
+                    plugin.status = `Found ${plugin.errors.length} cached errors`;
                 }
             });
         };
