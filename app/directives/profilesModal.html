@@ -9,7 +9,7 @@
             <section>
                 <div class="subsection" ng-repeat="game in games">
                     <span class="input-label">{{game.name}}</span>
-                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="buildValidProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
+                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="validateProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
                     <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
                 </div>
             </section>
@@ -18,14 +18,13 @@
                 <div class="subsection default-profile-section">
                     <span class="input-label">Default Profile</span>
                     <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
-                        <option value="" ng-if="!validProfiles.length"></option>
+                        <option value="None" ng-if="!validProfiles.length"></option>
                     </select>
                 </div>
             </section>
 
             <div class="action-button-container">
-                <span class="action-box" ng-click="saveProfiles()">Save</span>
-                <span class="action-box" ng-click="toggleProfilesModal()">Close</span>
+                <span class="action-box" ng-click="close()">Close</span>
             </div>
         </form>
     </div>

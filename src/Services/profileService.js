@@ -32,7 +32,16 @@ export default function(ngapp, xelib, fileHelpers) {
         this.getProfiles = function () {
             service.detectMissingProfiles(service.profiles);
             service.saveProfiles(service.profiles);
-            return service.profiles;
+            return service.profiles.filter(function(profile) {
+                return service.gamePathValid(profile.gameMode, profile.installPath);
+            });
+        };
+
+        this.setDefaultProfile = function(defaultProfile) {
+            let n = service.profiles.indexOf(defaultProfile);
+            if (n == 0) return;
+            service.profiles.splice(n, 1);
+            service.profiles.unshift(defaultProfile);
         };
 
         this.getGame = function (gameMode) {
