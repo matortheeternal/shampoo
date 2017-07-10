@@ -20,3 +20,4 @@ Thumbs.db
 # ignore VSCode editor files
 .vscode/
 app/profiles/
+cache/

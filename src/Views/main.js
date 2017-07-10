@@ -1,4 +1,4 @@
-export default function(ngapp, xelib, remote) {
+export default function(ngapp, xelib, remote, fileHelpers) {
     ngapp.config(['$stateProvider', function ($stateProvider) {
         $stateProvider.state('base.main', {
             templateUrl: 'partials/main.html',
@@ -7,13 +7,13 @@ export default function(ngapp, xelib, remote) {
         });
     }]);
 
-    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, spinnerService, errorsService, xelibService) {
+    ngapp.controller('mainController', function ($scope, $rootScope, $timeout, spinnerFactory, errorsService, xelibService) {
         $scope.loaded = false;
         $scope.log = xelib.GetMessages();
         $scope.checkedPlugins = 0;
         $scope.totalErrors = 0;
         $scope.plugins = [];
-        $scope.spinnerOpts = spinnerService.defaultOptions;
+        $scope.spinnerOpts = spinnerFactory.defaultOptions;
         $scope.groupedErrors = errorsService.errorGroups();
         xelibService.printGlobals();
 
@@ -26,10 +26,6 @@ export default function(ngapp, xelib, remote) {
                     return error.group === errorGroup.group;
                 });
                 $scope.changeErrorResolution(errorGroup);
-            });
-
-            $scope.groupedErrors.forEach(function(errorGroup, index) {
-                errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
             });
         };
 
@@ -62,29 +58,29 @@ export default function(ngapp, xelib, remote) {
             $scope.toggleResolveModal(true);
         };
 
-        $scope.setCurrentPluginErrors = function(errors) {
+        $scope.setPluginErrors = function(plugin, errors) {
             errorsService.getErrorMessages(errors);
-            $scope.currentPlugin.errors = errors;
-            $scope.currentPlugin.status = "Found " + errors.length + " errors";
-            $scope.currentPlugin.checking = false;
-            $scope.currentPlugin.checked = true;
-            $scope.checkedPlugins++;
+            plugin.errors = errors;
+            plugin.status = "Found " + errors.length + " errors";
+            plugin.checking = false;
+            plugin.checked = true;
             $scope.totalErrors += errors.length;
-            $scope.groupErrors($scope.currentPlugin);
+            $scope.groupErrors(plugin);
         };
 
         $scope.getErrors = function() {
             try {
+                $scope.checkedPlugins++;
                 var errors = xelib.GetErrors();
                 console.log(errors);
-                $scope.setCurrentPluginErrors(errors);
+                $scope.setPluginErrors($scope.currentPlugin, errors);
             } catch (e) {
                 xelibService.getExceptionInformation();
             }
         };
 
         $scope.pollErrorChecking = function() {
-            var done = xelib.GetErrorThreadDone();
+            let done = xelib.GetErrorThreadDone();
             if (done) {
                 $scope.getErrors();
                 $scope.checkNextPlugin();
@@ -93,9 +89,17 @@ export default function(ngapp, xelib, remote) {
             }
         };
 
+        $scope.clearErrors = function(plugin) {
+            if (!plugin.hasOwnProperty('errors')) return;
+            $scope.totalErrors -= plugin.errors.length;
+            delete plugin.errors;
+            delete plugin.groupedErrors;
+        };
+
         $scope.checkPluginForErrors = function(plugin) {
             plugin.status = "Checking for errors...";
             plugin.checking = true;
+            $scope.clearErrors(plugin);
             try {
                 xelib.CheckForErrors(plugin._id);
                 $scope.currentPlugin = plugin;
@@ -106,12 +110,22 @@ export default function(ngapp, xelib, remote) {
             }
         };
 
-        $scope.checkNextPlugin = function () {
-            var nextPlugin = $scope.plugins.find(function(plugin) {
+        $scope.endErrorCheck = function() {
+            $scope.checkingDone = true;
+            $scope.plugins.forEach(function(plugin) {
+                if (!plugin.hasOwnProperty('groupedErrors')) return;
+                $scope.groupedErrors.forEach(function(errorGroup, index) {
+                    errorGroup.errors = errorGroup.errors.concat(plugin.groupedErrors[index].errors);
+                });
+            });
+        };
+
+        $scope.checkNextPlugin = function() {
+            let nextPlugin = $scope.plugins.find(function(plugin) {
                 return !plugin.skip && plugin.status === "Queued";
             });
             if (!nextPlugin) {
-                $scope.checkingDone = true;
+                $scope.endErrorCheck();
                 return;
             }
             $scope.checkPluginForErrors(nextPlugin);
@@ -125,8 +139,8 @@ export default function(ngapp, xelib, remote) {
             $scope.checking = true;
         };
 
-        $scope.skipPlugin = function(filename) {
-            var gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
+        $scope.ignorePlugin = function(filename) {
+            let gameEsmFilename = $rootScope.selectedProfile.name + ".esm";
             return filename.endsWith(".dat") || (filename === gameEsmFilename);
         };
 
@@ -137,12 +151,40 @@ export default function(ngapp, xelib, remote) {
                 return {
                     _id: _id,
                     filename: xelib.Name(_id),
+                    hash: xelib.MD5Hash(_id),
                     status: "Queued",
                     skip: false,
                     showContent: false
                 };
             }).filter(function (plugin) {
-                return !$scope.skipPlugin(plugin.filename);
+                return !$scope.ignorePlugin(plugin.filename);
+            });
+        };
+
+        $scope.buildErrors = function(plugin, errors) {
+            return errors.map(function(error) {
+                let _id = xelib.GetElement(plugin._id, xelibService.intToHex(error.f, 8));
+                let x = {
+                    handle: _id,
+                    group: error.g,
+                    form_id: error.f,
+                    name: xelib.LongName(_id)
+                };
+                if (error.hasOwnProperty('d')) x.data = error.d;
+                return x;
+            });
+        };
+
+        $scope.loadCache = function() {
+            $scope.plugins.forEach(function(plugin) {
+                let filePath = `cache\\${plugin.filename}-${plugin.hash}.json`;
+                if (fileHelpers.appDir.exists(filePath)) {
+                    let cachedErrors = fileHelpers.loadJsonFile(filePath, {});
+                    let errors = $scope.buildErrors(plugin, cachedErrors);
+                    $scope.setPluginErrors(plugin, errors);
+                    plugin.skip = true;
+                    plugin.status = `Found ${plugin.errors.length} cached errors`;
+                }
             });
         };
 
@@ -157,6 +199,7 @@ export default function(ngapp, xelib, remote) {
                 console.log($scope.log);
                 $scope.loaded = true;
                 $scope.getPlugins();
+                $scope.loadCache();
             } else {
                 $timeout($scope.checkIfLoaded, 250);
             }

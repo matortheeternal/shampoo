@@ -51,6 +51,8 @@ var lib = ffi.Library('XEditLib', {
     'FileByAuthor': [WordBool, [PWChar, PCardinal]],
     'SaveFile': [WordBool, [Cardinal]],
     'OverrideRecordCount': [WordBool, [Cardinal, PInteger]],
+    'MD5Hash': [WordBool, [Cardinal, PInteger]],
+    'CRCHash': [WordBool, [Cardinal, PInteger]],
     'SortEditorIDs': [WordBool, [Cardinal, PWChar]],
     'SortNames': [WordBool, [Cardinal, PWChar]],
     // MASTER HANDLING METHODS
@@ -384,6 +386,18 @@ var xelib = {
                 Fail(`Failed to find file with author: ${author}`);
         });
     },
+    'MD5Hash': function(_id) {
+        return GetString(function(_len) {
+            if (!lib.MD5Hash(_id, _len))
+                Fail(`Failed to get MD5 Hash for: ${_id}`);
+        });
+    },
+    'CRCHash': function(_id) {
+        return GetString(function(_len) {
+            if (!lib.CRCHash(_id, _len))
+                Fail(`Failed to get CRC Hash for: ${_id}`);
+        });
+    },
     'SaveFile': function(_id) {
         if (!lib.SaveFile(_id))
             Fail(`Failed to save file: ${_id}`);
@@ -411,7 +425,7 @@ var xelib = {
 
     // ELEMENT HANDLING METHODS
     'HasElement': function(_id, path = '') {
-        return GetBoolean(function(_bool) {
+        return GetBool(function(_bool) {
             if (!lib.HasElement(_id, wcb(path), _bool))
                 Fail(`Failed to check if element exists at: ${elementContext(_id, path)}`);
         });

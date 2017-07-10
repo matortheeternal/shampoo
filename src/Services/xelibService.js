@@ -78,5 +78,13 @@ export default function(ngapp, xelib) {
                 console.log(e);
             }
         };
+
+        this.intToHex = function(n, padding) {
+            var str = Number(n).toString(16).toUpperCase();
+            while (str.length < padding) {
+                str = '0' + str;
+            }
+            return str;
+        };
     });
 }

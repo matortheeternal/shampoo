@@ -21,6 +21,9 @@ export default function(ngapp, xelib) {
 
         $scope.toggleProfilesModal = function (visible) {
             $scope.showProfilesModal = visible;
+            if (!visible) {
+                $scope.profiles = profileService.getProfiles();
+            }
         };
 
         $scope.toggleLoadOrderModal = function (visible) {
