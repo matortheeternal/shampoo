@@ -10,6 +10,7 @@ import xelibService from './Services/xelibService.js';
 import profileService from './Services/profileService.js';
 import formUtils from './Services/formUtils.js';
 import spinnerFactory from './Factories/spinnerFactory.js';
+import listViewFactory from './Factories/listViewFactory.js';
 import errorsService from './Services/errorsService.js';
 import profilesModal from './Directives/profilesModal.js';
 import loadOrderModal from './Directives/loadOrderModal.js';
@@ -57,6 +58,7 @@ errorsService(ngapp, xelib);
 
 // FACTORIES
 spinnerFactory(ngapp);
+listViewFactory(ngApp);
 
 // FILTERS
 hexFilter(ngapp);
