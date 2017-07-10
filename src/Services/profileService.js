@@ -5,11 +5,14 @@ export default function(ngapp, xelib, fileHelpers) {
         this.games = fileHelpers.loadJsonFile('app/games.json');
         this.profiles = fileHelpers.loadJsonFile('app/profiles.json');
 
-        this.saveProfiles = function (profiles) {
+        this.saveProfiles = function(profiles) {
+            profiles.forEach(function(profile) {
+                if (profile.hasOwnProperty('$$hashKey')) delete profile['$$hashKey'];
+            });
             fileHelpers.saveJsonFile('app/profiles.json', profiles);
         };
 
-        this.createProfile = function (game) {
+        this.createProfile = function(game) {
             return {
                 name: game.name,
                 gameMode: game.mode,
@@ -17,8 +20,8 @@ export default function(ngapp, xelib, fileHelpers) {
             }
         };
 
-        this.detectMissingProfiles = function (profiles) {
-            service.games.forEach(function (game) {
+        this.detectMissingProfiles = function(profiles) {
+            service.games.forEach(function(game) {
                 var gameProfile = profiles.find(function (profile) {
                     return profile.gameMode == game.mode;
                 });
@@ -29,7 +32,7 @@ export default function(ngapp, xelib, fileHelpers) {
             });
         };
 
-        this.getProfiles = function () {
+        this.getProfiles = function() {
             service.detectMissingProfiles(service.profiles);
             service.saveProfiles(service.profiles);
             return service.profiles.filter(function(profile) {
@@ -44,13 +47,13 @@ export default function(ngapp, xelib, fileHelpers) {
             service.profiles.unshift(defaultProfile);
         };
 
-        this.getGame = function (gameMode) {
+        this.getGame = function(gameMode) {
             return service.games.find(function (game) {
                 return game.mode == gameMode;
             });
         };
 
-        this.gamePathValid = function (gameMode, path) {
+        this.gamePathValid = function(gameMode, path) {
             var game = service.getGame(gameMode);
             return fileHelpers.jetpack.exists(path + game.exeName);
         };
