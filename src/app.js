@@ -73,5 +73,5 @@ saveModal(ngapp, xelib, fileHelpers);
 
 // VIEWS
 baseView(ngapp, xelib, remote);
-startView(ngapp, xelib);
+startView(ngapp, xelib, fileHelpers);
 mainView(ngapp, xelib, remote, fileHelpers);

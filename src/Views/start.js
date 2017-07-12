@@ -1,4 +1,4 @@
-export default function(ngapp, xelib) {
+export default function(ngapp, xelib, fileHelpers) {
     ngapp.config(['$stateProvider', function ($stateProvider) {
         $stateProvider.state('base.start', {
             templateUrl: 'partials/start.html',
@@ -43,8 +43,17 @@ export default function(ngapp, xelib) {
             });
         };
 
+        $scope.checkHardcodedDat = function() {
+            let game = profileService.getGame($scope.selectedProfile.gameMode);
+            let hardcodedSuffix = '.Hardcoded.keep.this.with.the.exe.and.otherwise.ignore.it.I.really.mean.it.dat';
+            let fileName = game.shortName + hardcodedSuffix;
+            if (fileHelpers.appDir.exists(fileName)) return true;
+            alert(`Error: Required file "${fileName}" not found, please re-install the application.`);
+        };
+
         $scope.startSession = function () {
             $rootScope.selectedProfile = $scope.selectedProfile;
+            if (!$scope.checkHardcodedDat()) return;
             settingsService.loadSettings($scope.selectedProfile.name);
             console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
             xelib.SetGameMode($scope.selectedProfile.gameMode);
