@@ -85,6 +85,7 @@ export default function(ngapp, fileHelpers) {
         };
 
         $scope.clearErrorCache = function() {
+            if (!confirm('Clear the entire error cache?')) return;
             $scope.errorCache.forEach(function(cache) {
                 $scope.deleteCache(cache);
             });
