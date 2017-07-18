@@ -68,7 +68,7 @@ elementView(ngapp);
 profilesModal(ngapp);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
-settingsModal(ngapp);
+settingsModal(ngapp, fileHelpers);
 saveModal(ngapp, xelib, fileHelpers);
 
 // VIEWS
