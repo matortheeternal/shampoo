@@ -82,8 +82,7 @@ export default function(ngapp, xelib) {
                 return [error.name, `Record marked as deleted but contains: ${error.data}`];
             },
             UES: function(error) {
-                var dataParts = error.data.split(',');
-                return [error.name, `Error: Record (${dataParts[0]}) contains unexpected (or out of order) subrecord ${dataParts[1]}`];
+                return [error.name, `Error: Record contains unexpected (or out of order) subrecord ${error.data}`];
             },
             URR: function(error) {
                 return [error.name, `${error.path}: [${error.data}] < Error: Could not be resolved >`];
@@ -121,7 +120,7 @@ export default function(ngapp, xelib) {
             label: "Tweak EDID",
             class: "green",
             available: function(error) {
-                return xelib.ElementExists(error.handle, "EDID");
+                return xelib.HasElement(error.handle, "EDID");
             },
             execute: function(error, tweak) {
                 if (!tweak) tweak = "-Intended";
@@ -133,7 +132,7 @@ export default function(ngapp, xelib) {
             label: "Tweak Position",
             class: "green",
             available: function(error) {
-                return xelib.ElementExists(error.handle, "DATA\\Position");
+                return xelib.HasElement(error.handle, "DATA\\Position");
             },
             execute: function(error, tweak) {
                 if (!tweak) tweak = {
@@ -148,21 +147,17 @@ export default function(ngapp, xelib) {
             label: "Nullify",
             class: "green",
             available: function(error) {
-                var expectedSignatures;
+                var allowed;
                 if (error.group == 5) {
                     // if error is UER, get expected signatures from error data
-                    expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
+                    var expectedSignatures = error.data.split(/,(.+)?/, 2)[1];
+                    allowed = expectedSignatures.indexOf('NULL') > -1;
                 } else {
-                    // else get the expected signatures through xelib
                     withErrorElement(error, function(element) {
-                        expectedSignatures = xelib.GetExpectedSignatures(element);
-                    }, function(error, exception) {
-                        console.log(error);
-                        console.log(exception);
-                        expectedSignatures = [];
+                        allowed = xelib.GetSignatureAllowed(element, 'NULL');
                     });
                 }
-                return expectedSignatures.indexOf('*') > -1 || expectedSignatures.indexOf('NULL') > -1;
+                return allowed;
             },
             execute: function(error) {
                 withErrorElement(error, function(element) {
@@ -249,8 +244,20 @@ export default function(ngapp, xelib) {
             ITPO: identicalResolutions,
             UDR: deletedResolutions,
             UES: [
+                {
+                    label: "Repair",
+                    class: "green",
+                    execute: function(error) {
+                        xelibService.withElement(xelib.GetElementFile(error.handle), function(file) {
+                            var copy = xelib.CopyElement(error.handle, file, true);
+                            var formID = xelib.GetFormID(error.handle);
+                            xelib.RemoveElement(error.handle);
+                            xelib.SetFormID(copy, formID);
+                            xelib.Switch(error.handle, copy);
+                        });
+                    }
+                },
                 removeRecordResolution,
-                // TODO: Repair
                 ignoreResolution
             ],
             URR: [
@@ -303,7 +310,11 @@ export default function(ngapp, xelib) {
                 errorGroup.errors.forEach(function(error) {
                     error.resolution = resolutions.find(function(resolution) {
                         if (!resolution.hasOwnProperty('available')) return true;
-                        return resolution.available(error);
+                        try {
+                            return resolution.available(error);
+                        } catch (x) {
+                            return false;
+                        }
                     });
                 });
             } else {

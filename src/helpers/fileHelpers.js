@@ -18,5 +18,9 @@ export default function(remote, jetpack) {
         fh.appDir.write(filename, value);
     };
 
+    fh.getDateModified = function(filename) {
+        return fh.appDir.inspect(filename, {times: true}).modifyTime;
+    };
+
     return fh;
 }

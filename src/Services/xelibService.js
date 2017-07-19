@@ -154,5 +154,13 @@ export default function(ngapp, xelib) {
             var maxZ = xelib.GetFloatValue(handle, 'NVNM\\Max Z');
             xelib.SetFloatValue(handle, 'NVNM\\Max Z', maxZ - 30000.0);
         };
+
+        this.intToHex = function(n, padding) {
+            var str = Number(n).toString(16).toUpperCase();
+            while (str.length < padding) {
+                str = '0' + str;
+            }
+            return str;
+        };
     });
 }

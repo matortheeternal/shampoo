@@ -1,8 +1,23 @@
 <div class="modal-container">
     <div class="modal">
-        <form>
+        <form ng-if="saving">
             <h2>{{message}}</h2>
             <h3>{{detailedMessage}}...</h3>
+        </form>
+        <form ng-if="!saving">
+            <h3>Select Plugins to Save</h3>
+            <section>
+                <ul class="checkbox-list">
+                    <li ng-repeat="item in pluginsToProcess" ng-class="{ 'selected' : item.selected }" ng-click="select($event, item, $index)">
+                        <input type="checkbox" ng-model="item.active"/>
+                        {{::item.filename}}
+                    </li>
+                </ul>
+            </section>
+
+            <div class="action-button-container">
+                <span class="action-box" ng-click="save()">Save</span>
+            </div>
         </form>
     </div>
 </div>

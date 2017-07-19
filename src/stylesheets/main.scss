@@ -197,7 +197,7 @@ ui-view {
     -webkit-transition: background-color 0.2s ease-in-out;
 
     &:hover {
-        background-color: #4d5e6b;
+        background-color: #4d5e6b !important;
     }
 
     &.red-box {
@@ -212,6 +212,10 @@ ui-view {
         font-size: 12px;
         padding: 4px 6px;
     }
+}
+
+.monospace {
+    font-family: 'Courier New', monospace;
 }
 
 .highlight {
@@ -321,6 +325,12 @@ resolve-modal {
     }
 }
 
+profiles-modal {
+    .modal {
+        max-width: 700px !important;
+    }
+}
+
 settings-modal {
     h3 {
         margin-top: 0;
@@ -332,6 +342,43 @@ settings-modal {
 
     form {
         text-align: left;
+    }
+}
+
+.cache-container {
+    border: 1px solid #aaa;
+    padding: 6px;
+
+    .cache-item {
+        border-top: 1px solid #aaa;
+        position: relative;
+        padding: 10px 4px;
+
+        &:first-of-type {
+            border-top: none;
+        }
+
+        .delete-item {
+            position: absolute;
+            top: 10px;
+            right: 4px;
+
+            .action-box {
+                font-size: 12px;
+            }
+        }
+
+        .filename {
+            font-size: 20px;
+            padding-bottom: 6px;
+        }
+    }
+
+    .cache-files-table {
+        td, th {
+            padding-right: 10px;
+            font-size: 14px;
+        }
     }
 }
 
@@ -363,10 +410,6 @@ settings-modal {
             vertical-align: top;
             font-size: 20px;
             font-weight: 500;
-        }
-
-        .content-message {
-            margin: 20px 0 0;
         }
     }
 
@@ -496,6 +539,12 @@ input.invalid {
 
 .big-spinner {
     height: 250px;
+}
+
+.content-message {
+    font-size: 20px;
+    text-align: center;
+    padding: 16px;
 }
 
 .content-block {
