@@ -230,10 +230,15 @@ export default function(ngapp, xelib) {
                 label: "Replace Navmesh",
                 class: "red",
                 available: function(error) {
-                    return error.signature === 'NAVM';
+                    if (error.signature === 'NAVM') {
+                        return !!xelibService.GetReplacementNavmesh(error.handle);
+                    }
                 },
                 execute: function(error) {
-                    // TODO
+                    let r = xelibService.GetReplacementNavmesh(error.handle);
+                    let formID = xelib.GetFormID(error.handle);
+                    xelib.RemoveElement(error.handle);
+                    xelib.SetFormID(r, formID);
                 }
             },
             ignoreResolution
