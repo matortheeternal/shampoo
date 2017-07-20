@@ -37,6 +37,8 @@ try {
         'GetExceptionMessageLength': [Void, [PInteger]],
         'GetExceptionMessage': [WordBool, [PWChar, Integer]],
         // SETUP FUNCTIONS
+        'SetGamePath': [WordBool, [PWChar]],
+        'SetLanguage': [WordBool, [PWChar]],
         'SetGameMode': [WordBool, [Integer]],
         'GetGamePath': [WordBool, [Integer, PInteger]],
         'GetLoadOrder': [WordBool, [PInteger]],
@@ -336,6 +338,14 @@ var xelib = {
     },
 
     // SETUP FUNCTIONS
+    'SetGamePath': function(gamePath) {
+        if (!lib.SetGamePath(wcb(gamePath)))
+            Fail(`Failed to set game path to ${gamePath}`);
+    },
+    'SetLanguage': function(language) {
+        if (!lib.SetLanguage(wcb(language)))
+            Fail(`Failed to set language to ${language}`);
+    },
     'SetGameMode': function(gameMode) {
         if (!lib.SetGameMode(gameMode))
             Fail(`Failed to set game mode to ${gameMode}`);
