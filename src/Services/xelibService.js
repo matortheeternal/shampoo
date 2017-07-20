@@ -116,7 +116,7 @@ export default function(ngapp, xelib) {
         };
 
         this.RemoveEdgeLinkFlags = function(triangle) {
-            var flags = xelib.GetUIntValue(triangle, `Flags`);
+            let flags = xelib.GetUIntValue(triangle, `Flags`);
             if (flags & 2048) {
                 xelib.SetIntValue(triangle, `Edge 0-1`, -1);
             }
@@ -128,24 +128,47 @@ export default function(ngapp, xelib) {
             }
             if (flags >= 512) {
                 xelib.SetUIntValue(triangle, `Flags`, flags % 512);
+                return true;
             }
         };
 
+        this.withOverride = function(record, file, callback) {
+            let form = xelib.GetFormID(record);
+            let override = xelib.AddElement(file, `${service.intToHex(form, 8)}`);
+            if (!callback(override)) {
+                xelib.RemoveElement(override);
+            }
+        };
+
+        this.RemoveLinkedEdgeLinks = function(currentFile, currentForm, form, edgeLink) {
+            service.withLinksTo(edgeLink, 'Mesh', function(mesh) {
+                service.withOverride(mesh, currentFile, function(override) {
+                    let triangle = xelib.GetIntValue(edgeLink, 'Triangle');
+                    let changed = false;
+                    service.withElement(override, `NVNM\\Triangles\\[${triangle}]`, function(meshTriangle) {
+                        changed = changed || service.RemoveEdgeLinkFlags(meshTriangle);
+                    });
+                    if (!form) {
+                        changed = changed || service.RemoveEdgeLinks(override, currentForm);
+                    }
+                    return changed;
+                });
+            });
+        };
+
         this.RemoveEdgeLinks = function(handle, form) {
-            var currentForm = xelib.GetFormID(handle);
+            let currentFile = xelib.GetElementFile(handle);
+            let currentForm = xelib.GetFormID(handle);
+            let changed = false;
             service.withElements(handle, 'NVNM\\Edge Links', function(edgeLinks) {
                 for (let i = edgeLinks.length - 1; i >= 0; i--) {
-                    if (form && xelib.GetUIntValue(edgeLinks[i], 'Mesh') != form) continue;
-                    service.withLinksTo(edgeLinks[i], 'Mesh', function(mesh) {
-                        let triangle = xelib.GetIntValue(edgeLinks[i], 'Triangle');
-                        service.withElement(mesh, `NVNM\\Triangles\\[${triangle}]`, function(meshTriangle) {
-                            service.RemoveEdgeLinkFlags(meshTriangle);
-                        });
-                        if (!form) service.RemoveEdgeLinks(mesh, currentForm);
-                    });
+                    if (form && xelib.GetUIntValue(edgeLinks[i], 'Mesh') !== form) continue;
+                    service.RemoveLinkedEdgeLinks(currentFile, currentForm, form, edgeLinks[i]);
                     xelib.RemoveElement(edgeLinks[i]);
+                    changed = true;
                 }
             });
+            return changed;
         };
 
         this.UpdateMinMaxZ = function(handle) {
