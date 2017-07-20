@@ -111,14 +111,16 @@ export default function(ngapp, xelib) {
 
         var removeRecordResolution = {
             label: "Delete",
-            class: "red",
+            color: "red",
+            description: "This resolution will remove the record from the plugin.",
             execute: function(error) {
                 xelib.RemoveElement(error.handle);
             }
         };
         var tweakEdidResolution = {
             label: "Tweak EDID",
-            class: "green",
+            color: "green",
+            description: "This resolution will adjusted the EditorID of the record so it is no longer an ITM.",
             available: function(error) {
                 return xelib.HasElement(error.handle, "EDID");
             },
@@ -130,7 +132,8 @@ export default function(ngapp, xelib) {
         };
         var tweakPositionResolution = {
             label: "Tweak Position",
-            class: "green",
+            color: "green",
+            description: "This resolution will slightly adjust the position of the reference so it is no longer an ITM.",
             available: function(error) {
                 return xelib.HasElement(error.handle, "DATA\\Position");
             },
@@ -145,7 +148,8 @@ export default function(ngapp, xelib) {
         };
         var nullifyResolution = {
             label: "Nullify",
-            class: "green",
+            color: "green",
+            description: "This resolution will set the reference to a NULL [00000000] reference.",
             available: function(error) {
                 var allowed;
                 if (error.group == 5) {
@@ -171,7 +175,8 @@ export default function(ngapp, xelib) {
         };
         var removeResolution = {
             label: "Remove",
-            class: "red",
+            color: "red",
+            description: "This resolution will remove the error element from the record.",
             execute: function(error) {
                 withErrorElement(error, function(element) {
                     xelib.RemoveElementOrParent(element);
@@ -184,7 +189,8 @@ export default function(ngapp, xelib) {
         };
         var ignoreResolution = {
             label: "Ignore",
-            class: "yellow"
+            color: "yellow",
+            description: "This resolution will leave the error in the plugin."
         };
         var identicalResolutions = [
             removeRecordResolution,
@@ -195,7 +201,8 @@ export default function(ngapp, xelib) {
         var deletedResolutions = [
             {
                 label: "Undelete and Disable",
-                class: "green",
+                color: "green",
+                description: "This resolution will undelete the record and mark it as disabled.",
                 available: function(error) {
                     return error.signature !== 'NAVM';
                 },
@@ -206,7 +213,8 @@ export default function(ngapp, xelib) {
             },
             {
                 label: "Replace Navmesh",
-                class: "green",
+                color: "green",
+                description: "This resolution will replace the deleted navmesh with the new navmesh introduced by the plugin.",
                 available: function(error) {
                     if (error.signature === 'NAVM') {
                         return !!xelibService.GetReplacementNavmesh(error.handle);
@@ -221,7 +229,8 @@ export default function(ngapp, xelib) {
             },
             {
                 label: "Bury Navmesh",
-                class: "green",
+                color: "green",
+                description: "This resolution will lower the navmesh's verticies below the ground and remove its edge links.",
                 available: function(error) {
                     return error.signature === 'NAVM';
                 },
@@ -233,7 +242,8 @@ export default function(ngapp, xelib) {
             },
             {
                 label: "Restore",
-                class: "red",
+                color: "red",
+                description: "This resolution will restore the record.  You should not use this resolution unless you know exactly what you're doing!",
                 execute: function(error) {
                     xelib.SetRecordFlag(error.handle, "Deleted", false);
                 }
@@ -248,7 +258,8 @@ export default function(ngapp, xelib) {
             UES: [
                 {
                     label: "Repair",
-                    class: "green",
+                    color: "green",
+                    description: "This resolution will fix the order of subrecords in the record and trim invalid ones.",
                     execute: function(error) {
                         xelibService.withElement(xelib.GetElementFile(error.handle), function(file) {
                             var copy = xelib.CopyElement(error.handle, file, true);
