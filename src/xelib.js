@@ -119,8 +119,8 @@ try {
         'ElementToJson': [WordBool, [Cardinal, PInteger]],
         'ElementFromJson': [WordBool, [Cardinal, PWChar, PWChar]],
         // RECORD HANDLING METHODS
-        'GetFormID': [WordBool, [Cardinal, PCardinal]],
-        'SetFormID': [WordBool, [Cardinal, Cardinal]],
+        'GetFormID': [WordBool, [Cardinal, PCardinal, WordBool]],
+        'SetFormID': [WordBool, [Cardinal, Cardinal, WordBool]],
         'GetRecords': [WordBool, [Cardinal, PWChar, PInteger]],
         'GetOverrides': [WordBool, [Cardinal, PInteger]],
         'GetReferencedBy': [WordBool, [Cardinal, PInteger]],
@@ -174,6 +174,13 @@ var wcb = function(value) {
     var buf = new Buffer((value.length + 1) * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
+    return buf;
+};
+
+var wb = function(value) {
+    var buf = new Buffer(2);
+    buf.write(+value, 0);
+    buf.type = WordBool;
     return buf;
 };
 
@@ -626,14 +633,14 @@ var xelib = {
     },
 
     // RECORD HANDLING METHODS
-    'GetFormID': function(_id) {
+    'GetFormID': function(_id, local = false) {
         var _res = createTypedBuffer(4, PCardinal);
-        if (!lib.GetFormID(_id, _res))
+        if (!lib.GetFormID(_id, _res, wb(local)))
             Fail(`Failed to get FormID for ${_id}`);
         return _res.readUInt32LE();
     },
-    'SetFormID': function(_id, newFormID) {
-        if (!lib.SetFormID(_id, newFormID))
+    'SetFormID': function(_id, newFormID, local = false) {
+        if (!lib.SetFormID(_id, newFormID, wb(local)))
             Fail(`Failed to set FormID on ${_id} to ${newFormID}`);
     },
     'IsMaster': function(_id) {
