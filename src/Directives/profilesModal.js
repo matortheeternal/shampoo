@@ -15,7 +15,7 @@ export default function(ngapp) {
             var gameProfile = $scope.profiles.find(function(profile) {
                 return profile.gameMode == game.mode;
             });
-            if (gameProfile) game.installPath = gameProfile.installPath;
+            if (gameProfile) game.installPath = gameProfile.gamePath;
         });
 
         $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
@@ -33,7 +33,7 @@ export default function(ngapp) {
                 let game = $scope.games.find(function(game) {
                     return game.mode === profile.gameMode;
                 });
-                profile.installPath = game.installPath;
+                profile.gamePath = game.installPath;
             });
         };
 

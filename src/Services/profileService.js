@@ -16,7 +16,7 @@ export default function(ngapp, xelib, fileHelpers) {
             return {
                 name: game.name,
                 gameMode: game.mode,
-                installPath: xelib.GetGamePath(game.mode)
+                gamePath: xelib.GetGamePath(game.mode)
             }
         };
 
@@ -36,7 +36,7 @@ export default function(ngapp, xelib, fileHelpers) {
             service.detectMissingProfiles(service.profiles);
             service.saveProfiles(service.profiles);
             return service.profiles.filter(function(profile) {
-                return service.gamePathValid(profile.gameMode, profile.installPath);
+                return service.gamePathValid(profile.gameMode, profile.gamePath);
             });
         };
 

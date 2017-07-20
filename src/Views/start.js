@@ -56,6 +56,7 @@ export default function(ngapp, xelib, fileHelpers) {
             if (!$scope.checkHardcodedDat()) return;
             settingsService.loadSettings($scope.selectedProfile.name);
             console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
+            xelib.SetGamePath($scope.selectedProfile.gamePath);
             xelib.SetGameMode($scope.selectedProfile.gameMode);
             $scope.getLoadOrder();
             $scope.toggleLoadOrderModal(true);
