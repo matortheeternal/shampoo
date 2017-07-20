@@ -235,6 +235,7 @@ export default function(ngapp, xelib) {
                     return error.signature === 'NAVM';
                 },
                 execute: function(error) {
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
                     xelibService.MoveVerticesUnderground(error.handle);
                     xelibService.RemoveEdgeLinks(error.handle);
                     xelibService.UpdateMinMaxZ(error.handle);
