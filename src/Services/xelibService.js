@@ -155,6 +155,12 @@ export default function(ngapp, xelib) {
             xelib.SetFloatValue(handle, 'NVNM\\Max Z', maxZ - 30000.0);
         };
 
+        this.GetReplacementNavmesh = function(handle) {
+            let container = xelib.GetContainer(handle);
+            let navmeshes = xelib.GetRecords(container, 'NAVM', false);
+            return navmeshes[0];
+        };
+
         this.intToHex = function(n, padding) {
             var str = Number(n).toString(16).toUpperCase();
             while (str.length < padding) {
