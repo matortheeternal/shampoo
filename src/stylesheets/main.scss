@@ -313,12 +313,16 @@ resolve-modal {
                 color: #000 !important;
                 background: none;
 
-                &.selected {
-                    background: #E0FFE8;
-                }
-
-                &:hover {
-                    background: #E0F0FF;
+                &.selected, &:hover {
+                    &.green {
+                        background: #E0FFE8 !important;
+                    }
+                    &.yellow {
+                        background: #F9F9D0 !important;
+                    }
+                    &.red {
+                        background: #FFE0E0 !important;
+                    }
                 }
             }
         }
