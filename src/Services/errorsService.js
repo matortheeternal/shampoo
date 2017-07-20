@@ -205,13 +205,18 @@ export default function(ngapp, xelib) {
                 }
             },
             {
-                label: "Restore",
-                class: "red",
+                label: "Replace Navmesh",
+                class: "green",
                 available: function(error) {
-                    return error.signature !== 'NAVM';
+                    if (error.signature === 'NAVM') {
+                        return !!xelibService.GetReplacementNavmesh(error.handle);
+                    }
                 },
                 execute: function(error) {
-                    xelib.SetRecordFlag(error.handle, "Deleted", false);
+                    let r = xelibService.GetReplacementNavmesh(error.handle);
+                    let formID = xelib.GetFormID(error.handle);
+                    xelib.RemoveElement(error.handle);
+                    xelib.SetFormID(r, formID);
                 }
             },
             {
@@ -227,18 +232,10 @@ export default function(ngapp, xelib) {
                 }
             },
             {
-                label: "Replace Navmesh",
+                label: "Restore",
                 class: "red",
-                available: function(error) {
-                    if (error.signature === 'NAVM') {
-                        return !!xelibService.GetReplacementNavmesh(error.handle);
-                    }
-                },
                 execute: function(error) {
-                    let r = xelibService.GetReplacementNavmesh(error.handle);
-                    let formID = xelib.GetFormID(error.handle);
-                    xelib.RemoveElement(error.handle);
-                    xelib.SetFormID(r, formID);
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
                 }
             },
             ignoreResolution
