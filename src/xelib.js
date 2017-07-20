@@ -653,6 +653,28 @@ var xelib = {
         if (!lib.SetFormID(_id, newFormID, wb(local)))
             Fail(`Failed to set FormID on ${_id} to ${newFormID}`);
     },
+    'GetRecords': function(_id, search, includeOverrides = false) {
+        return GetArray(function(_len) {
+            if (!lib.GetRecords(_id, wcb(search), wb(includeOverrides), _len))
+                Fail(`Failed to get records from: ${elementContext(_id, search)}`);
+        });
+    },
+    'GetOverrides': function(_id) {
+        return GetArray(function(_len) {
+            if (!lib.GetOverrides(_id, _len))
+                Fail(`Failed to get overrides for: ${_id}`);
+        });
+    },
+    'ExchangeReferences': function(_id, oldFormID, newFormID) {
+        if (!lib.ExchangeReferences(_id, oldFormID, newFormID))
+            Fail(`Failed to exchange references on ${_id} from ${oldFormID} to ${newFormID}`)
+    },
+    'GetReferencedBy': function(_id) {
+        return GetArray(function(_len) {
+            if (!lib.GetReferencedBy(_id, _len))
+                Fail(`Failed to get referenced by for: ${_id}`);
+        });
+    },
     'IsMaster': function(_id) {
         return GetBoolValue(_id, "IsMaster");
     },
