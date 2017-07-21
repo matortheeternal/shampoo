@@ -1,5 +1,5 @@
 export default function(remote, jetpack) {
-    var fh = {};
+    let fh = {};
 
     fh.jetpack = jetpack;
     fh.appDir = jetpack.cwd(remote.app.getAppPath());
@@ -20,6 +20,17 @@ export default function(remote, jetpack) {
 
     fh.getDateModified = function(filename) {
         return fh.appDir.inspect(filename, {times: true}).modifyTime;
+    };
+
+    // helper function for selecting a directory
+    fh.selectDirectory = function(title, defaultPath) {
+        let selection = remote.dialog.showOpenDialog({
+            title: title,
+            defaultPath: defaultPath,
+            properties: ['openDirectory']
+        });
+        if (!selection) return defaultPath;
+        return selection[0];
     };
 
     return fh;
