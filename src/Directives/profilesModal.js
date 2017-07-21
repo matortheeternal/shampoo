@@ -1,4 +1,4 @@
-export default function(ngapp) {
+export default function(ngapp, fileHelpers) {
     ngapp.directive('profilesModal', function () {
         return {
             restrict: 'E',
@@ -9,43 +9,42 @@ export default function(ngapp) {
     });
 
     ngapp.controller('profilesModalController', function ($scope, profileService, formUtils) {
+        // initialize scope variables
         $scope.games = profileService.games;
+        $scope.languages = profileService.languages;
+        $scope.defaultProfile = profileService.getDefaultProfile();
 
-        $scope.games.forEach(function(game) {
-            var gameProfile = $scope.profiles.find(function(profile) {
-                return profile.gameMode == game.mode;
+        // scope functions
+        $scope.addProfile = function() {
+            $scope.profiles.push({
+                name: profileService.newProfileName('New Profile'),
+                gameMode: 3,
+                gamePath: '',
+                language: 'English',
+                valid: false
             });
-            if (gameProfile) game.installPath = gameProfile.gamePath;
-        });
-
-        $scope.validateProfiles = function() {
-            $scope.games.forEach(function(game) {
-                game.valid = profileService.gamePathValid(game.mode, game.installPath);
-            });
-            $scope.validProfiles = profileService.getProfiles();
-            $scope.defaultProfile = $scope.validProfiles[0];
         };
 
-        $scope.setProfileGamePaths = function() {
-            profileService.profiles.forEach(function(profile) {
-                let game = $scope.games.find(function(game) {
-                    return game.mode === profile.gameMode;
-                });
-                profile.gamePath = game.installPath;
-            });
+        $scope.removeProfile = function(profile) {
+            let index = $scope.profiles.indexOf(profile);
+            $scope.profiles.splice(index, 1);
+        };
+
+        $scope.validateProfile = function(profile) {
+            profileService.validateProfile(profile);
         };
 
         $scope.close = function() {
-            $scope.setProfileGamePaths();
             profileService.setDefaultProfile($scope.defaultProfile);
+            profileService.saveProfiles();
             $scope.toggleProfilesModal();
         };
 
-        $scope.pathBrowse = function(game) {
-            // todo
+        $scope.browse = function(profile) {
+            let game = profileService.getGame(profile.gameMode);
+            profile.gamePath = fileHelpers.selectDirectory(`Select your ${game.name} directory`, profile.gamePath) + '\\';
         };
 
-        $scope.validateProfiles();
         // inherited functions
         $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.close);
     });

@@ -67,7 +67,7 @@ profileValidFilter(ngapp);
 
 // DIRECTIVES
 elementView(ngapp);
-profilesModal(ngapp);
+profilesModal(ngapp, fileHelpers);
 loadOrderModal(ngapp, xelib);
 resolveModal(ngapp);
 settingsModal(ngapp, fileHelpers);
