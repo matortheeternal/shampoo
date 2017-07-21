@@ -20,6 +20,12 @@ export default function(ngapp, xelib) {
             }
         };
 
+        this.startSession = function(profile) {
+            xelib.SetGamePath(profile.gamePath);
+            xelib.SetLanguage(profile.language);
+            xelib.SetGameMode(profile.gameMode);
+        };
+
         this.logXELibMessages = function() {
             console.log(xelib.GetMessages());
         };

@@ -7,23 +7,15 @@ export default function(ngapp, xelib, fileHelpers) {
         });
     }]);
 
-    ngapp.controller('startController', function ($scope, $rootScope, profileService, settingsService) {
-        $scope.profiles = profileService.getProfiles();
-        $scope.selectedProfile = ($scope.profiles.length > 0) && $scope.profiles[0];
+    ngapp.controller('startController', function ($scope, $rootScope, profileService, settingsService, xelibService) {
+        // prepare profiles
+        profileService.validateProfiles();
+        $scope.profiles = profileService.profiles;
+        $scope.selectedProfile = profileService.getDefaultProfile();
 
-        $scope.setSelectedGame = function () {
-            if ($scope.selectedProfile) {
-                $scope.selectedGame = profileService.getGame($scope.selectedProfile.gameMode);
-            } else {
-                $scope.selectedGame = {};
-            }
-        };
-
+        // scope functions
         $scope.toggleProfilesModal = function (visible) {
             $scope.showProfilesModal = visible;
-            if (!visible) {
-                $scope.profiles = profileService.getProfiles();
-            }
         };
 
         $scope.toggleLoadOrderModal = function (visible) {
@@ -52,17 +44,14 @@ export default function(ngapp, xelib, fileHelpers) {
         };
 
         $scope.startSession = function () {
-            $rootScope.selectedProfile = $scope.selectedProfile;
             if (!$scope.checkHardcodedDat()) return;
-            settingsService.loadSettings($scope.selectedProfile.name);
-            console.log("Setting game mode to: " + $scope.selectedProfile.gameMode);
-            xelib.SetGamePath($scope.selectedProfile.gamePath);
-            xelib.SetGameMode($scope.selectedProfile.gameMode);
+            let p = $scope.selectedProfile;
+            $rootScope.selectedProfile = p;
+            settingsService.loadSettings(p);
+            console.log("Setting game mode to: " + p.gameMode);
+            xelibService.startSession(p);
             $scope.getLoadOrder();
             $scope.toggleLoadOrderModal(true);
         };
-
-        // load selectedGame
-        $scope.setSelectedGame();
     });
 }
