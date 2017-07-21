@@ -2,11 +2,10 @@
     <div>
         <h1>Shampoo Plugin Cleaner</h1>
         <div class="game-logo-container">
-            <img ng-src="images/games/{{selectedGame.mode}}.png"/>
+            <img ng-src="images/games/{{selectedProfile.gameMode}}.png"/>
         </div>
         <div class="profile-controls">
-            <select ng-options="profile as profile.name for profile in profiles" ng-model="selectedProfile"
-                    ng-change="setSelectedGame()">
+            <select ng-model="selectedProfile" ng-options="profile as profile.name for profile in profiles | profileValid">
                 <option value="" ng-if="!profiles.length">None</option>
             </select>
             <span class="fa fa-gear" ng-click="toggleProfilesModal(true)"></span>
