@@ -18,8 +18,6 @@ export default function(ngapp) {
             if (gameProfile) game.installPath = gameProfile.gamePath;
         });
 
-        $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.toggleProfilesModal);
-
         $scope.validateProfiles = function() {
             $scope.games.forEach(function(game) {
                 game.valid = profileService.gamePathValid(game.mode, game.installPath);
@@ -48,5 +46,7 @@ export default function(ngapp) {
         };
 
         $scope.validateProfiles();
+        // inherited functions
+        $scope.unfocusProfilesModal = formUtils.unfocusModal($scope.close);
     });
 }
