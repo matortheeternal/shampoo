@@ -19,6 +19,7 @@ import saveModal from './Directives/saveModal.js';
 import resolveModal from './Directives/resolveModal.js';
 import elementView from './Directives/elementView.js';
 import hexFilter from './Filters/hexFilter.js';
+import profileValidFilter from './Filters/profileValidFilter.js';
 import baseView from './Views/base.js';
 import startView from './Views/start.js';
 import mainView from './Views/main.js';
@@ -62,6 +63,7 @@ listViewFactory(ngapp);
 
 // FILTERS
 hexFilter(ngapp);
+profileValidFilter(ngapp);
 
 // DIRECTIVES
 elementView(ngapp);
