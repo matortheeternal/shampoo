@@ -7,19 +7,39 @@
 
             <h3>Game Profiles</h3>
             <section>
-                <div class="subsection" ng-repeat="game in games">
-                    <span class="input-label">{{game.name}}</span>
-                    <input class="path-input" type="text" ng-model="game.installPath" ng-change="validateProfiles()" ng-class="{ 'invalid' : !game.valid }"/>
-                    <span class="fa fa-folder-open-o" ng-click="pathBrowse(game)"></span>
+                <div class="profile-container" ng-repeat="profile in profiles">
+                    <div class="remove-item" title="Delete Profile">
+                        <span class="fa fa-times" ng-click="removeProfile(profile)"></span>
+                    </div>
+                    <img ng-src="images/games/{{profile.gameMode}}.png"/>
+                    <div class="right-column">
+                        <label>
+                            <span class="input-label">Name</span>
+                            <input type="text" ng-model="profile.name" ng-change="validateProfile(profile)" ng-class="{ 'invalid' : !profile.name.length }"/>
+                        </label>
+                        <label>
+                            <span class="input-label">Game</span>
+                            <select ng-model="profile.gameMode" ng-change="validateProfile(profile)" ng-options="game.mode as game.name for game in games"></select>
+                        </label>
+                        <label>
+                            <span class="input-label">Path</span>
+                            <input class="path-input" type="text" ng-model="profile.gamePath" ng-change="validateProfile(profile)" ng-class="{ 'invalid' : !profile.valid }"/>
+                            <span class="fa fa-folder-open-o" ng-click="browse(profile)" title="Browse"></span>
+                        </label>
+                        <label>
+                            <span class="input-label">Language</span>
+                            <select ng-model="profile.language">
+                                <option ng-repeat="language in languages">{{::language}}</option>
+                            </select>
+                        </label>
+                    </div>
                 </div>
             </section>
 
             <section>
                 <div class="subsection default-profile-section">
                     <span class="input-label">Default Profile</span>
-                    <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in validProfiles">
-                        <option value="None" ng-if="!validProfiles.length"></option>
-                    </select>
+                    <select ng-model="defaultProfile" ng-options="profile as profile.name for profile in profiles | profileValid"></select>
                 </div>
             </section>
 
