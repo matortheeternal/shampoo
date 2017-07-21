@@ -4,40 +4,60 @@ export default function(ngapp, xelib, fileHelpers) {
 
         this.games = fileHelpers.loadJsonFile('app/games.json');
         this.profiles = fileHelpers.loadJsonFile('app/profiles.json');
+        this.languages = ['English'];
 
-        this.saveProfiles = function(profiles) {
-            profiles.forEach(function(profile) {
-                if (profile.hasOwnProperty('$$hashKey')) delete profile['$$hashKey'];
+        this.saveProfiles = function() {
+            let sanitizedProfiles = service.profiles.map(function(profile) {
+                return {
+                    name: profile.name,
+                    gameMode: profile.gameMode,
+                    gamePath: profile.gamePath || '',
+                    language: profile.language
+                };
             });
-            fileHelpers.saveJsonFile('app/profiles.json', profiles);
+            fileHelpers.saveJsonFile('app/profiles.json', sanitizedProfiles);
         };
 
-        this.createProfile = function(game) {
+        this.newProfileName = function(name) {
+            let counter = 2;
+            let profileName = name;
+            let existingProfile;
+            do {
+                if (existingProfile) {
+                    profileName = `${name} ${counter}`;
+                    counter++;
+                }
+                existingProfile = service.profiles.find(function(profile) {
+                    return profile.name === profileName;
+                });
+            } while (existingProfile);
+            return profileName;
+        };
+
+        this.createProfile = function(game, gamePath) {
             return {
-                name: game.name,
+                name: service.newProfileName(game.name),
                 gameMode: game.mode,
-                gamePath: xelib.GetGamePath(game.mode)
+                gamePath: gamePath,
+                language: 'English'
             }
         };
 
         this.detectMissingProfiles = function(profiles) {
             service.games.forEach(function(game) {
-                var gameProfile = profiles.find(function (profile) {
+                let gameProfile = profiles.find(function(profile) {
                     return profile.gameMode == game.mode;
                 });
-                if (!gameProfile) {
-                    gameProfile = service.createProfile(game);
-                    if (gameProfile) profiles.push(gameProfile);
+                if (gameProfile) return;
+                let gamePath = xelib.GetGamePath(game.mode);
+                if (gamePath !== '') {
+                    profiles.push(service.createProfile(game, gamePath));
                 }
             });
         };
 
-        this.getProfiles = function() {
-            service.detectMissingProfiles(service.profiles);
-            service.saveProfiles(service.profiles);
-            return service.profiles.filter(function(profile) {
-                return service.gamePathValid(profile.gameMode, profile.gamePath);
-            });
+        this.getDefaultProfile = function() {
+            return service.profiles.find(function(profile) { return profile.valid });
         };
 
         this.setDefaultProfile = function(defaultProfile) {
@@ -53,9 +73,13 @@ export default function(ngapp, xelib, fileHelpers) {
             });
         };
 
-        this.gamePathValid = function(gameMode, path) {
-            var game = service.getGame(gameMode);
-            return fileHelpers.jetpack.exists(path + game.exeName);
+        this.validateProfile = function(profile) {
+            let game = service.getGame(profile.gameMode);
+            profile.valid = fileHelpers.jetpack.exists(profile.gamePath + game.exeName);
+        };
+
+        this.validateProfiles = function() {
+            service.profiles.forEach(service.validateProfile);
         };
     });
 }
