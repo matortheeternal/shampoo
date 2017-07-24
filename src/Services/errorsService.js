@@ -102,7 +102,11 @@ export default function(ngapp, xelib) {
                 try {
                     callback(element);
                 } catch(exception) {
-                    onException(error, exception);
+                    if (onException) {
+                        onException(error, exception);
+                    } else {
+                        console.log(exception);
+                    }
                 }
             } finally {
                 xelib.Release(element);
