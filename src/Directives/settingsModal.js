@@ -14,7 +14,7 @@ export default function(ngapp, fileHelpers) {
 
         // initialize scope variables
         $scope.settings = settingsService.settings;
-        $scope.profileName = settingsService.currentProfile;
+        $scope.profileName = settingsService.currentProfile.name;
 
         // scope functions
         $scope.saveSettings = function() {
