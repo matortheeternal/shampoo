@@ -95,7 +95,7 @@ export default function(ngapp, xelib) {
         };
 
         this.withElements = function(handle, path, callback) {
-            var elements = xelib.GetElements(handle, path);
+            let elements = xelib.GetElements(handle, path);
             try {
                 callback(elements);
             } finally {
@@ -103,8 +103,17 @@ export default function(ngapp, xelib) {
             }
         };
 
+        this.withRecords = function(handle, search, includeOverrides, callback) {
+            let records = xelib.GetRecords(handle, search, includeOverrides);
+            try {
+                callback(records);
+            } finally {
+                records.forEach(xelib.Release);
+            }
+        };
+
         this.withLinksTo = function(handle, path, callback) {
-            var element = xelib.GetLinksTo(handle, path);
+            let element = xelib.GetLinksTo(handle, path);
             try {
                 callback(element);
             } finally {
@@ -184,10 +193,14 @@ export default function(ngapp, xelib) {
             xelib.SetFloatValue(handle, 'NVNM\\Max Z', maxZ - 30000.0);
         };
 
-        this.GetReplacementNavmesh = function(handle) {
+        this.withReplacementNavmesh = function(handle, callback) {
             let container = xelib.GetContainer(handle);
             let navmeshes = xelib.GetRecords(container, 'NAVM', false);
-            return navmeshes[0];
+            try {
+                callback(navmeshes[0]);
+            } finally {
+                navmeshes.forEach(xelib.Release);
+            }
         };
 
         this.intToHex = function(n, padding) {
