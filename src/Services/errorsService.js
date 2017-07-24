@@ -292,6 +292,7 @@ export default function(ngapp, xelib) {
                         return error.data === 'Navmesh marked as deleted';
                     },
                     execute: function(error) {
+                        console.log(`Burying [NAVM:${xelib.GetFormID(error.handle)}]`);
                         xelib.SetRecordFlag(error.handle, "Deleted", false);
                         xelibService.MoveVerticesUnderground(error.handle);
                         xelibService.RemoveEdgeLinks(error.handle);
