@@ -33,7 +33,7 @@ export default function(ngapp) {
         };
 
         $scope.setError = function() {
-            if ($scope.errorIndex + 1 >= $scope.errorsToResolve.length) {
+            if ($scope.errorIndex >= $scope.errorsToResolve.length) {
                 $scope.toggleResolveModal();
                 return;
             }
