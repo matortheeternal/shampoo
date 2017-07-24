@@ -170,7 +170,8 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                     form_id: error.f,
                     name: xelib.LongName(_id)
                 };
-                if (error.hasOwnProperty('d')) x.data = error.d;
+                x.data = error.hasOwnProperty('d') ? error.d : '';
+                x.path = error.hasOwnProperty('p') ? error.p : '';
                 return x;
             });
         };

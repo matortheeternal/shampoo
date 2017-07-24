@@ -46,9 +46,8 @@ export default function(ngapp, xelib, fileHelpers) {
                     g: error.group,
                     f: error.form_id
                 };
-                if (error.hasOwnProperty('data')) {
-                    x.d = error.data;
-                }
+                if (error.hasOwnProperty('data')) x.d = error.data;
+                if (error.path !== '') x.p = error.path;
                 return x;
             });
         };
