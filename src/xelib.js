@@ -263,9 +263,9 @@ var GetStringValue = function(_id, method) {
 };
 
 var GetNativeValue = function(_id, path, method, refType) {
-    var buff = createTypedBuffer(4, refType);
+    var buff = createTypedBuffer(refType == PDouble ? 8 : 4, refType);
     if (!lib[method](_id, wcb(path), buff))
-        Fail(`Failed to ${method} at: ${_id}, ${path}`);
+        Fail(`Failed to ${method} at: ${elementContext(_id, path)}`);
     return buff;
 };
 
@@ -275,7 +275,7 @@ var SetNativeValue = function(_id, path, method, value) {
         path = '';
     }
     if (!lib[method](_id, wcb(path), value))
-        Fail(`Failed to ${method} to ${value} at: ${_id}, ${path}`);
+        Fail(`Failed to ${method} to ${value} at: ${elementContext(_id, path)}`);
 };
 
 // wrapper functions
@@ -473,10 +473,10 @@ var xelib = {
         });
     },
     'GetLinksTo': function(_id, path) {
-        var _res = createTypedBuffer(4, PCardinal);
-        if (!lib.ElementEquals(_id, wcb(path), _res))
-            Fail(`Failed to get link at: ${elementContext(_id, path)}`);
-        return _res.readUInt32LE();
+        return GetHandle(function(_res) {
+            if (!lib.GetLinksTo(_id, wcb(path), _res))
+                Fail(`Failed to get link at: ${elementContext(_id, path)}`);
+        });
     },
     'GetContainer': function(_id) {
         return GetHandle(function(_res) {
@@ -576,9 +576,9 @@ var xelib = {
     'DefType': function(_id) {
         return GetStringValue(_id, 'DefType');
     },
-    'GetValue': function(_id, path) {
+    'GetValue': function(_id, path = '') {
         return GetString(function(_len) {
-            if (!lib.GetValue(_id, wcb(_path), _len))
+            if (!lib.GetValue(_id, wcb(path), _len))
                 Fail(`Failed to get element value at: ${elementContext(_id, path)}`);
         });
     },
