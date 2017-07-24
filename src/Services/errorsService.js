@@ -212,36 +212,6 @@ export default function(ngapp, xelib) {
                 }
             },
             {
-                label: "Replace Navmesh",
-                color: "green",
-                description: "This resolution will replace the deleted navmesh with the new navmesh introduced by the plugin.",
-                available: function(error) {
-                    if (error.signature === 'NAVM') {
-                        return !!xelibService.GetReplacementNavmesh(error.handle);
-                    }
-                },
-                execute: function(error) {
-                    let r = xelibService.GetReplacementNavmesh(error.handle);
-                    let formID = xelib.GetFormID(error.handle);
-                    xelib.RemoveElement(error.handle);
-                    xelib.SetFormID(r, formID);
-                }
-            },
-            {
-                label: "Bury Navmesh",
-                color: "green",
-                description: "This resolution will lower the navmesh's verticies below the ground and remove its edge links.",
-                available: function(error) {
-                    return error.signature === 'NAVM';
-                },
-                execute: function(error) {
-                    xelib.SetRecordFlag(error.handle, "Deleted", false);
-                    xelibService.MoveVerticesUnderground(error.handle);
-                    xelibService.RemoveEdgeLinks(error.handle);
-                    xelibService.UpdateMinMaxZ(error.handle);
-                }
-            },
-            {
                 label: "Restore",
                 color: "red",
                 description: "This resolution will restore the record.  You should not use this resolution unless you know exactly what you're doing!",
@@ -285,7 +255,49 @@ export default function(ngapp, xelib) {
                 ignoreResolution
             ],
             OE: [
-                // TODO: fix reporting/classify with fixes
+                {
+                    label: "Replace Navmesh",
+                    color: "green",
+                    description: "This resolution will replace the deleted navmesh with the new navmesh introduced by the plugin.",
+                    available: function(error) {
+                        if (error.data === 'Navmesh marked as deleted') {
+                            let result = false;
+                            xelibService.withReplacementNavmesh(error.handle, function(navmesh) {
+                                result = !!navmesh;
+                            });
+                            return result;
+                        }
+                    },
+                    execute: function(error) {
+                        xelibService.withReplacementNavmesh(error.handle, function(navmesh) {
+                            let plugin = xelib.GetElementFile(navmesh);
+                            let oldFormID = xelib.GetFormID(navmesh);
+                            let newFormID = xelib.GetFormID(error.handle);
+                            console.log(`Removing [NAVM:${oldFormID}] and replacing it with [NAVM:${newFormID}]`);
+                            xelib.RemoveElement(error.handle);
+                            xelib.SetFormID(navmesh, newFormID, false, false);
+                            xelibService.withRecords(plugin, 'NAVM,NAVI', true, function(records) {
+                                records.forEach(function(record) {
+                                    xelib.ExchangeReferences(record, oldFormID, newFormID);
+                                });
+                            });
+                        });
+                    }
+                },
+                {
+                    label: "Bury Navmesh",
+                    color: "green",
+                    description: "This resolution will lower the navmesh's verticies below the ground and remove its edge links.",
+                    available: function(error) {
+                        return error.data === 'Navmesh marked as deleted';
+                    },
+                    execute: function(error) {
+                        xelib.SetRecordFlag(error.handle, "Deleted", false);
+                        xelibService.MoveVerticesUnderground(error.handle);
+                        xelibService.RemoveEdgeLinks(error.handle);
+                        xelibService.UpdateMinMaxZ(error.handle);
+                    }
+                },
                 ignoreResolution
             ]
         };
