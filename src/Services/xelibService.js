@@ -160,6 +160,7 @@ export default function(ngapp, xelib) {
 
         this.RemoveLinkedEdgeLinks = function(currentFile, currentForm, form, edgeLink) {
             service.withLinksTo(edgeLink, 'Mesh', function(mesh) {
+                if (xelib.HasElement(currentFile, service.HexFormID(mesh))) return;
                 service.withOverride(mesh, currentFile, function(override) {
                     let triangle = xelib.GetIntValue(edgeLink, 'Triangle');
                     let changed = false;
