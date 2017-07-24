@@ -80,6 +80,8 @@ export default function(ngapp, xelib) {
                 return [error.name];
             },
             DR: function(error) {
+                if (isNavmeshError(error)) return [error.name, `Navmesh marked as deleted.`];
+                if (isUDR(error)) return [error.name, `Reference marked as deleted.`];
                 return [error.name, `Record marked as deleted but contains: ${error.data}`];
             },
             UES: function(error) {
