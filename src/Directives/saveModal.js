@@ -110,7 +110,7 @@ export default function(ngapp, xelib, fileHelpers) {
             var cache = buildCache();
             cache.forEach(function(entry) {
                 var filename = `cache\\${entry.filename}-${entry.hash}.json`;
-                fileHelpers.saveJsonFile(filename, sanitizeErrors(entry.errors));
+                fileHelpers.saveJsonFile(filename, sanitizeErrors(entry.errors), true);
             });
         };
 

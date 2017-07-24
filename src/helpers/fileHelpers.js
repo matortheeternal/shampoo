@@ -14,8 +14,8 @@ export default function(remote, jetpack) {
     };
 
     // helper function for saving json files
-    fh.saveJsonFile = function(filename, value) {
-        fh.appDir.write(filename, value);
+    fh.saveJsonFile = function(filename, value, minify = false) {
+        fh.appDir.write(filename, minify ? JSON.stringify(value) : value);
     };
 
     fh.getDateModified = function(filename) {
