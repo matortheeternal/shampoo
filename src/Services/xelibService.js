@@ -124,25 +124,29 @@ export default function(ngapp, xelib) {
         this.MoveVerticesUnderground = function(handle) {
             service.withElement(handle, 'NVNM\\Vertices', function(vertices) {
                 for (var i = 0; i < xelib.ElementCount(vertices); i++) {
-                    let z = xelib.GetFloatValue(vertices, `[${i}]`);
-                    xelib.SetFloatValue(vertices, `[${i}]`, z - 30000.0);
+                    let z = xelib.GetFloatValue(vertices, `[${i}]\\Z`);
+                    xelib.SetFloatValue(vertices, `[${i}]\\Z`, z - 30000.0);
                 }
             });
         };
 
         this.RemoveEdgeLinkFlags = function(triangle) {
             let flags = xelib.GetUIntValue(triangle, `Flags`);
-            if (flags & 2048) {
+            let originalFlags = flags;
+            if (flags & 1) {
                 xelib.SetIntValue(triangle, `Edge 0-1`, -1);
+                flags -= 1;
             }
-            if (flags & 1024) {
+            if (flags & 2) {
                 xelib.SetIntValue(triangle, `Edge 1-2`, -1);
+                flags -= 2;
             }
-            if (flags & 512) {
+            if (flags & 4) {
                 xelib.SetIntValue(triangle, `Edge 2-0`, -1);
+                flags -= 4;
             }
-            if (flags >= 512) {
-                xelib.SetUIntValue(triangle, `Flags`, flags % 512);
+            if (flags !== originalFlags) {
+                xelib.SetUIntValue(triangle, `Flags`, flags);
                 return true;
             }
         };
