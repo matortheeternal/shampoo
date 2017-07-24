@@ -5,7 +5,7 @@ export default function(ngapp, xelib) {
         this.errorAcronyms = [
             "ITM",
             "ITPO",
-            "UDR",
+            "DR",
             "UES",
             "URR",
             "UER",
@@ -18,7 +18,7 @@ export default function(ngapp, xelib) {
                     group: 0,
                     name: "Identical to Master Records",
                     acronym: "ITM",
-                    caption: "ITMs are dirty edits where a record has been overridden in a plugin file, but hasn't been changed.",
+                    caption: "ITMs are records that have been overridden in a plugin file but haven't been change relative to their master record.",
                     benign: true,
                     errors: []
                 },
@@ -26,15 +26,15 @@ export default function(ngapp, xelib) {
                     group: 1,
                     name: "Identical to Previous Override Records",
                     acronym: "ITPO",
-                    caption: "ITPOs are dirty edits where a record has been overridden in a plugin file, but hasn't been changed relative to the previous override.",
+                    caption: "ITPOs are records that have been overridden in a plugin file that haven't been changed relative to their previous override.",
                     benign: true,
                     errors: []
                 },
                 {
                     group: 2,
-                    name: "Deleted References",
-                    acronym: "UDR",
-                    caption: "UDRs are dirty edits where an object reference has been deleted instead of being disabled.",
+                    name: "Deleted Records",
+                    acronym: "DR",
+                    caption: "DRs are records which have been marked as deleted with either their subrecords still present or the chance to cause CTDs when referenced.",
                     errors: []
                 },
                 {
@@ -42,6 +42,7 @@ export default function(ngapp, xelib) {
                     name: "Unexpected Subrecords",
                     acronym: "UES",
                     caption: "UESs are errors where the data structure of a record is abnormal.",
+                    benign: true,
                     errors: []
                 },
                 {
@@ -78,7 +79,7 @@ export default function(ngapp, xelib) {
             ITPO: function(error) {
                 return [error.name];
             },
-            UDR: function(error) {
+            DR: function(error) {
                 return [error.name, `Record marked as deleted but contains: ${error.data}`];
             },
             UES: function(error) {
@@ -96,17 +97,28 @@ export default function(ngapp, xelib) {
             }
         };
 
-        var withErrorElement = function(error, callback, onException) {
+        var referenceSignatures = ['REFR', 'PGRE', 'PMIS', 'ACHR', 'PARW', 'PBAR', 'PBEA', 'PCON', 'PFLA', 'PHZD'];
+
+        var isUDR = function(error) {
+            return referenceSignatures.indexOf(error.signature) > -1;
+        };
+
+        var isNavmeshError = function(error) {
+            return error.signature === 'NAVM';
+        };
+
+        var logErrorException = function(error, exception) {
+            console.log(error);
+            console.log(exception);
+        };
+
+        var withErrorElement = function(error, callback, onException = logErrorException) {
             var element = xelib.GetElement(error.handle, error.path);
             try {
                 try {
                     callback(element);
                 } catch(exception) {
-                    if (onException) {
-                        onException(error, exception);
-                    } else {
-                        console.log(exception);
-                    }
+                    onException(error, exception);
                 }
             } finally {
                 xelib.Release(element);
@@ -171,9 +183,6 @@ export default function(ngapp, xelib) {
                 withErrorElement(error, function(element) {
                     xelib.SetUIntValue(element, 0);
                     xelib.Release(element);
-                }, function(error, exception) {
-                    console.log(error);
-                    console.log(exception);
                 });
             }
         };
@@ -185,9 +194,20 @@ export default function(ngapp, xelib) {
                 withErrorElement(error, function(element) {
                     xelib.RemoveElementOrParent(element);
                     xelib.Release(element);
-                }, function(error, exception) {
-                    console.log(error);
-                    console.log(exception);
+                });
+            }
+        };
+        var repairResolution = {
+            label: "Repair",
+            color: "green",
+            description: "This resolution will fix the order of subrecords in the record and trim invalid ones.",
+            execute: function(error) {
+                xelibService.withElementFile(error.handle, function(file) {
+                    var copy = xelib.CopyElement(error.handle, file, true);
+                    var formID = xelib.GetFormID(error.handle);
+                    xelib.RemoveElement(error.handle);
+                    xelib.SetFormID(copy, formID);
+                    xelib.Switch(error.handle, copy);
                 });
             }
         };
@@ -204,15 +224,61 @@ export default function(ngapp, xelib) {
         ];
         var deletedResolutions = [
             {
+                label: "Replace Navmesh",
+                color: "green",
+                description: "This resolution will replace the deleted navmesh with the new navmesh introduced by the plugin.",
+                available: function(error) {
+                    return isNavmeshError(error) && xelibService.hasReplacementNavmesh(error.handle);
+                },
+                execute: function(error) {
+                    xelibService.withReplacementNavmesh(error.handle, function(navmesh) {
+                        let plugin = xelib.GetElementFile(navmesh);
+                        let oldFormID = xelib.GetFormID(navmesh);
+                        let newFormID = xelib.GetFormID(error.handle);
+                        console.log(`Removing [NAVM:${oldFormID}] and replacing it with [NAVM:${newFormID}]`);
+                        xelib.RemoveElement(error.handle);
+                        xelib.SetFormID(navmesh, newFormID, false, false);
+                        xelibService.withRecords(plugin, 'NAVM,NAVI', true, function(records) {
+                            records.forEach(function(record) {
+                                xelib.ExchangeReferences(record, oldFormID, newFormID);
+                            });
+                        });
+                    });
+                }
+            },
+            {
+                label: "Bury Navmesh",
+                color: "green",
+                description: "This resolution will lower the navmesh's verticies below the ground and remove its edge links.",
+                available: isNavmeshError,
+                execute: function(error) {
+                    console.log(`Burying [NAVM:${xelib.GetFormID(error.handle)}]`);
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
+                    xelibService.MoveVerticesUnderground(error.handle);
+                    xelibService.RemoveEdgeLinks(error.handle);
+                    xelibService.UpdateMinMaxZ(error.handle);
+                }
+            },
+            {
                 label: "Undelete and Disable",
                 color: "green",
-                description: "This resolution will undelete the record and mark it as disabled.",
-                available: function(error) {
-                    return error.signature !== 'NAVM';
-                },
+                description: "This resolution will undelete the reference and mark it as disabled.",
+                available: isUDR,
                 execute: function(error) {
                     xelib.SetRecordFlag(error.handle, "Deleted", false);
                     xelib.SetRecordFlag(error.handle, "Initially Disabled", true);
+                }
+            },
+            {
+                label: "Clear Subrecords",
+                color: "green",
+                description: "This resolution will clear the record's subrecords.",
+                available: function(error) {
+                    return !isUDR(error) && !isNavmeshError(error);
+                },
+                execute: function(error) {
+                    xelib.SetRecordFlag(error.handle, "Deleted", false);
+                    xelib.SetRecordFlag(error.handle, "Deleted", true);
                 }
             },
             {
@@ -229,22 +295,9 @@ export default function(ngapp, xelib) {
         this.errorResolutions = {
             ITM: identicalResolutions,
             ITPO: identicalResolutions,
-            UDR: deletedResolutions,
+            DR: deletedResolutions,
             UES: [
-                {
-                    label: "Repair",
-                    color: "green",
-                    description: "This resolution will fix the order of subrecords in the record and trim invalid ones.",
-                    execute: function(error) {
-                        xelibService.withElement(xelib.GetElementFile(error.handle), function(file) {
-                            var copy = xelib.CopyElement(error.handle, file, true);
-                            var formID = xelib.GetFormID(error.handle);
-                            xelib.RemoveElement(error.handle);
-                            xelib.SetFormID(copy, formID);
-                            xelib.Switch(error.handle, copy);
-                        });
-                    }
-                },
+                repairResolution,
                 removeRecordResolution,
                 ignoreResolution
             ],
@@ -259,56 +312,12 @@ export default function(ngapp, xelib) {
                 ignoreResolution
             ],
             OE: [
-                {
-                    label: "Replace Navmesh",
-                    color: "green",
-                    description: "This resolution will replace the deleted navmesh with the new navmesh introduced by the plugin.",
-                    available: function(error) {
-                        if (error.data === 'Navmesh marked as deleted') {
-                            let result = false;
-                            xelibService.withReplacementNavmesh(error.handle, function(navmesh) {
-                                result = !!navmesh;
-                            });
-                            return result;
-                        }
-                    },
-                    execute: function(error) {
-                        xelibService.withReplacementNavmesh(error.handle, function(navmesh) {
-                            let plugin = xelib.GetElementFile(navmesh);
-                            let oldFormID = xelib.GetFormID(navmesh);
-                            let newFormID = xelib.GetFormID(error.handle);
-                            console.log(`Removing [NAVM:${oldFormID}] and replacing it with [NAVM:${newFormID}]`);
-                            xelib.RemoveElement(error.handle);
-                            xelib.SetFormID(navmesh, newFormID, false, false);
-                            xelibService.withRecords(plugin, 'NAVM,NAVI', true, function(records) {
-                                records.forEach(function(record) {
-                                    xelib.ExchangeReferences(record, oldFormID, newFormID);
-                                });
-                            });
-                        });
-                    }
-                },
-                {
-                    label: "Bury Navmesh",
-                    color: "green",
-                    description: "This resolution will lower the navmesh's verticies below the ground and remove its edge links.",
-                    available: function(error) {
-                        return error.data === 'Navmesh marked as deleted';
-                    },
-                    execute: function(error) {
-                        console.log(`Burying [NAVM:${xelib.GetFormID(error.handle)}]`);
-                        xelib.SetRecordFlag(error.handle, "Deleted", false);
-                        xelibService.MoveVerticesUnderground(error.handle);
-                        xelibService.RemoveEdgeLinks(error.handle);
-                        xelibService.UpdateMinMaxZ(error.handle);
-                    }
-                },
                 ignoreResolution
             ]
         };
 
         this.getErrorResolutions = function(error) {
-            var acronym = service.errorAcronyms[error.group];
+            let acronym = service.errorAcronyms[error.group];
             return service.errorResolutions[acronym].filter(function(resolution) {
                 if (!resolution.hasOwnProperty('available')) return true;
                 return resolution.available(error);
@@ -316,7 +325,7 @@ export default function(ngapp, xelib) {
         };
 
         this.getErrorMessage = function(error) {
-            var acronym = service.errorAcronyms[error.group];
+            let acronym = service.errorAcronyms[error.group];
             return service.messageFormats[acronym](error);
         };
 

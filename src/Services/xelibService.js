@@ -94,6 +94,15 @@ export default function(ngapp, xelib) {
             }
         };
 
+        this.withElementFile = function(handle, callback) {
+            var file = xelib.GetElementFile(handle);
+            try {
+                callback(file);
+            } finally {
+                xelib.Release(file);
+            }
+        };
+
         this.withElements = function(handle, path, callback) {
             let elements = xelib.GetElements(handle, path);
             try {
@@ -205,6 +214,13 @@ export default function(ngapp, xelib) {
             } finally {
                 navmeshes.forEach(xelib.Release);
             }
+        };
+
+        this.hasReplacementNavmesh = function(handle) {
+            let container = xelib.GetContainer(handle);
+            let navmeshes = xelib.GetRecords(container, 'NAVM', false);
+            navmeshes.forEach(xelib.Release);
+            return navmeshes.length > 0;
         };
 
         this.intToHex = function(n, padding) {

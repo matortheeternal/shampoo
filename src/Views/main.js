@@ -75,6 +75,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                 console.log(errors);
                 $scope.setPluginErrors($scope.currentPlugin, errors);
             } catch (e) {
+                console.log(e);
                 xelibService.getExceptionInformation();
             }
         };
