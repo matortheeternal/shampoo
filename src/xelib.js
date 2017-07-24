@@ -122,8 +122,8 @@ try {
         'ElementFromJson': [WordBool, [Cardinal, PWChar, PWChar]],
         // RECORD HANDLING METHODS
         'GetFormID': [WordBool, [Cardinal, PCardinal, WordBool]],
-        'SetFormID': [WordBool, [Cardinal, Cardinal, WordBool]],
-        'GetRecords': [WordBool, [Cardinal, PWChar, PInteger]],
+        'SetFormID': [WordBool, [Cardinal, Cardinal, WordBool, WordBool]],
+        'GetRecords': [WordBool, [Cardinal, PWChar, WordBool, PInteger]],
         'GetOverrides': [WordBool, [Cardinal, PInteger]],
         'GetReferencedBy': [WordBool, [Cardinal, PInteger]],
         'ExchangeReferences': [WordBool, [Cardinal, Cardinal, Cardinal]],
@@ -176,13 +176,6 @@ var wcb = function(value) {
     var buf = new Buffer((value.length + 1) * 2);
     buf.write(value, 0, 'ucs2');
     buf.type = PWChar;
-    return buf;
-};
-
-var wb = function(value) {
-    var buf = new Buffer(2);
-    buf.write(+value, 0);
-    buf.type = WordBool;
     return buf;
 };
 
@@ -645,17 +638,17 @@ var xelib = {
     // RECORD HANDLING METHODS
     'GetFormID': function(_id, local = false) {
         var _res = createTypedBuffer(4, PCardinal);
-        if (!lib.GetFormID(_id, _res, wb(local)))
+        if (!lib.GetFormID(_id, _res, local))
             Fail(`Failed to get FormID for ${_id}`);
         return _res.readUInt32LE();
     },
-    'SetFormID': function(_id, newFormID, local = false) {
-        if (!lib.SetFormID(_id, newFormID, wb(local)))
+    'SetFormID': function(_id, newFormID, local = false, fixReferences = true) {
+        if (!lib.SetFormID(_id, newFormID, local, fixReferences))
             Fail(`Failed to set FormID on ${_id} to ${newFormID}`);
     },
     'GetRecords': function(_id, search, includeOverrides = false) {
         return GetArray(function(_len) {
-            if (!lib.GetRecords(_id, wcb(search), wb(includeOverrides), _len))
+            if (!lib.GetRecords(_id, wcb(search), includeOverrides, _len))
                 Fail(`Failed to get records from: ${elementContext(_id, search)}`);
         });
     },
