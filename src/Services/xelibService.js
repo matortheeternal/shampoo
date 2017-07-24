@@ -152,8 +152,7 @@ export default function(ngapp, xelib) {
         };
 
         this.withOverride = function(record, file, callback) {
-            let form = xelib.GetFormID(record);
-            let override = xelib.AddElement(file, `${service.intToHex(form, 8)}`);
+            let override = xelib.AddElement(file, service.HexFormID(record));
             if (!callback(override)) {
                 xelib.RemoveElement(override);
             }
@@ -213,6 +212,10 @@ export default function(ngapp, xelib) {
                 str = '0' + str;
             }
             return str;
+        };
+
+        this.HexFormID = function(handle) {
+            return service.intToHex(xelib.GetFormID(handle), 8);
         };
     });
 }
