@@ -17,7 +17,7 @@
     ],
     "extraFiles": [
       "XEditLib.dll",
-      "*.dat"
+      "*.Hardcoded.dat"
     ]
   },
   "scripts": {

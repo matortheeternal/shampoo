@@ -37,8 +37,7 @@ export default function(ngapp, xelib, fileHelpers) {
 
         $scope.checkHardcodedDat = function() {
             let game = profileService.getGame($scope.selectedProfile.gameMode);
-            let hardcodedSuffix = '.Hardcoded.keep.this.with.the.exe.and.otherwise.ignore.it.I.really.mean.it.dat';
-            let fileName = game.shortName + hardcodedSuffix;
+            let fileName = game.shortName + '.Hardcoded.dat';
             if (fileHelpers.appDir.exists(fileName)) return true;
             alert(`Error: Required file "${fileName}" not found, please re-install the application.`);
         };

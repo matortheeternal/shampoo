@@ -2,7 +2,8 @@ export default function(remote, jetpack) {
     let fh = {};
 
     fh.jetpack = jetpack;
-    fh.appDir = jetpack.cwd(remote.app.getAppPath());
+    fh.appPath = remote.app.getAppPath();
+    fh.appDir = jetpack.cwd(fh.appPath);
 
     // helper function for loading json file
     fh.loadJsonFile = function (filename, defaultValue) {
