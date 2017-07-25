@@ -8,7 +8,7 @@ export default function(ngapp, xelib, remote) {
         });
     }]);
 
-    ngapp.controller('baseController', function ($scope) {
+    ngapp.controller('baseController', function ($scope, $document) {
         var hostWindow = remote.getCurrentWindow();
 
         $scope.helpClick = function () {
@@ -34,6 +34,17 @@ export default function(ngapp, xelib, remote) {
         $scope.$on('terminate', function() {
             remote.app.forceClose = true;
             $scope.closeClick();
+        });
+
+        // keyboard shortcuts
+        $document.bind('keypress', function(e) {
+            // ctrl + shift + i OR F12
+            if ((e.which === 9 && e.shiftKey && e.ctrlKey) || e.which === 123) {
+                hostWindow.toggleDevTools();
+            // f5
+            } else if (e.which === 18 && e.ctrlKey) {
+                location.reload();
+            }
         });
     });
 }
