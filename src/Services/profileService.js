@@ -3,7 +3,7 @@ export default function(ngapp, xelib, fileHelpers) {
         var service = this;
 
         this.games = fileHelpers.loadJsonFile('app/games.json');
-        this.profiles = fileHelpers.loadJsonFile('app/profiles.json');
+        this.profiles = fileHelpers.loadJsonFile('profiles.json');
         this.languages = ['English'];
 
         this.saveProfiles = function() {
