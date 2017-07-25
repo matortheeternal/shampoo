@@ -5,12 +5,15 @@ export default function(remote, jetpack) {
     fh.appPath = remote.app.getAppPath();
     fh.appDir = jetpack.cwd(fh.appPath);
 
+    // log app directory for reference
+    console.log('App directory: ' + fh.appPath);
+
     // helper function for loading json file
-    fh.loadJsonFile = function (filename, defaultValue) {
+    fh.loadJsonFile = function (filename, defaultValue = []) {
         if (fh.appDir.exists(filename) === 'file') {
             return fh.appDir.read(filename, 'json');
         } else {
-            return defaultValue || [];
+            return defaultValue;
         }
     };
 
