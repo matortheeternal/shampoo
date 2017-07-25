@@ -185,6 +185,7 @@ export default function(ngapp, xelib, remote, fileHelpers) {
                     let errors = $scope.buildErrors(plugin, cachedErrors);
                     $scope.setPluginErrors(plugin, errors);
                     plugin.skip = true;
+                    plugin.loadedCache = true;
                     plugin.status = `Found ${plugin.errors.length} cached errors`;
                 }
             });

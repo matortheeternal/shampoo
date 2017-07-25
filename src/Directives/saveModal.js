@@ -31,6 +31,7 @@ export default function(ngapp, xelib, fileHelpers) {
             var cache = [];
             $scope.pluginsToProcess.forEach(function(plugin, index) {
                 $scope.detailedMessage = `${plugin.filename} (${index}/${$scope.total})`;
+                if (plugin.loadedCache) return;
                 cache.push({
                     filename: plugin.filename,
                     hash: plugin.hash,
